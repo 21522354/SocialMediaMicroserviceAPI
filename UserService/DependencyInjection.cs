@@ -1,5 +1,6 @@
 ﻿using Microsoft.EntityFrameworkCore;
 using UserService.DataLayer;
+using UserService.DataLayer.Repository;
 using UserService.Mapper;
 
 namespace UserService
@@ -13,6 +14,7 @@ namespace UserService
             {
                 options.UseInMemoryDatabase("InMem");
             });
+            services.AddScoped<IUserRepository, UserRepository>();
         }
     }
 }

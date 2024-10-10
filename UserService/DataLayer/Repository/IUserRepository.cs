@@ -1,16 +1,9 @@
-﻿using Microsoft.AspNetCore.Mvc;
-using UserService.DataLayer.DTOs;
-using UserService.DataLayer.Models;
+﻿using UserService.DataLayer.Models;
 
 namespace UserService.DataLayer.Repository
 {
-    public interface IUserRepository
+    public interface IUserRepository : IRepository<User, Guid>
     {
-        bool SaveChange();
-        IEnumerable<User> GetAllUsers();
-        User GetUserById(Guid userId);
-        void AddUser(User user);        
-        void UpdateUser(User user); 
-        void DeleteUser(User user);
+        Task<User> GetUserByEmail(string email);
     }
 }

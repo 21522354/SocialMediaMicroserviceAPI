@@ -1,15 +1,18 @@
-﻿namespace UserService.DataLayer.Models
+﻿using UserService.DataLayer.Models;
+
+namespace UserService.DataLayer
 {
     public static class SeedData
     {
         public static void seedData(this IApplicationBuilder app)
         {
-            using(var serviceScope = app.ApplicationServices.CreateScope())
+            using (var serviceScope = app.ApplicationServices.CreateScope())
             {
                 var _context = serviceScope.ServiceProvider.GetService<UserDBContext>();
                 Console.WriteLine("Seeding data");
                 _context.Users.AddRange(
-                    new User() {
+                    new User()
+                    {
                         UserId = Guid.Parse("e0be4a36-67cd-4dd6-be48-8b800c3123d1"),
                         Name = "Nguyen Van A",
                         Email = "ndam8175@gmail.com",
@@ -56,53 +59,45 @@
                 _context.Follows.AddRange(
                     new UserFollow()
                     {
-                        Id = 1,
                         UserFromId = Guid.Parse("e0be4a36-67cd-4dd6-be48-8b800c3123d1"),
                         UserToId = Guid.Parse("e0be4a36-67cd-4dd6-be48-8b800c3123d2")
                     },
                     new UserFollow()
                     {
-                        Id = 1,
                         UserFromId = Guid.Parse("e0be4a36-67cd-4dd6-be48-8b800c3123d1"),
                         UserToId = Guid.Parse("e0be4a36-67cd-4dd6-be48-8b800c3123d3")
                     },
                     new UserFollow()
                     {
-                        Id = 1,
                         UserFromId = Guid.Parse("e0be4a36-67cd-4dd6-be48-8b800c3123d1"),
                         UserToId = Guid.Parse("e0be4a36-67cd-4dd6-be48-8b800c3123d4")
                     },
                     new UserFollow()
                     {
-                        Id = 1,
                         UserFromId = Guid.Parse("e0be4a36-67cd-4dd6-be48-8b800c3123d2"),
                         UserToId = Guid.Parse("e0be4a36-67cd-4dd6-be48-8b800c3123d4")
                     },
                     new UserFollow()
                     {
-                        Id = 1,
                         UserFromId = Guid.Parse("e0be4a36-67cd-4dd6-be48-8b800c3123d2"),
                         UserToId = Guid.Parse("e0be4a36-67cd-4dd6-be48-8b800c3123d1")
                     },
                     new UserFollow()
                     {
-                        Id = 1,
                         UserFromId = Guid.Parse("e0be4a36-67cd-4dd6-be48-8b800c3123d1"),
                         UserToId = Guid.Parse("e0be4a36-67cd-4dd6-be48-8b800c3123d2")
                     },
                     new UserFollow()
                     {
-                        Id = 1,
                         UserFromId = Guid.Parse("e0be4a36-67cd-4dd6-be48-8b800c3123d2"),
                         UserToId = Guid.Parse("e0be4a36-67cd-4dd6-be48-8b800c3123d3")
                     },
                     new UserFollow()
                     {
-                        Id = 1,
                         UserFromId = Guid.Parse("e0be4a36-67cd-4dd6-be48-8b800c3123d3"),
                         UserToId = Guid.Parse("e0be4a36-67cd-4dd6-be48-8b800c3123d4")
                     });
-
+                _context.SaveChanges();     
             }
         }
     }

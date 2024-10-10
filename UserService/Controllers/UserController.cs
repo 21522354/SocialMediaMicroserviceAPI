@@ -1,6 +1,7 @@
 ﻿using MapsterMapper;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
+using UserService.DataLayer.DTOs;
 using UserService.DataLayer.Repository;
 
 namespace UserService.Controllers
@@ -14,8 +15,18 @@ namespace UserService.Controllers
 
         public UserController(IUserRepository repo, IMapper mapper)
         {
-            _repo = repo;   
-            _mapper = mapper;   
+            _repo = repo;
+            _mapper = mapper;
+        }
+        [HttpGet("{id}")]
+        public async Task<IActionResult> GetUserById(Guid id)
+        {
+            var user = await _repo.GetByIdAsync(id);
+            if (user == null)
+            {
+                return NotFound();      
+            }
+            return Ok(_mapper.Map<UserReadDto>(user));
         }
     }
 }

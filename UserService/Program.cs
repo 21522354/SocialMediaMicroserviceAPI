@@ -1,5 +1,5 @@
 using UserService;
-using UserService.DataLayer.Models;
+using UserService.DataLayer;
 
 var builder = WebApplication.CreateBuilder(args);
 
