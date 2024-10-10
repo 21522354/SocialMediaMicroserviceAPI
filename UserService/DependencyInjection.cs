@@ -1,4 +1,6 @@
-﻿using UserService.Mapper;
+﻿using Microsoft.EntityFrameworkCore;
+using UserService.DataLayer;
+using UserService.Mapper;
 
 namespace UserService
 {
@@ -7,6 +9,10 @@ namespace UserService
         public static void AddApplicationService(this IServiceCollection services)
         {
             services.AddMapping();
+            services.AddDbContext<UserDBContext>(options =>
+            {
+                options.UseInMemoryDatabase("InMem");
+            });
         }
     }
 }

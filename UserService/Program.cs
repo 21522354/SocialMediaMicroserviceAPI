@@ -1,4 +1,5 @@
 using UserService;
+using UserService.DataLayer.Models;
 
 var builder = WebApplication.CreateBuilder(args);
 
@@ -24,5 +25,7 @@ app.UseHttpsRedirection();
 app.UseAuthorization();
 
 app.MapControllers();
+
+app.seedData();
 
 app.Run();
