@@ -84,11 +84,6 @@ namespace UserService.DataLayer
                     },
                     new UserFollow()
                     {
-                        UserFromId = Guid.Parse("e0be4a36-67cd-4dd6-be48-8b800c3123d1"),
-                        UserToId = Guid.Parse("e0be4a36-67cd-4dd6-be48-8b800c3123d2")
-                    },
-                    new UserFollow()
-                    {
                         UserFromId = Guid.Parse("e0be4a36-67cd-4dd6-be48-8b800c3123d2"),
                         UserToId = Guid.Parse("e0be4a36-67cd-4dd6-be48-8b800c3123d3")
                     },

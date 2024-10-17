@@ -2,9 +2,8 @@
 {
     public class UserReadDto
     {
+        public Guid UserId { get; set; }    
         public string Name { get; set; }
-        public string Avatar { get; set; }
-        public int UserFollowing { get; set; }
-        public int UserFollower { get; set; }           
+        public string Avatar { get; set; }         
     }
 }
