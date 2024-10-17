@@ -11,5 +11,7 @@ namespace UserService.DataLayer.Repository
         Task<IEnumerable<User>> GetListUserFollower(Guid userId);
         Task<IEnumerable<User>> GetListUserFollowing(Guid userId);  
         Task<IEnumerable<User>> GetAllUsers();
+        Task ChangePassword(Guid userId, string oldPassword,string newPassword);
+        Task SetNameAndAvatar(Guid userId, string newName, string avatar);  
     }
 }

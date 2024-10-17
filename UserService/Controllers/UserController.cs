@@ -22,7 +22,7 @@ namespace UserService.Controllers
         [HttpGet]
         public async Task<IActionResult> GetAllUser()
         {
-            return Ok(_mapper.Map<IEnumerable<User>>(await _repo.GetAllUsers()));   
+            return Ok(_mapper.Map<IEnumerable<UserReadDto>>(await _repo.GetAllUsers()));   
         }
         [HttpGet("{id}")]
         public async Task<IActionResult> GetUserById(Guid id)
@@ -56,11 +56,29 @@ namespace UserService.Controllers
             }
             return Ok(_mapper.Map<UserReadDto>(user));
         }
-        [HttpPost("login/email={email}&&password={password}")]
-        public async Task<IActionResult> Login(string email, string password)
+        [HttpPost("Login")]
+        public async Task<IActionResult> Login([FromBody] SignUpAndSignInRequest request)
         {
-            var user = await _repo.SignIn(email, password);
+            var user = await _repo.SignIn(request.Email, request.Password);
             return Ok(_mapper.Map<UserReadDto>(user));
+        }
+        [HttpPost("SignUp")]
+        public async Task<IActionResult> SignUp([FromBody]SignUpAndSignInRequest request)
+        {
+            var user = await _repo.SignUp(request.Email, request.Password);
+            return Ok(_mapper.Map<UserReadDto>(user));
+        }
+        [HttpPost("SetNameAndAvatar")]
+        public async Task<IActionResult> SetNameAndAvatar([FromBody]SetNameAndAvatarRequest request)
+        {
+            await _repo.SetNameAndAvatar(request.UserId, request.Name, request.Avatar);
+            return Ok("Set name and avatar successfully");
+        }
+        [HttpPost("ChangePassword")]
+        public async Task<IActionResult> ChangePassword([FromBody]ChangePasswordRequest request)
+        {
+            await _repo.ChangePassword(request.UserId, request.OldPassword, request.NewPassword);
+            return Ok("Change password successfully");
         }
     }
 }

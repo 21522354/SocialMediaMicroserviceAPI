@@ -24,6 +24,8 @@ app.UseHttpsRedirection();
 
 app.UseAuthorization();
 
+app.UseExceptionHandler("/error");
+
 app.MapControllers();
 
 app.seedData();

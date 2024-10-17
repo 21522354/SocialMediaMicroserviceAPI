@@ -1,5 +1,6 @@
 ﻿using Microsoft.EntityFrameworkCore;
 using UserService.DataLayer.Models;
+using UserService.Error;
 
 namespace UserService.DataLayer.Repository
 {
@@ -9,6 +10,36 @@ namespace UserService.DataLayer.Repository
         public UserRepository(UserDBContext context) : base(context)
         {
             _context = context;
+        }
+
+        public async Task ChangePassword(Guid userId, string oldPassword,string newPassword)
+        {
+            var user = await _context.Users.FindAsync(userId); 
+            if (user == null)
+            {
+                throw new BadHttpRequestException("User not found");
+            }
+            if(user.Password != oldPassword)
+            {
+                throw new BadHttpRequestException("Old password does not correct");
+            }
+            user.Password = newPassword;
+            await _context.SaveChangesAsync();  
+        }
+        public async Task SetNameAndAvatar(Guid userId, string newName, string avatar)
+        {
+            var user = await _context.Users.FindAsync(userId);
+            if (user == null)
+            {
+                throw new BadHttpRequestException("User not found");
+            }
+            user.Name = newName;
+            user.Image = avatar;    
+            await _context.SaveChangesAsync();  
+        }
+        public async Task<User> GetUserByEmail(string email)
+        {
+            return await _context.Users.Where(p => p.Email.Trim() == email.Trim()).FirstOrDefaultAsync();
         }
 
         public async Task<IEnumerable<User>> GetAllUsers()
@@ -24,11 +55,6 @@ namespace UserService.DataLayer.Repository
         public async Task<IEnumerable<User>> GetListUserFollowing(Guid userId)
         {
             return await _context.Follows.Where(p => p.UserFromId == userId).Include(p => p.UserTo).Select(p => p.UserTo).ToListAsync();
-        }
-
-        public async Task<User> GetUserByEmail(string email)
-        {
-            return await _context.Users.Where(p => p.Email.Trim() == email.Trim()).FirstOrDefaultAsync();
         }
 
         public async Task<User> SignIn(string email, string password)
