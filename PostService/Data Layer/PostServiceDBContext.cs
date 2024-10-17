@@ -1,9 +1,48 @@
 ﻿using Microsoft.EntityFrameworkCore;
+using PostService.Data_Layer.Models;
 
 namespace PostService.Data_Layer
 {
     public class PostServiceDBContext : DbContext
     {
         public PostServiceDBContext(DbContextOptions<PostServiceDBContext> options) : base(options) { }
+        public DbSet<Post> Posts { get; set; }
+        public DbSet<PostMedia> PostMedias { get; set; }
+        public DbSet<PostLike> PostLikes { get; set; }
+        public DbSet<PostComment> PostComments { get; set; }
+        public DbSet<UnseenPost> UnseenPosts { get; set; }
+        protected override void OnModelCreating(ModelBuilder modelBuilder)
+        {
+            base.OnModelCreating(modelBuilder);
+
+            modelBuilder.Entity<Post>()
+                .HasKey(p => p.PostId);
+
+            modelBuilder.Entity<Post>()
+                .HasMany(p => p.PostMedias)
+                .WithOne(p => p.Post)
+                .HasForeignKey(p => p.PostId);
+            modelBuilder.Entity<Post>()
+                .HasMany(p => p.PostComments)
+                .WithOne(p => p.Post)
+                .HasForeignKey(p => p.PostId);
+            modelBuilder.Entity<Post>()
+                .HasMany(p => p.PostLikes)
+                .WithOne(p => p.Post)
+                .HasForeignKey(p => p.PostId);
+            modelBuilder.Entity<Post>()
+                .HasMany(p => p.UnseenPosts)
+                .WithOne(p => p.Post)
+                .HasForeignKey(p => p.PostId);
+
+            modelBuilder.Entity<PostComment>()
+                .HasKey(p => p.CommentId);
+            modelBuilder.Entity<PostLike>()
+                .HasKey(p => new { p.PostId, p.UserId });
+            modelBuilder.Entity<PostMedia>()
+                .HasKey(p => p.Id);
+            modelBuilder.Entity<UnseenPost>()
+                .HasKey(p => new { p.PostId, p.UserId });
+        }
     }
 }
