@@ -1,6 +1,7 @@
 ﻿using Microsoft.EntityFrameworkCore;
 using PostService.Data_Layer;
 using PostService.Mapper;
+using PostService.SyncDataService;
 using System.Reflection.Metadata;
 
 namespace PostService
@@ -14,6 +15,7 @@ namespace PostService
             {
                 options.UseInMemoryDatabase("InMem");
             });
+            services.AddHttpClient<IUserDataClient, HttpUserDataClient>();
 
             return services;
         }

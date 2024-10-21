@@ -1,17 +1,18 @@
 ﻿using PostService.Data_Layer.DTOs;
 using PostService.Data_Layer.Models;
+using PostService.SyncDataService;
 
 namespace PostService.Data_Layer.Repository
 {
     public class PostRepository : Repository<Post, Guid>, IPostRepository
     {
         private readonly PostServiceDBContext _context;
-        private readonly IConfiguration _configuration;
+        private readonly IUserDataClient _userDataClient;
 
-        public PostRepository(PostServiceDBContext context, IConfiguration configuration) : base(context) 
+        public PostRepository(PostServiceDBContext context, IUserDataClient userDataClient) : base(context) 
         {
             _context = context;
-            _configuration = configuration;
+            _userDataClient = userDataClient;
         }
 
         public async Task CommentPost(Guid postId, Guid userId, string message)
@@ -20,6 +21,13 @@ namespace PostService.Data_Layer.Repository
             if (post == null)
             {
                 throw new Exception("Can't find this post");
+            }
+            var user = await _userDataClient.GetUserById(userId);
+            var postComment = new PostComment()
+            {
+                CommentId = Guid.NewGuid(),
+                UserId = userId,
+                PostId = postId,   
             }
         }
 

@@ -11,6 +11,7 @@ namespace PostService.Data_Layer
         public DbSet<PostLike> PostLikes { get; set; }
         public DbSet<PostComment> PostComments { get; set; }
         public DbSet<UnseenPost> UnseenPosts { get; set; }
+        public DbSet<ReplyComment> ReplyComments { get; set; }
         protected override void OnModelCreating(ModelBuilder modelBuilder)
         {
             base.OnModelCreating(modelBuilder);
@@ -37,6 +38,14 @@ namespace PostService.Data_Layer
 
             modelBuilder.Entity<PostComment>()
                 .HasKey(p => p.CommentId);
+            modelBuilder.Entity<PostComment>()
+                .HasMany(p => p.ReplyComments)
+                .WithOne(p => p.Comment)
+                .HasForeignKey(p => p.CommentId);
+
+            modelBuilder.Entity<ReplyComment>()
+                .HasKey(p => p.ReplyCommentId);
+
             modelBuilder.Entity<PostLike>()
                 .HasKey(p => new { p.PostId, p.UserId });
             modelBuilder.Entity<PostMedia>()
