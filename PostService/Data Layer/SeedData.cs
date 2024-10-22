@@ -39,13 +39,42 @@ namespace PostService.Data_Layer
                                 CommentId = Guid.NewGuid(),
                                 PostId = post.PostId,
                                 UserId = Guid.NewGuid(),
-                                CommentReplyId = Guid.Empty,
                                 Message = $"Comment {i} on post {post.PostTitle}",
                                 NumberOfLike = i
                             });
                         }
                     }
                     _context.PostComments.AddRange(comments);
+
+                    var replyComments = new List<ReplyComment>();
+                    var comment1 = new ReplyComment()
+                    {
+                        ReplyCommentId = Guid.NewGuid(),
+                        UserId = Guid.NewGuid(),
+                        Message = "asdfasdf",
+                        NumberOfLike = 4,
+                        CommentId = comments[1].CommentId
+                    };
+                    replyComments.Add(comment1);
+                    var comment2 = new ReplyComment()
+                    {
+                        ReplyCommentId = Guid.NewGuid(),
+                        UserId = Guid.NewGuid(),
+                        Message = "asdfasdf",
+                        NumberOfLike = 4,
+                        CommentId = comments[1].CommentId
+                    };
+                    replyComments.Add(comment2);
+                    var comment3 = new ReplyComment()
+                    {
+                        ReplyCommentId = Guid.NewGuid(),
+                        UserId = Guid.NewGuid(),
+                        Message = "asdfasdf",
+                        NumberOfLike = 4,
+                        CommentId = comments[2].CommentId
+                    };
+                    replyComments.Add(comment3);
+                    _context.ReplyComments.AddRange(replyComments); 
 
                     // Seed PostLikes
                     var likes = new List<PostLike>();

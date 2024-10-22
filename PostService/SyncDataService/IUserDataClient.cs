@@ -4,6 +4,7 @@ namespace PostService.SyncDataService
 {
     public interface IUserDataClient
     {
-        Task<UserReadDTO> GetUserById(Guid id); 
+        Task<UserReadDTO> GetUserById(Guid id);
+        Task<IEnumerable<UserReadDTO>> GetUserFollower(Guid id);             
     }
 }
