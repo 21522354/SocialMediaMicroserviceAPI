@@ -23,7 +23,6 @@ namespace PostService.Data_Layer
                             UserId = Guid.NewGuid(),
                             PostTitle = $"Post Title {i}",
                             CreatedDate = DateTime.Now,
-                            PostLink = $"https://post{i}.com"
                         });
                     }
                     _context.Posts.AddRange(posts);
@@ -101,8 +100,7 @@ namespace PostService.Data_Layer
                             {
                                 PostId = post.PostId,
                                 STT = i,
-                                ImageLink = $"https://image{i}.com",
-                                VideoLink = $"https://video{i}.com"
+                                Link = $"https://image{i}.com",
                             });
                         }
                     }
