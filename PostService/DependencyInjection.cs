@@ -13,9 +13,7 @@ namespace PostService
         {
             services.AddMapping();
             services.AddDbContext<PostServiceDBContext>(options =>
-            {
-                options.UseInMemoryDatabase("InMem");
-            });
+                options.UseInMemoryDatabase("PostServiceInMemoryDb"));
             services.AddHttpClient<IUserDataClient, HttpUserDataClient>();
             services.AddScoped<IPostRepository, PostRepository>();
             services.AddScoped<IPostCommentRepository, PostCommentRepository>();

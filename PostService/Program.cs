@@ -1,4 +1,5 @@
 
+using PostService.Data_Layer;
 using PostService.Mapper;
 
 namespace PostService
@@ -16,6 +17,7 @@ namespace PostService
             builder.Services.AddEndpointsApiExplorer();
             builder.Services.AddSwaggerGen();
             builder.Services.AddMapping();
+            builder.Services.AddApplicationService();
 
             var app = builder.Build();
 
@@ -31,6 +33,8 @@ namespace PostService
             app.UseAuthorization();
 
             app.MapControllers();
+
+            app.seedData();
 
             app.Run();
         }
