@@ -17,10 +17,25 @@ namespace PostService.Data_Layer
                     var posts = new List<Post>();
                     for (int i = 1; i <= 10; i++)
                     {
+                        Guid userId;
+                        switch (i % 4)
+                        {
+                            case 0: userId = Guid.Parse("e0be4a36-67cd-4dd6-be48-8b800c3123d1");
+                                break;
+                            case 1: userId = Guid.Parse("e0be4a36-67cd-4dd6-be48-8b800c3123d2");
+                                break;
+                            case 2: userId = Guid.Parse("e0be4a36-67cd-4dd6-be48-8b800c3123d4");
+                                break;
+                            case 3: userId = Guid.Parse("e0be4a36-67cd-4dd6-be48-8b800c3123d5");
+                                break;
+                            default:
+                                userId = Guid.Parse("e0be4a36-67cd-4dd6-be48-8b800c3123d1");
+                                break;
+                        }
                         posts.Add(new Post
                         {
                             PostId = Guid.NewGuid(),
-                            UserId = Guid.NewGuid(),
+                            UserId = userId,
                             PostTitle = $"Post Title {i}",
                             CreatedDate = DateTime.Now,
                         });
@@ -33,11 +48,30 @@ namespace PostService.Data_Layer
                     {
                         for (int i = 1; i <= 10; i++)
                         {
+                            Guid userId;
+                            switch (i % 4)
+                            {
+                                case 0:
+                                    userId = Guid.Parse("e0be4a36-67cd-4dd6-be48-8b800c3123d1");
+                                    break;
+                                case 1:
+                                    userId = Guid.Parse("e0be4a36-67cd-4dd6-be48-8b800c3123d2");
+                                    break;
+                                case 2:
+                                    userId = Guid.Parse("e0be4a36-67cd-4dd6-be48-8b800c3123d4");
+                                    break;
+                                case 3:
+                                    userId = Guid.Parse("e0be4a36-67cd-4dd6-be48-8b800c3123d5");
+                                    break;
+                                default:
+                                    userId = Guid.Parse("e0be4a36-67cd-4dd6-be48-8b800c3123d1");
+                                    break;
+                            }
                             comments.Add(new PostComment
                             {
                                 CommentId = Guid.NewGuid(),
                                 PostId = post.PostId,
-                                UserId = Guid.NewGuid(),
+                                UserId = userId,
                                 Message = $"Comment {i} on post {post.PostTitle}",
                                 NumberOfLike = i
                             });
@@ -46,10 +80,11 @@ namespace PostService.Data_Layer
                     _context.PostComments.AddRange(comments);
 
                     var replyComments = new List<ReplyComment>();
+
                     var comment1 = new ReplyComment()
                     {
                         ReplyCommentId = Guid.NewGuid(),
-                        UserId = Guid.NewGuid(),
+                        UserId = Guid.Parse("e0be4a36-67cd-4dd6-be48-8b800c3123d1"),
                         Message = "asdfasdf",
                         NumberOfLike = 4,
                         CommentId = comments[1].CommentId
@@ -58,7 +93,7 @@ namespace PostService.Data_Layer
                     var comment2 = new ReplyComment()
                     {
                         ReplyCommentId = Guid.NewGuid(),
-                        UserId = Guid.NewGuid(),
+                        UserId = Guid.Parse("e0be4a36-67cd-4dd6-be48-8b800c3123d1"),
                         Message = "asdfasdf",
                         NumberOfLike = 4,
                         CommentId = comments[1].CommentId
@@ -67,7 +102,7 @@ namespace PostService.Data_Layer
                     var comment3 = new ReplyComment()
                     {
                         ReplyCommentId = Guid.NewGuid(),
-                        UserId = Guid.NewGuid(),
+                        UserId = Guid.Parse("e0be4a36-67cd-4dd6-be48-8b800c3123d2"),
                         Message = "asdfasdf",
                         NumberOfLike = 4,
                         CommentId = comments[2].CommentId
@@ -79,14 +114,32 @@ namespace PostService.Data_Layer
                     var likes = new List<PostLike>();
                     foreach (var post in posts)
                     {
-                        for (int i = 1; i <= 10; i++)
+
+                        likes.Add(new PostLike
                         {
-                            likes.Add(new PostLike
-                            {
-                                PostId = post.PostId,
-                                UserId = Guid.NewGuid()
-                            });
-                        }
+                            PostId = post.PostId,
+                            UserId = Guid.Parse("e0be4a36-67cd-4dd6-be48-8b800c3123d1")
+                        });
+                        likes.Add(new PostLike
+                        {
+                            PostId = post.PostId,
+                            UserId = Guid.Parse("e0be4a36-67cd-4dd6-be48-8b800c3123d2")
+                        });
+                        likes.Add(new PostLike
+                        {
+                            PostId = post.PostId,
+                            UserId = Guid.Parse("e0be4a36-67cd-4dd6-be48-8b800c3123d3")
+                        });
+                        likes.Add(new PostLike
+                        {
+                            PostId = post.PostId,
+                            UserId = Guid.Parse("e0be4a36-67cd-4dd6-be48-8b800c3123d4")
+                        });
+                        likes.Add(new PostLike
+                        {
+                            PostId = post.PostId,
+                            UserId = Guid.Parse("e0be4a36-67cd-4dd6-be48-8b800c3123d5")
+                        });
                     }
                     _context.PostLikes.AddRange(likes);
 
@@ -113,7 +166,22 @@ namespace PostService.Data_Layer
                         unseenPosts.Add(new UnseenPost
                         {
                             PostId = post.PostId,
-                            UserId = Guid.NewGuid()
+                            UserId = Guid.Parse("e0be4a36-67cd-4dd6-be48-8b800c3123d1")
+                        });
+                        unseenPosts.Add(new UnseenPost
+                        {
+                            PostId = post.PostId,
+                            UserId = Guid.Parse("e0be4a36-67cd-4dd6-be48-8b800c3123d2")
+                        });
+                        unseenPosts.Add(new UnseenPost
+                        {
+                            PostId = post.PostId,
+                            UserId = Guid.Parse("e0be4a36-67cd-4dd6-be48-8b800c3123d3")
+                        });
+                        unseenPosts.Add(new UnseenPost
+                        {
+                            PostId = post.PostId,
+                            UserId = Guid.Parse("e0be4a36-67cd-4dd6-be48-8b800c3123d4")
                         });
                     }
                     _context.UnseenPosts.AddRange(unseenPosts);

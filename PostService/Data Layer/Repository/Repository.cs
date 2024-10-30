@@ -1,7 +1,4 @@
-﻿
-
-
-using Microsoft.EntityFrameworkCore;
+﻿using Microsoft.EntityFrameworkCore;
 
 namespace PostService.Data_Layer.Repository
 {
@@ -33,16 +30,43 @@ namespace PostService.Data_Layer.Repository
 
         public async Task<IEnumerable<T>> GetAllAsync()
         {
-            return await _context.Set<T>().ToListAsync();
+            // Lấy tất cả các thực thể
+            var query = _context.Set<T>().AsQueryable();
+
+            // Include tất cả các collection
+            var entityType = _context.Model.FindEntityType(typeof(T));
+            var navigations = entityType.GetNavigations();
+
+            foreach (var navigation in navigations)
+            {
+                query = query.Include(navigation.Name);
+            }
+
+            return await query.ToListAsync();
         }
 
         public async Task<T> GetByIdAsync(ID id)
         {
             var entity = await _context.Set<T>().FindAsync(id);
+
             if(entity == null)
             {
                 throw new Exception("Can't found this entity");
             }
+
+            // Include các trường collection liên quan
+            var entry = _context.Entry(entity);
+            var navigations = entry.Navigations;
+
+            foreach (var navigation in navigations)
+            {
+                // Load collection nếu nó là một ICollection
+                if (navigation.IsLoaded == false)
+                {
+                    await navigation.LoadAsync();
+                }
+            }
+
             return entity;  
         }
 

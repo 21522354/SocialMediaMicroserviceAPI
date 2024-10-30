@@ -1,4 +1,6 @@
-﻿namespace PostService.Data_Layer.Repository
+﻿using System.Linq.Expressions;
+
+namespace PostService.Data_Layer.Repository
 {
     public interface IRepository<T, Id> where T : class
     {

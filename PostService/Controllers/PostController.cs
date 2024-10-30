@@ -1,4 +1,6 @@
-﻿using Microsoft.AspNetCore.Http;
+﻿using Mapster;
+using MapsterMapper;
+using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
 using PostService.Data_Layer.DTOs;
@@ -20,6 +22,7 @@ namespace PostService.Controllers
         private readonly IReplyCommentRepository _replyCommentRepository;
         private readonly IUnseenPostRepository _unseenPostRepository;
         private readonly IUserDataClient _userDataClient;
+        private readonly IMapper _mapper;
 
         public PostController(
             IPostRepository postRepository,
@@ -28,7 +31,8 @@ namespace PostService.Controllers
             IPostMediaRepository postMediaRepository,
             IReplyCommentRepository replyCommentRepository,
             IUnseenPostRepository unseenPostRepository,
-            IUserDataClient userDataClient
+            IUserDataClient userDataClient,
+            IMapper mapper
             )
         {
             _postRepository = postRepository;
@@ -38,28 +42,20 @@ namespace PostService.Controllers
             _replyCommentRepository = replyCommentRepository;
             _unseenPostRepository = unseenPostRepository;
             _userDataClient = userDataClient;
+            _mapper = mapper;
         }
         [HttpGet("/{postId}")]
         public async Task<IActionResult> GetPostByPostId(Guid postId)
         {
             var post = await _postRepository.GetByIdAsync(postId);
+            post.PostComments = (ICollection<PostComment>)await _postCommentRepository.GetCommentsByPostId(post.PostId);
             if (post == null)
             {
                 throw new Exception("Can't find this post");
             }
-            var user = await _userDataClient.GetUserById(postId);
-            var postReadDTO = new PostReadDTO()
-            {
-                PostId = post.PostId,
-                UserId = post.UserId,
-                Name = user.Name,
-                Avatar = user.Avatar,
-                PostTitle = post.PostTitle,
-                CreatedDate = post.CreatedDate,
-                ImageAndVideo = post.PostMedias.Select(p => p.Link).ToList(),
-                NumberOfLike = post.PostLikes.Count,
-                NumberOfComment = post.PostComments.Count
-            };
+            var user = await _userDataClient.GetUserById(post.UserId);
+            var postReadDTO = (post, user).Adapt<PostReadDTO>();
+
             return Ok(postReadDTO);
         }
         [HttpGet("/personalPage/{userId}")]
@@ -67,23 +63,8 @@ namespace PostService.Controllers
         {
             var listPost = await _postRepository.GetPostsByUserId(userId);
             var user = await _userDataClient.GetUserById(userId);
-            var listPostReadDTO = new List<PostReadDTO>();
-            foreach (var post in listPost)
-            {
-                var postReadDTO = new PostReadDTO()
-                {
-                    UserId = userId,
-                    Name = user.Name,
-                    Avatar = user.Avatar,
-                    PostTitle = post.PostTitle,
-                    CreatedDate = post.CreatedDate,
-                    ImageAndVideo = post.PostMedias.Select(p => p.Link),
-                    NumberOfLike = post.PostLikes.Count(),
-                    NumberOfComment = post.PostComments.Count(),
-                    NumberOfShare = post.NumberOfShare
-                };
-                listPostReadDTO.Add(postReadDTO);
-            }
+            // Sử dụng ánh xạ cho từng post trong danh sách
+            var listPostReadDTO = listPost.Select(post => (post, user).Adapt<PostReadDTO>()).ToList();
             return Ok(listPostReadDTO);
         }
         [HttpGet("/{postId}/comments")]
@@ -138,13 +119,8 @@ namespace PostService.Controllers
             var listPostLikeReadDTO = new List<PostLikeReadDTO>();
             foreach (var item in listPostLike)
             {
-                var user = await _userDataClient.GetUserById(item.PostId);
-                var postLikeReadDTO = new PostLikeReadDTO()
-                {
-                    UserId = user.UserId,
-                    Name = user.Name,
-                    Avatar = user.Avatar,
-                };
+                var user = await _userDataClient.GetUserById(item.UserId);
+                var postLikeReadDTO = _mapper.Map<PostLikeReadDTO>(user);
                 listPostLikeReadDTO.Add(postLikeReadDTO);
             }
             return Ok(listPostLikeReadDTO);
@@ -161,19 +137,8 @@ namespace PostService.Controllers
                 {
                     throw new Exception("Can't find this post with id = " + item.PostId);
                 }
-                var user = await _userDataClient.GetUserById(item.PostId);
-                var postReadDTO = new PostReadDTO()
-                {
-                    PostId = post.PostId,
-                    UserId = post.UserId,
-                    Name = user.Name,
-                    Avatar = user.Avatar,
-                    PostTitle = post.PostTitle,
-                    CreatedDate = post.CreatedDate,
-                    ImageAndVideo = post.PostMedias.Select(p => p.Link).ToList(),
-                    NumberOfLike = post.PostLikes.Count,
-                    NumberOfComment = post.PostComments.Count
-                };
+                var user = await _userDataClient.GetUserById(item.UserId);
+                var postReadDTO = (post, user).Adapt<PostReadDTO>();
                 feeds.Add(postReadDTO);
             }
             return Ok(feeds);
