@@ -34,13 +34,13 @@ namespace UserService.Controllers
             }
             return Ok(_mapper.Map<UserReadDto>(user));
         }
-        [HttpGet("/followers/{id}")]
+        [HttpGet("followers/{id}")]
         public async Task<IActionResult> GetListUserFollower(Guid id)
         {
             var listUser = await _repo.GetListUserFollower(id);
             return Ok(_mapper.Map<IEnumerable<UserReadDto>>(listUser));
         }
-        [HttpGet("/following/{id}")]
+        [HttpGet("following/{id}")]
         public async Task<IActionResult> GetListUserFollowing(Guid id)
         {
             var listUser = await _repo.GetListUserFollowing(id);
