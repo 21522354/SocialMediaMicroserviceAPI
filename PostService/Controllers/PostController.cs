@@ -152,18 +152,24 @@ namespace PostService.Controllers
                 throw new Exception("Can't find this post");
             }
             var user = await _userDataClient.GetUserById(request.UserId);
-            var postLike = new PostLike()
+            var postLike = await _postLikeRepository.FindPostLike(request.PostId, request.UserId);
+            if (postLike != null)
             {
-                PostId = request.PostId,
+                await _postLikeRepository.DeletePostLikeAsync(postLike);
+                return Ok("Unlike post successfully");
+            }
+            postLike = new PostLike()
+            {
                 UserId = request.UserId,
+                PostId = request.PostId,
             };
             await _postLikeRepository.AddPostLikeAsync(postLike);
             return Ok("Like post successfully");
         }
         [HttpPost("/likeComment")]
-        public async Task<IActionResult> LikeComment([FromBody] Guid commentId)
+        public async Task<IActionResult> LikeComment([FromBody] LikeCommentRequest request)
         {
-            await _postCommentRepository.LikeComment(commentId);
+            await _postCommentRepository.LikeComment(request.CommentId);
             return Ok("Like comment successfully");
         }
         [HttpPost("/commentPost")]
@@ -189,12 +195,13 @@ namespace PostService.Controllers
         [HttpPost("/replyComment")]
         public async Task<IActionResult> ReplyComment([FromBody] ReplyCommentRequest request)
         {
-            var comment = await _replyCommentRepository.GetByIdAsync(request.CommentId);
-            if(comment == null)
+            var postcomment = await _postCommentRepository.GetByIdAsync(request.CommentId);
+            var replyComment = await _replyCommentRepository.GetByIdAsync(request.CommentId);
+            if(postcomment == null && replyComment == null)
             {
-                throw new Exception("Can't find this comment");
+                return BadRequest("Can't find this comment");
             }
-            var replyComment = new ReplyComment()
+            var newReplyComment = new ReplyComment()
             {
                 ReplyCommentId = Guid.NewGuid(),
                 UserId = request.UserId,
@@ -202,7 +209,7 @@ namespace PostService.Controllers
                 Message = request.Message,
                 NumberOfLike = 0
             };
-            await _replyCommentRepository.CreateAsync(replyComment);
+            await _replyCommentRepository.CreateAsync(newReplyComment);
             return Ok("Reply comment successfully");
         }
         [HttpPost("/create")]

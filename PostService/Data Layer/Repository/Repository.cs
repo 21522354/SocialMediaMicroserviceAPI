@@ -49,10 +49,7 @@ namespace PostService.Data_Layer.Repository
         {
             var entity = await _context.Set<T>().FindAsync(id);
 
-            if(entity == null)
-            {
-                throw new Exception("Can't found this entity");
-            }
+            if (entity == null) return null;
 
             // Include các trường collection liên quan
             var entry = _context.Entry(entity);

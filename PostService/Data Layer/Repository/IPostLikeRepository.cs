@@ -6,5 +6,7 @@ namespace PostService.Data_Layer.Repository
     {
         Task<IEnumerable<PostLike>> GetLikeForPost(Guid postId);
         Task AddPostLikeAsync(PostLike postLike);
+        Task<PostLike> FindPostLike(Guid postId, Guid userId);
+        Task DeletePostLikeAsync(PostLike postLike);
     }
 }
