@@ -137,7 +137,7 @@ namespace PostService.Controllers
                 {
                     throw new Exception("Can't find this post with id = " + item.PostId);
                 }
-                var user = await _userDataClient.GetUserById(item.UserId);
+                var user = await _userDataClient.GetUserById(post.UserId);
                 var postReadDTO = (post, user).Adapt<PostReadDTO>();
                 feeds.Add(postReadDTO);
             }
