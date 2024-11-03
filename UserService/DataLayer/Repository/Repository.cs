@@ -14,6 +14,7 @@ namespace UserService.DataLayer.Repository
         public async Task<T> AddAsync(T entity)
         {
             await _context.Set<T>().AddAsync(entity);
+            await _context.SaveChangesAsync();
             return entity;
         }
 

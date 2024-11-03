@@ -15,6 +15,7 @@ namespace UserService
                 options.UseInMemoryDatabase("InMem");
             });
             services.AddScoped<IUserRepository, UserRepository>();
+            services.AddScoped<IUserFollowRepository, UserFollowRepository>();
 
         }
     }
