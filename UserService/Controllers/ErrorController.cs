@@ -21,6 +21,11 @@ namespace UserService.Controllers
                     statusCode: 400,
                     title: "Action failed"
                     ),
+                WrongUsernameOrPasswordException => Problem(
+                    detail: exception.Message,
+                    statusCode: 401,
+                    title: "Invalid credential"
+                    ),
                 _ => Problem(
                     detail: "Internal server error",
                     statusCode: 500,
