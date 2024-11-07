@@ -5,7 +5,9 @@ VisualStudioVersion = 17.10.35027.167
 MinimumVisualStudioVersion = 10.0.40219.1
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "UserService", "UserService\UserService.csproj", "{93F9DB2D-EA6D-4A3B-8B08-6849E8B37028}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "PostService", "PostService\PostService.csproj", "{6BE8227A-1F58-4178-AEEA-4138D48B305C}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "PostService", "PostService\PostService.csproj", "{6BE8227A-1F58-4178-AEEA-4138D48B305C}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "StoryService", "StoryService\StoryService.csproj", "{FDDB1197-C0D4-4CBD-BB4F-F440E4105752}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
@@ -21,6 +23,10 @@ Global
 		{6BE8227A-1F58-4178-AEEA-4138D48B305C}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{6BE8227A-1F58-4178-AEEA-4138D48B305C}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{6BE8227A-1F58-4178-AEEA-4138D48B305C}.Release|Any CPU.Build.0 = Release|Any CPU
+		{FDDB1197-C0D4-4CBD-BB4F-F440E4105752}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{FDDB1197-C0D4-4CBD-BB4F-F440E4105752}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{FDDB1197-C0D4-4CBD-BB4F-F440E4105752}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{FDDB1197-C0D4-4CBD-BB4F-F440E4105752}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
