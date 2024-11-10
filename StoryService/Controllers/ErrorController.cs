@@ -9,7 +9,7 @@ namespace StoryService.Controllers
     [Route("/error")]
     public class ErrorController : ControllerBase
     {
-        [HttpPost]
+        [HttpGet]
         public IActionResult HandleError()
         {
             var exception = HttpContext.Features.Get<IExceptionHandlerFeature>()?.Error;
@@ -21,7 +21,7 @@ namespace StoryService.Controllers
                     title: "Action failed"
                     ),
                 _ => Problem(
-                    detail: exception.Message,
+                    detail: "Internal server error",
                     statusCode: 500,
                     title: "Internal server error")
             };

@@ -53,7 +53,7 @@ namespace StoryService.Controllers
                 int count = 0;
                 foreach (var story in stories)
                 {
-                    var userAlreadySeen = await _userAlreadySeenStoryRepository.GetByBothId(friend.UserId, story.StoryId);
+                    var userAlreadySeen = await _userAlreadySeenStoryRepository.GetByBothId(story.StoryId, userId);
                     if (userAlreadySeen != null) count++;
                 }
                 var friendStories = _mapper.Map<StoryReadDTO>((stories, friend));
@@ -67,7 +67,7 @@ namespace StoryService.Controllers
         {
             var userAlreadySeen = _mapper.Map<UserAlreadySeenStory>(request);
             await _userAlreadySeenStoryRepository.CreateUserAlreadySeenStory(userAlreadySeen);
-            return Ok(userAlreadySeen);
+            return Ok("Seen story successfully");
         }
         [HttpPost]
         public async Task<IActionResult> CreateStory([FromBody]CreateStoryRequest request)
@@ -78,8 +78,11 @@ namespace StoryService.Controllers
             await _storyRepository.CreateStory(newStory);
             return Ok(newStory.StoryId);        
         }
-        //[HttpPost("repStory")]
-        //public async Task<IActionResult> repStory()
+        [HttpGet("usersadasdffdfdas")]
+        public async Task<IActionResult> get()
+        {
+            return Ok(await _userAlreadySeenStoryRepository.GetAll());      
+        }
         
     }
 }

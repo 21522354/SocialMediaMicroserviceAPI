@@ -25,13 +25,14 @@ namespace StoryService.Data_Layer.Repository
             await _context.SaveChangesAsync();
         }
 
+        public async Task<IEnumerable<UserAlreadySeenStory>> GetAll()
+        {
+            return await _context.UserAlreadySeenStories.ToListAsync();
+        }
+
         public async Task<UserAlreadySeenStory> GetByBothId(Guid storyId, Guid userId)
         {
             var story = await _context.UserAlreadySeenStories.Where(p => p.UserId == userId && p.StoryId == storyId).FirstOrDefaultAsync();
-            if(story == null)
-            {
-                throw new Exception("Can't find this entity");
-            }
             return story;
         }
 

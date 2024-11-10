@@ -37,24 +37,24 @@ namespace StoryService.Data_Layer
                 }
                 _context.Stories.AddRange(stories);
 
-                // Seed 20 UserAlreadySeenStory records
-                var userAlreadySeenStories = new List<UserAlreadySeenStory>();
-                foreach (var story in stories)
-                {
-                    // Select random users who have seen this story
-                    var seenUserIds = userIds.OrderBy(x => Guid.NewGuid()).Take(3).ToList();
-                    foreach (var userId in seenUserIds)
-                    {
-                        var userSeenStory = new UserAlreadySeenStory
-                        {
-                            UserId = userId,
-                            StoryId = story.StoryId,
-                            Story = story
-                        };
-                        userAlreadySeenStories.Add(userSeenStory);
-                    }
-                }
-                _context.UserAlreadySeenStories.AddRange(userAlreadySeenStories);
+                //// Seed 20 UserAlreadySeenStory records
+                //var userAlreadySeenStories = new List<UserAlreadySeenStory>();
+                //foreach (var story in stories)
+                //{
+                //    // Select random users who have seen this story
+                //    var seenUserIds = userIds.OrderBy(x => Guid.NewGuid()).Take(3).ToList();
+                //    foreach (var userId in seenUserIds)
+                //    {
+                //        var userSeenStory = new UserAlreadySeenStory
+                //        {
+                //            UserId = userId,
+                //            StoryId = story.StoryId,
+                //            Story = story
+                //        };
+                //        userAlreadySeenStories.Add(userSeenStory);
+                //    }
+                //}
+                //_context.UserAlreadySeenStories.AddRange(userAlreadySeenStories);
 
                 _context.SaveChanges();
                 Console.WriteLine("Data seeding completed");
