@@ -22,7 +22,7 @@ namespace StoryService.Data_Layer.Repository
             return story;   
         }
 
-        public async Task<IEnumerable<Story>> GetAllAsync()
+        public async Task<List<Story>> GetAllAsync()
         {
             return await _context.Stories.ToListAsync();
         }
@@ -37,10 +37,13 @@ namespace StoryService.Data_Layer.Repository
             return story;
         }
 
-        public async Task<IEnumerable<Story>> GetFriendStory(Guid userId)
+        public async Task<List<Story>> GetFriendStory(Guid userId)
         {
             var user = _userDataClient.GetUserById(userId);
-            var friendStories = await _context.Stories.Where(p => p.UserId == userId).ToListAsync();
+            var friendStories = await _context.Stories
+            .Where(p => p.UserId == userId && p.CreatedDate > DateTime.Now.AddHours(-24))
+            .OrderBy(p => p.CreatedDate)
+            .ToListAsync();
             return friendStories;
         }
     }

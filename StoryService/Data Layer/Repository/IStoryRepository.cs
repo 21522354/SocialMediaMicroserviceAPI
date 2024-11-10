@@ -4,9 +4,9 @@ namespace StoryService.Data_Layer.Repository
 {
     public interface IStoryRepository
     {
-        Task<IEnumerable<Story>> GetAllAsync();
+        Task<List<Story>> GetAllAsync();
         Task<Story> GetByIdAsync(Guid storyId);
-        Task<IEnumerable<Story>> GetFriendStory(Guid userId);
+        Task<List<Story>> GetFriendStory(Guid userId);
         Task<Story> CreateStory(Story story);
     }
 }

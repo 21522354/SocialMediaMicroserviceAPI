@@ -17,6 +17,7 @@ namespace StoryService
 
             services.AddHttpClient<IUserDataClient, HttpUserDataClient>();
             services.AddScoped<IStoryRepository, StoryRepository>();
+            services.AddScoped<IUserAlreadySeenStoryRepository, UserAlreadySeenStoryRepository>();
 
             services.AddMapping();
         }

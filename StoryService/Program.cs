@@ -1,4 +1,6 @@
 
+using StoryService.Data_Layer;
+
 namespace StoryService
 {
     public class Program
@@ -29,6 +31,8 @@ namespace StoryService
             app.UseAuthorization();
 
             app.UseExceptionHandler("/error");
+
+            app.seedData();
 
             app.MapControllers();
 
