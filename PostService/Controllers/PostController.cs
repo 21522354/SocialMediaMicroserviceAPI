@@ -3,6 +3,7 @@ using MapsterMapper;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
+using PostService.AsyncDataService;
 using PostService.Data_Layer.DTOs;
 using PostService.Data_Layer.Models;
 using PostService.Data_Layer.Repository;
@@ -22,6 +23,7 @@ namespace PostService.Controllers
         private readonly IReplyCommentRepository _replyCommentRepository;
         private readonly IUnseenPostRepository _unseenPostRepository;
         private readonly IUserDataClient _userDataClient;
+        private readonly IMessageBusClient _messageBusClient;
         private readonly IMapper _mapper;
 
         public PostController(
@@ -32,6 +34,7 @@ namespace PostService.Controllers
             IReplyCommentRepository replyCommentRepository,
             IUnseenPostRepository unseenPostRepository,
             IUserDataClient userDataClient,
+            IMessageBusClient messageBusClient,
             IMapper mapper
             )
         {
@@ -42,6 +45,7 @@ namespace PostService.Controllers
             _replyCommentRepository = replyCommentRepository;
             _unseenPostRepository = unseenPostRepository;
             _userDataClient = userDataClient;
+            _messageBusClient = messageBusClient;
             _mapper = mapper;
         }
         [HttpGet("/{postId}")]
@@ -55,6 +59,8 @@ namespace PostService.Controllers
             }
             var user = await _userDataClient.GetUserById(post.UserId);
             var postReadDTO = (post, user).Adapt<PostReadDTO>();
+
+            await _messageBusClient.PublishNewNotification(new NotificationReadDTO() { UserId = Guid.NewGuid(), PostId = postId, Message = "asdfdssffd" });
 
             return Ok(postReadDTO);
         }
