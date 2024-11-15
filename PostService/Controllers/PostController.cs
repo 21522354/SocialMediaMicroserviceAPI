@@ -60,7 +60,7 @@ namespace PostService.Controllers
             var user = await _userDataClient.GetUserById(post.UserId);
             var postReadDTO = (post, user).Adapt<PostReadDTO>();
 
-            await _messageBusClient.PublishNewNotification(new NotificationReadDTO() { UserId = Guid.NewGuid(), PostId = postId, Message = "asdfdssffd" });
+            await _messageBusClient.PublishNewNotification(new NotificationMessageDTO() { UserId = Guid.NewGuid(), PostId = postId, Message = "asdfdssffd", EventType = "NewPost" });
 
             return Ok(postReadDTO);
         }

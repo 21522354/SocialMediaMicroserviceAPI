@@ -23,19 +23,19 @@ namespace PostService.AsyncDataService
             _channel = _connection.CreateModel();      // Tạo channel
 
             // Đảm bảo rằng queue đã được tạo sẵn
-            _channel.QueueDeclare("orders", durable: false, exclusive: false, autoDelete: false, arguments: null);
+            _channel.QueueDeclare("posts", durable: false, exclusive: false, autoDelete: false, arguments: null);
         }
 
         // Phương thức để publish notification mới
-        public async Task PublishNewNotification(NotificationReadDTO notificationReadDTO)
+        public async Task PublishNewNotification(NotificationMessageDTO notificationReadDTO)
         {
             var json = JsonConvert.SerializeObject(notificationReadDTO);
             var body = Encoding.UTF8.GetBytes(json);
 
             // Tái sử dụng channel đã tạo
             _channel.BasicPublish(
-                exchange: "",
-                routingKey: "orders",
+                exchange: "posts",
+                routingKey: "",
                 body: body);
             await Task.CompletedTask;
         }

@@ -4,6 +4,6 @@ namespace PostService.AsyncDataService
 {
     public interface IMessageBusClient
     {
-        Task PublishNewNotification(NotificationReadDTO notificationReadDTO);
+        Task PublishNewNotification(NotificationMessageDTO notificationReadDTO);
     }
 }
