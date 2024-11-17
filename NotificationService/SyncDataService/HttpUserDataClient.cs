@@ -1,7 +1,7 @@
-﻿using PostService.Data_Layer.DTOs;
+﻿using NotificationService.DataLayer.DTOs;
 using System.Text.Json;
 
-namespace PostService.SyncDataService
+namespace NotificationService.SyncDataService
 {
     public class HttpUserDataClient : IUserDataClient
     {
@@ -11,7 +11,7 @@ namespace PostService.SyncDataService
         public HttpUserDataClient(HttpClient httpClient, IConfiguration configuration)
         {
             _httpClient = httpClient;
-            _configuration = configuration; 
+            _configuration = configuration;
         }
         public async Task<UserReadDTO> GetUserById(Guid id)
         {

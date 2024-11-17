@@ -2,6 +2,7 @@
 using NotificationService.DataLayer.DTOs;
 using NotificationService.DataLayer.Models;
 using NotificationService.DataLayer.Repository;
+using NotificationService.SyncDataService;
 using System.Text.Json;
 
 namespace NotificationService.EventProcessing
@@ -25,21 +26,55 @@ namespace NotificationService.EventProcessing
                     NewPostEvent(message);
                     break;
                 case EventType.LikePost:
+                    LikePostEvent(message);
                     break;
                 case EventType.CommentPost:
+                    CommentPostEvent(message);
                     break;
-                case EventType.Undetermined:
+                case EventType.ReplyComment:
+                    ReplyCommentEvent(message);
                     break;
                 default:
                     break;
             }
         }
 
-        private void NewPostEvent(string message)
+        private async void NewPostEvent(string message)
         {
             using (var scope = _serviceScopeFactory.CreateScope())
             {
                 var _repo = scope.ServiceProvider.GetRequiredService<INotificationRepository>();
+                var _userDataClient = scope.ServiceProvider.GetRequiredService<IUserDataClient>();
+
+                var notificationMessageDTO = JsonSerializer.Deserialize<NotificationReadDTO>(message);
+
+                var listUserFollower = await _userDataClient.GetUserFollower(notificationMessageDTO.UserId);
+
+                foreach ( var item in listUserFollower)
+                {
+                    try
+                    {
+                        var noti = _mapper.Map<Notification>(notificationMessageDTO);
+                        noti.Id = Guid.NewGuid();
+                        noti.UserId = item.UserId;
+                        noti.CreatedDate = DateTime.Now;
+                        noti.IsAlreadySeen = false;
+                        await _repo.AddNew(noti);
+                    }
+                    catch (Exception ex)
+                    {
+                        Console.WriteLine($"--> Could not add Notification to DB {ex.Message}");
+                    }
+                }
+                
+            }
+        }
+        private async void ReplyCommentEvent(string message)
+        {
+            using (var scope = _serviceScopeFactory.CreateScope())
+            {
+                var _repo = scope.ServiceProvider.GetRequiredService<INotificationRepository>();
+
                 var notificationMessageDTO = JsonSerializer.Deserialize<NotificationReadDTO>(message);
 
                 try
@@ -48,7 +83,7 @@ namespace NotificationService.EventProcessing
                     noti.Id = Guid.NewGuid();
                     noti.CreatedDate = DateTime.Now;
                     noti.IsAlreadySeen = false;
-                    _repo.AddNew(noti);
+                    await _repo.AddNew(noti);
                 }
                 catch (Exception ex)
                 {
@@ -56,6 +91,51 @@ namespace NotificationService.EventProcessing
                 }
             }
         }
+        private async void CommentPostEvent(string message)
+        {
+            using (var scope = _serviceScopeFactory.CreateScope())
+            {
+                var _repo = scope.ServiceProvider.GetRequiredService<INotificationRepository>();
+
+                var notificationMessageDTO = JsonSerializer.Deserialize<NotificationReadDTO>(message);
+
+                try
+                {
+                    var noti = _mapper.Map<Notification>(notificationMessageDTO);
+                    noti.Id = Guid.NewGuid();
+                    noti.CreatedDate = DateTime.Now;
+                    noti.IsAlreadySeen = false;
+                    await _repo.AddNew(noti);
+                }
+                catch (Exception ex)
+                {
+                    Console.WriteLine($"--> Could not add Notification to DB {ex.Message}");
+                }
+            }
+        }
+        private async void LikePostEvent(string message)
+        {
+            using (var scope = _serviceScopeFactory.CreateScope())
+            {
+                var _repo = scope.ServiceProvider.GetRequiredService<INotificationRepository>();
+
+                var notificationMessageDTO = JsonSerializer.Deserialize<NotificationReadDTO>(message);
+
+                try
+                {
+                    var noti = _mapper.Map<Notification>(notificationMessageDTO);
+                    noti.Id = Guid.NewGuid();
+                    noti.CreatedDate = DateTime.Now;
+                    noti.IsAlreadySeen = false;
+                    await _repo.AddNew(noti);
+                }
+                catch (Exception ex)
+                {
+                    Console.WriteLine($"--> Could not add Notification to DB {ex.Message}");
+                }
+            }
+        }
+
 
         private EventType DetermineEvent(string notificationMessage)
         {
@@ -78,6 +158,7 @@ namespace NotificationService.EventProcessing
         NewPost,
         LikePost,
         CommentPost,
-        Undetermined
+        ReplyComment,
+        Undetermined,
     }
 }

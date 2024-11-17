@@ -59,9 +59,6 @@ namespace PostService.Controllers
             }
             var user = await _userDataClient.GetUserById(post.UserId);
             var postReadDTO = (post, user).Adapt<PostReadDTO>();
-
-            await _messageBusClient.PublishNewNotification(new NotificationMessageDTO() { UserId = Guid.NewGuid(), PostId = postId, Message = "asdfdssffd", EventType = "NewPost" });
-
             return Ok(postReadDTO);
         }
         [HttpGet("/personalPage/{userId}")]
@@ -170,12 +167,16 @@ namespace PostService.Controllers
                 PostId = request.PostId,
             };
             await _postLikeRepository.AddPostLikeAsync(postLike);
+
+            await _messageBusClient.PublishNewNotification(new NotificationMessageDTO() { UserId = post.UserId, PostId = post.PostId, Message = $"{user.Name} liked your post", EventType = "LikePost" });
+
             return Ok("Like post successfully");
         }
         [HttpPost("/likeComment")]
         public async Task<IActionResult> LikeComment([FromBody] LikeCommentRequest request)
         {
             await _postCommentRepository.LikeComment(request.CommentId);
+
             return Ok("Like comment successfully");
         }
         [HttpPost("/commentPost")]
@@ -196,6 +197,9 @@ namespace PostService.Controllers
                 NumberOfLike = 0
             };
             await _postCommentRepository.CreateAsync(postComment);
+
+            await _messageBusClient.PublishNewNotification(new NotificationMessageDTO() { UserId = post.UserId, PostId = post.PostId, CommentId = postComment.CommentId, Message = $"{user.Name} commented on your post", EventType = "CommentPost" });
+
             return Ok("Comment post successfully");
         }
         [HttpPost("/replyComment")]
@@ -203,25 +207,33 @@ namespace PostService.Controllers
         {
             var postcomment = await _postCommentRepository.GetByIdAsync(request.CommentId);
             var replyComment = await _replyCommentRepository.GetByIdAsync(request.CommentId);
+            var user = await _userDataClient.GetUserById(request.UserId);
             if(postcomment == null && replyComment == null)
             {
                 return BadRequest("Can't find this comment");
             }
+            var commentId = postcomment != null ? postcomment.CommentId : replyComment.CommentId;
+            var userId = postcomment != null ? postcomment.UserId : replyComment.UserId;
             var newReplyComment = new ReplyComment()
             {
                 ReplyCommentId = Guid.NewGuid(),
                 UserId = request.UserId,
                 CommentId = request.CommentId,
+                PostId = request.PostId,
                 Message = request.Message,
                 NumberOfLike = 0
             };
             await _replyCommentRepository.CreateAsync(newReplyComment);
+
+            await _messageBusClient.PublishNewNotification(new NotificationMessageDTO() { UserId = userId, PostId = request.PostId, CommentId = commentId, Message = $"{user.Name} responded to your comment", EventType = "ReplyComment" });
+
             return Ok("Reply comment successfully");
         }
         [HttpPost("/create")]
         public async Task<IActionResult> CreateNewPost([FromBody] PostCreateRequest request)
         {
             var listUserFollower = await _userDataClient.GetUserFollower(request.UserId);
+            var user = await _userDataClient.GetUserById(request.UserId);
             var post = new Post()
             {
                 PostId = Guid.NewGuid(),
@@ -254,6 +266,9 @@ namespace PostService.Controllers
                 };
                 await _unseenPostRepository.CreateAsync(unSeenPost);
             }
+
+            await _messageBusClient.PublishNewNotification(new NotificationMessageDTO() { UserId = post.UserId, PostId = post.PostId, Message = $"{user.Name} created a new post", EventType = "NewPost" });
+
             return Ok(post.PostId);
         }
     }

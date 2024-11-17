@@ -29,13 +29,13 @@ namespace StoryService.SyncDataService
             }
         }
 
-        public async Task<IEnumerable<UserReadDTO>> GetUsersFollowing(Guid userId)
+        public async Task<List<UserReadDTO>> GetUsersFollowing(Guid userId)
         {
             var response = await _httpClient.GetAsync($"{_configuration["UserServiceEndpoint"]}/following/{userId}");
             if (response.IsSuccessStatusCode)
             {
                 var content = await response.Content.ReadAsStringAsync();
-                var users = JsonSerializer.Deserialize<IEnumerable<UserReadDTO>>(content, new JsonSerializerOptions { PropertyNameCaseInsensitive = true });
+                var users = JsonSerializer.Deserialize<List<UserReadDTO>>(content, new JsonSerializerOptions { PropertyNameCaseInsensitive = true });
                 return users;
             }
             else
