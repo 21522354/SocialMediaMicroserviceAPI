@@ -1,4 +1,5 @@
 ﻿using Microsoft.EntityFrameworkCore;
+using Microsoft.VisualBasic;
 using NotificationService.DataLayer.Models;
 
 namespace NotificationService.DataLayer.Repository
@@ -20,6 +21,11 @@ namespace NotificationService.DataLayer.Repository
         public async Task<List<Notification>> GetAll()
         {
             return await _context.Notifications.ToListAsync();
+        }
+
+        public async Task<List<Notification>> GetByUserId(Guid userId)
+        {
+            return await _context.Notifications.Where(p => p.UserId == userId).ToListAsync();   
         }
     }
 }

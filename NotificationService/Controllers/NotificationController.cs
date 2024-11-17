@@ -19,5 +19,17 @@ namespace NotificationService.Controllers
         {
             return Ok(await _repo.GetAll());
         }
+        [HttpGet("{userId}")]
+        public async Task<IActionResult> GetByUserId(Guid userId)
+        {
+            try
+            {
+                return Ok(await _repo.GetByUserId(userId));
+            }
+            catch
+            {
+                return BadRequest("Can't find this user");
+            }
+        }
     }
 }

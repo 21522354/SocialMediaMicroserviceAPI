@@ -67,6 +67,7 @@ namespace NotificationService.EventProcessing
                     }
                 }
                 
+                Console.WriteLine(message);
             }
         }
         private async void ReplyCommentEvent(string message)
@@ -89,6 +90,7 @@ namespace NotificationService.EventProcessing
                 {
                     Console.WriteLine($"--> Could not add Notification to DB {ex.Message}");
                 }
+                Console.WriteLine(message);
             }
         }
         private async void CommentPostEvent(string message)
@@ -111,6 +113,7 @@ namespace NotificationService.EventProcessing
                 {
                     Console.WriteLine($"--> Could not add Notification to DB {ex.Message}");
                 }
+                Console.WriteLine(message);
             }
         }
         private async void LikePostEvent(string message)
@@ -133,6 +136,7 @@ namespace NotificationService.EventProcessing
                 {
                     Console.WriteLine($"--> Could not add Notification to DB {ex.Message}");
                 }
+                Console.WriteLine(message);
             }
         }
 
@@ -145,8 +149,13 @@ namespace NotificationService.EventProcessing
             switch (eventType.EventType)
             {
                 case "NewPost":
-                    Console.WriteLine("--> Platform Published Event Detected");
                     return EventType.NewPost;
+                case "LikePost":
+                    return EventType.LikePost;
+                case "CommentPost":
+                    return EventType.CommentPost;
+                case "ReplyComment":
+                    return EventType.ReplyComment;
                 default:
                     Console.WriteLine("--> Could not determine Event type");
                     return EventType.Undetermined;
