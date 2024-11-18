@@ -1,7 +1,9 @@
 ﻿using MapsterMapper;
+using Microsoft.AspNetCore.SignalR;
 using NotificationService.DataLayer.DTOs;
 using NotificationService.DataLayer.Models;
 using NotificationService.DataLayer.Repository;
+using NotificationService.Hubs;
 using NotificationService.SyncDataService;
 using System.Text.Json;
 
@@ -11,11 +13,13 @@ namespace NotificationService.EventProcessing
     {
         private readonly IServiceScopeFactory _serviceScopeFactory;
         private readonly IMapper _mapper;
+        private readonly IHubContext<NotificationHub> _hubContext;
 
-        public EventProcessor(IServiceScopeFactory serviceScopeFactory, IMapper mapper)
+        public EventProcessor(IServiceScopeFactory serviceScopeFactory, IMapper mapper, IHubContext<NotificationHub> hubContext)
         {
             _serviceScopeFactory = serviceScopeFactory;
             _mapper = mapper;
+            _hubContext = hubContext;
         }
         public void ProcessEvent(string message)
         {
@@ -34,8 +38,46 @@ namespace NotificationService.EventProcessing
                 case EventType.ReplyComment:
                     ReplyCommentEvent(message);
                     break;
+                case EventType.NewStory:
+                    NewStoryEvent(message);
+                    break;
                 default:
                     break;
+            }
+        }
+
+        private async void NewStoryEvent(string message)
+        {
+            using (var scope = _serviceScopeFactory.CreateScope())
+            {
+                var _repo = scope.ServiceProvider.GetRequiredService<INotificationRepository>();
+                var _userDataClient = scope.ServiceProvider.GetRequiredService<IUserDataClient>();
+
+                var notificationMessageDTO = JsonSerializer.Deserialize<NotificationReadDTO>(message);
+
+                var listUserFollower = await _userDataClient.GetUserFollower(notificationMessageDTO.UserId);
+
+                foreach (var item in listUserFollower)
+                {
+                    try
+                    {
+                        var noti = _mapper.Map<Notification>(notificationMessageDTO);
+                        noti.Id = Guid.NewGuid();
+                        noti.UserId = item.UserId;
+                        noti.CreatedDate = DateTime.Now;
+                        noti.IsAlreadySeen = false;
+                        await _repo.AddNew(noti);
+
+                        var messageToClient = _mapper.Map<NotificationReadDTO>(noti);
+                        var messageJson = JsonSerializer.Serialize(messageToClient);
+                        await _hubContext.Clients.All.SendAsync("ReceiveNotification", messageJson);
+                    }
+                    catch (Exception ex)
+                    {
+                        Console.WriteLine($"--> Could not add Notification to DB {ex.Message}");
+                    }
+                }
+
             }
         }
 
@@ -60,14 +102,17 @@ namespace NotificationService.EventProcessing
                         noti.CreatedDate = DateTime.Now;
                         noti.IsAlreadySeen = false;
                         await _repo.AddNew(noti);
+
+                        var messageToClient = _mapper.Map<NotificationReadDTO>(noti);
+                        var messageJson = JsonSerializer.Serialize(messageToClient);
+                        await _hubContext.Clients.All.SendAsync("ReceiveNotification", messageJson);
                     }
                     catch (Exception ex)
                     {
                         Console.WriteLine($"--> Could not add Notification to DB {ex.Message}");
                     }
                 }
-                
-                Console.WriteLine(message);
+
             }
         }
         private async void ReplyCommentEvent(string message)
@@ -85,6 +130,7 @@ namespace NotificationService.EventProcessing
                     noti.CreatedDate = DateTime.Now;
                     noti.IsAlreadySeen = false;
                     await _repo.AddNew(noti);
+                    await _hubContext.Clients.All.SendAsync("ReceiveNotification", message);
                 }
                 catch (Exception ex)
                 {
@@ -108,6 +154,7 @@ namespace NotificationService.EventProcessing
                     noti.CreatedDate = DateTime.Now;
                     noti.IsAlreadySeen = false;
                     await _repo.AddNew(noti);
+                    await _hubContext.Clients.All.SendAsync("ReceiveNotification", message);
                 }
                 catch (Exception ex)
                 {
@@ -131,6 +178,7 @@ namespace NotificationService.EventProcessing
                     noti.CreatedDate = DateTime.Now;
                     noti.IsAlreadySeen = false;
                     await _repo.AddNew(noti);
+                    await _hubContext.Clients.All.SendAsync("ReceiveNotification", message);
                 }
                 catch (Exception ex)
                 {
@@ -156,6 +204,8 @@ namespace NotificationService.EventProcessing
                     return EventType.CommentPost;
                 case "ReplyComment":
                     return EventType.ReplyComment;
+                case "NewStory":
+                    return EventType.NewStory;
                 default:
                     Console.WriteLine("--> Could not determine Event type");
                     return EventType.Undetermined;
@@ -168,6 +218,7 @@ namespace NotificationService.EventProcessing
         LikePost,
         CommentPost,
         ReplyComment,
+        NewStory,
         Undetermined,
     }
 }

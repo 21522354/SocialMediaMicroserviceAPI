@@ -1,6 +1,7 @@
 ﻿using MapsterMapper;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
+using StoryService.AsyncDataService;
 using StoryService.Data_Layer.DTOs;
 using StoryService.Data_Layer.Models;
 using StoryService.Data_Layer.Repository;
@@ -15,16 +16,19 @@ namespace StoryService.Controllers
         private readonly IStoryRepository _storyRepository;
         private readonly IUserAlreadySeenStoryRepository _userAlreadySeenStoryRepository;
         private readonly IUserDataClient _userDataClient;
+        private readonly IMessageBusClient _messageBusClient;
         private readonly IMapper _mapper;
 
         public StoryController(IStoryRepository storyRepository,
             IUserAlreadySeenStoryRepository userAlreadySeenStoryRepository, 
             IUserDataClient userDataClient,
+            IMessageBusClient messageBusClient,
             IMapper mapper)
         {
             _storyRepository = storyRepository;
             _userAlreadySeenStoryRepository = userAlreadySeenStoryRepository;
             _userDataClient = userDataClient;
+            _messageBusClient = messageBusClient;
             _mapper = mapper;
         }
         [HttpGet("{storyId}")]
@@ -73,15 +77,18 @@ namespace StoryService.Controllers
         public async Task<IActionResult> CreateStory([FromBody]CreateStoryRequest request)
         {
             var newStory = _mapper.Map<Story>(request);
+            var user = await _userDataClient.GetUserById(request.UserId); 
             newStory.StoryId = Guid.NewGuid();
             newStory.CreatedDate = DateTime.Now;
             await _storyRepository.CreateStory(newStory);
+            await _messageBusClient.PublishNewNotification(new NotificationMessageDTO()
+            {
+                UserId = newStory.UserId,
+                StoryId = newStory.StoryId,
+                EventType = "NewStory",
+                Message = $"{user.Name} created a new story",
+            });
             return Ok(newStory.StoryId);        
-        }
-        [HttpGet("usersadasdffdfdas")]
-        public async Task<IActionResult> get()
-        {
-            return Ok(await _userAlreadySeenStoryRepository.GetAll());      
         }
         
     }

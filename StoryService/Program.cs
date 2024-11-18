@@ -16,6 +16,7 @@ namespace StoryService
             builder.Services.AddEndpointsApiExplorer();
             builder.Services.AddSwaggerGen();
             builder.Services.AddApplicationService();
+            builder.Services.AddSignalR();
 
             var app = builder.Build();
 

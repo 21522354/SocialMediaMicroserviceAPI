@@ -1,3 +1,5 @@
+﻿
+using NotificationService.Hubs;
 
 namespace NotificationService
 {
@@ -15,6 +17,19 @@ namespace NotificationService
             builder.Services.AddSwaggerGen();
             builder.Services.AddApplicationService();
 
+            builder.Services.AddCors(options =>
+            {
+                options.AddPolicy("AllowSpecificOrigins", policy =>
+                {
+                    policy.WithOrigins("https://localhost:7270") // Thay bằng origin của frontend
+                          .AllowAnyHeader()
+                          .AllowAnyMethod()
+                          .AllowCredentials(); // Quan trọng với SignalR
+                });
+            });
+
+            builder.Services.AddSignalR();
+
             var app = builder.Build();
 
             // Configure the HTTP request pipeline.
@@ -28,7 +43,11 @@ namespace NotificationService
 
             app.UseAuthorization();
 
+            app.UseCors("AllowSpecificOrigins");
+
             app.MapControllers();
+
+            app.MapHub<NotificationHub>("/notificationHub");
 
             app.Run();
         }
