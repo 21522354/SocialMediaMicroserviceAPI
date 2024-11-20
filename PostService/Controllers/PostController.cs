@@ -52,11 +52,11 @@ namespace PostService.Controllers
         public async Task<IActionResult> GetPostByPostId(Guid postId)
         {
             var post = await _postRepository.GetByIdAsync(postId);
-            post.PostComments = (ICollection<PostComment>)await _postCommentRepository.GetCommentsByPostId(post.PostId);
             if (post == null)
             {
                 throw new Exception("Can't find this post");
             }
+            post.PostComments = (ICollection<PostComment>)await _postCommentRepository.GetCommentsByPostId(post.PostId);
             var user = await _userDataClient.GetUserById(post.UserId);
             var postReadDTO = (post, user).Adapt<PostReadDTO>();
             return Ok(postReadDTO);
