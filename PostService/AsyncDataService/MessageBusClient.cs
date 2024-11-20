@@ -18,7 +18,7 @@ namespace PostService.AsyncDataService
             _configuration = configuration;
 
             // Khởi tạo kết nối và channel trong hàm khởi tạo
-            var factory = new ConnectionFactory { HostName = _configuration["RabbitMQHost"], Port = int.Parse("RabbitMQPort") };
+            var factory = new ConnectionFactory { HostName = _configuration["RabbitMQHost"], Port = int.Parse(_configuration["RabbitMQPort"]) };
             _connection = factory.CreateConnection();  // Tạo kết nối
             _channel = _connection.CreateModel();      // Tạo channel
 

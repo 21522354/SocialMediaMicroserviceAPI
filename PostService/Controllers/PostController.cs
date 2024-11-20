@@ -48,7 +48,7 @@ namespace PostService.Controllers
             _messageBusClient = messageBusClient;
             _mapper = mapper;
         }
-        [HttpGet("/{postId}")]
+        [HttpGet("{postId}")]
         public async Task<IActionResult> GetPostByPostId(Guid postId)
         {
             var post = await _postRepository.GetByIdAsync(postId);
@@ -61,7 +61,7 @@ namespace PostService.Controllers
             var postReadDTO = (post, user).Adapt<PostReadDTO>();
             return Ok(postReadDTO);
         }
-        [HttpGet("/personalPage/{userId}")]
+        [HttpGet("personalPage/{userId}")]
         public async Task<IActionResult> GetUserPersonalPage(Guid userId)
         {
             var listPost = await _postRepository.GetPostsByUserId(userId);
@@ -70,7 +70,7 @@ namespace PostService.Controllers
             var listPostReadDTO = listPost.Select(post => (post, user).Adapt<PostReadDTO>()).ToList();
             return Ok(listPostReadDTO);
         }
-        [HttpGet("/{postId}/comments")]
+        [HttpGet("{postId}/comments")]
         public async Task<IActionResult> GetPostComments(Guid postId)
         {
             var listPostComment = await _postCommentRepository.GetCommentsByPostId(postId);
@@ -115,7 +115,7 @@ namespace PostService.Controllers
             }
             return listReplyCommentReadDTO;
         }
-        [HttpGet("/{postId}/likes")]
+        [HttpGet("{postId}/likes")]
         public async Task<IActionResult> GetPostLikes(Guid postId)
         {
             var listPostLike = await _postLikeRepository.GetLikeForPost(postId);
@@ -128,7 +128,7 @@ namespace PostService.Controllers
             }
             return Ok(listPostLikeReadDTO);
         }
-        [HttpGet("/user/{userId}/feeds")]
+        [HttpGet("user/{userId}/feeds")]
         public async Task<IActionResult> GetUserNewFeeds(Guid userId)
         {
             var listUnSeenPost = await _unseenPostRepository.GetUnseenPostByUserId(userId);
@@ -146,7 +146,7 @@ namespace PostService.Controllers
             }
             return Ok(feeds);
         }
-        [HttpPost("/likePost")]
+        [HttpPost("likePost")]
         public async Task<IActionResult> LikePost([FromBody] LikePostRequest request)
         {
             var post = await _postRepository.GetByIdAsync(request.PostId);
@@ -177,14 +177,14 @@ namespace PostService.Controllers
 
             return Ok("Like post successfully");
         }
-        [HttpPost("/likeComment")]
+        [HttpPost("likeComment")]
         public async Task<IActionResult> LikeComment([FromBody] LikeCommentRequest request)
         {
             await _postCommentRepository.LikeComment(request.CommentId);
 
             return Ok("Like comment successfully");
         }
-        [HttpPost("/commentPost")]
+        [HttpPost("commentPost")]
         public async Task<IActionResult> CommentPost([FromBody] CommentPostRequest request)
         {
             var post = await _postRepository.GetByIdAsync(request.PostId);
@@ -213,7 +213,7 @@ namespace PostService.Controllers
 
             return Ok("Comment post successfully");
         }
-        [HttpPost("/replyComment")]
+        [HttpPost("replyComment")]
         public async Task<IActionResult> ReplyComment([FromBody] ReplyCommentRequest request)
         {
             var postcomment = await _postCommentRepository.GetByIdAsync(request.CommentId);
@@ -246,7 +246,7 @@ namespace PostService.Controllers
 
             return Ok("Reply comment successfully");
         }
-        [HttpPost("/create")]
+        [HttpPost("create")]
         public async Task<IActionResult> CreateNewPost([FromBody] PostCreateRequest request)
         {
             var listUserFollower = await _userDataClient.GetUserFollower(request.UserId);

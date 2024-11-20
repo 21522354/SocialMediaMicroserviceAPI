@@ -30,6 +30,8 @@ namespace NotificationService
 
             builder.Services.AddSignalR();
 
+            Console.WriteLine($"{builder.Configuration["RabbitMQHost"]}/{builder.Configuration["RabbitMQPort"]}");
+
             var app = builder.Build();
 
             // Configure the HTTP request pipeline.

@@ -11,22 +11,23 @@ namespace StoryService.AsyncDataService
         private readonly IConnection _connection;
         private readonly IModel _channel;
 
-        // Constructor: Thiết lập kết nối và channel khi khởi tạo
         public MessageBusClient(IConfiguration configuration)
         {
             _configuration = configuration;
 
-            // Khởi tạo kết nối và channel trong hàm khởi tạo
-            var factory = new ConnectionFactory { HostName = _configuration["RabbitMQHost"], Port = int.Parse(_configuration["RabbitMQPort"]) };
-            _connection = factory.CreateConnection();  // Tạo kết nối
-            _channel = _connection.CreateModel();      // Tạo channel
+            // Khởi tạo kết nối và channel
+            var factory = new ConnectionFactory
+            {
+                HostName = _configuration["RabbitMQHost"],
+                Port = int.Parse(_configuration["RabbitMQPort"])
+            };
+            _connection = factory.CreateConnection();
+            _channel = _connection.CreateModel();
 
-            // Đảm bảo rằng queue đã được tạo sẵn
-            _channel.QueueDeclare("posts", durable: false, exclusive: false, autoDelete: false, arguments: null);
+            // Khai báo Exchange với kiểu Fanout
+            _channel.ExchangeDeclare(exchange: "posts", type: ExchangeType.Fanout);
         }
 
-
-        // Phương thức hủy kết nối (nên được gọi khi không còn sử dụng MessageBusClient)
         public void Dispose()
         {
             _channel?.Close();
@@ -38,11 +39,14 @@ namespace StoryService.AsyncDataService
             var json = JsonConvert.SerializeObject(notificationReadDTO);
             var body = Encoding.UTF8.GetBytes(json);
 
-            // Tái sử dụng channel đã tạo
+            // Publish message đến Fanout Exchange
             _channel.BasicPublish(
                 exchange: "posts",
-                routingKey: "",
+                routingKey: "", // Fanout không cần routingKey
+                basicProperties: null,
                 body: body);
+
+            Console.WriteLine("--> Published new notification to RabbitMQ");
             await Task.CompletedTask;
         }
     }

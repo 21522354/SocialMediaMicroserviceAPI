@@ -12,7 +12,7 @@ namespace PostService.Mapper
                 .Map(dest => dest.PostId, src => src.post.PostId)
                 .Map(dest => dest.UserId, src => src.post.UserId)
                 .Map(dest => dest.Name, src => src.user.Name)
-                .Map(dest => dest.Avatar, src => src.user.Avatar)
+                .Map(dest => dest.Avatar, src => src.user.Image)
                 .Map(dest => dest.PostTitle, src => src.post.PostTitle)
                 .Map(dest => dest.CreatedDate, src => src.post.CreatedDate)
                 .Map(dest => dest.ImageAndVideo, src => src.post.PostMedias.Select(pm => pm.Link))
@@ -26,7 +26,7 @@ namespace PostService.Mapper
                     PostId = post.PostId,
                     UserId = post.UserId,
                     Name = src.user.Name,
-                    Avatar = src.user.Avatar,
+                    Avatar = src.user.Image,
                     PostTitle = post.PostTitle,
                     CreatedDate = post.CreatedDate,
                     ImageAndVideo = post.PostMedias.Select(pm => pm.Link).ToList(),
