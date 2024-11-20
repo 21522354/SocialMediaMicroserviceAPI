@@ -48,6 +48,11 @@ namespace PostService.Controllers
             _messageBusClient = messageBusClient;
             _mapper = mapper;
         }
+        [HttpGet]
+        public async Task<IActionResult> GetAllPost()
+        {
+            return Ok(await _postRepository.GetAllAsync());
+        }
         [HttpGet("{postId}")]
         public async Task<IActionResult> GetPostByPostId(Guid postId)
         {
