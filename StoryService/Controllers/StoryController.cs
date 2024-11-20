@@ -83,12 +83,12 @@ namespace StoryService.Controllers
             await _storyRepository.CreateStory(newStory);
             await _messageBusClient.PublishNewNotification(new NotificationMessageDTO()
             {
-                UserId = newStory.UserId,
+                UserInvoke = newStory.UserId,
                 StoryId = newStory.StoryId,
                 EventType = "NewStory",
                 Message = $"{user.Name} created a new story",
             });
-            return Ok(newStory.StoryId);        
+            return Ok(new {storyId = newStory.StoryId});        
         }
         
     }

@@ -83,7 +83,7 @@ namespace PostService.Controllers
                     CommentId = item.CommentId,
                     UserId = user.UserId,
                     Name = user.Name,
-                    Avatar = user.Avatar,
+                    Avatar = user.Image,
                     Message = item.Message,
                     NumberOfLike = item.NumberOfLike,
                     ReplyComment = await getReplyComment(item.CommentId)
@@ -106,7 +106,7 @@ namespace PostService.Controllers
                     CommentId = item.ReplyCommentId,
                     UserId = user.UserId,
                     Name = user.Name,
-                    Avatar = user.Avatar,
+                    Avatar = user.Image,
                     Message = item.Message,
                     NumberOfLike = item.NumberOfLike,
                     ReplyComment = await getReplyComment(item.ReplyCommentId)
@@ -168,7 +168,12 @@ namespace PostService.Controllers
             };
             await _postLikeRepository.AddPostLikeAsync(postLike);
 
-            await _messageBusClient.PublishNewNotification(new NotificationMessageDTO() { UserId = post.UserId, PostId = post.PostId, Message = $"{user.Name} liked your post", EventType = "LikePost" });
+            await _messageBusClient.PublishNewNotification(new NotificationMessageDTO() {
+                UserId = post.UserId,
+                UserInvoke = user.UserId,
+                PostId = post.PostId,
+                Message = $"{user.Name} liked your post",
+                EventType = "LikePost" });
 
             return Ok("Like post successfully");
         }
@@ -198,7 +203,13 @@ namespace PostService.Controllers
             };
             await _postCommentRepository.CreateAsync(postComment);
 
-            await _messageBusClient.PublishNewNotification(new NotificationMessageDTO() { UserId = post.UserId, PostId = post.PostId, CommentId = postComment.CommentId, Message = $"{user.Name} commented on your post", EventType = "CommentPost" });
+            await _messageBusClient.PublishNewNotification(new NotificationMessageDTO() {
+                UserId = post.UserId,
+                UserInvoke = user.UserId,
+                PostId = post.PostId,
+                CommentId = postComment.CommentId,
+                Message = $"{user.Name} commented on your post",
+                EventType = "CommentPost" });
 
             return Ok("Comment post successfully");
         }
@@ -225,7 +236,13 @@ namespace PostService.Controllers
             };
             await _replyCommentRepository.CreateAsync(newReplyComment);
 
-            await _messageBusClient.PublishNewNotification(new NotificationMessageDTO() { UserId = userId, PostId = request.PostId, CommentId = commentId, Message = $"{user.Name} responded to your comment", EventType = "ReplyComment" });
+            await _messageBusClient.PublishNewNotification(new NotificationMessageDTO() { 
+                UserId = userId,
+                UserInvoke = user.UserId,
+                PostId = request.PostId,
+                CommentId = commentId, 
+                Message = $"{user.Name} responded to your comment",
+                EventType = "ReplyComment" });
 
             return Ok("Reply comment successfully");
         }
@@ -267,9 +284,13 @@ namespace PostService.Controllers
                 await _unseenPostRepository.CreateAsync(unSeenPost);
             }
 
-            await _messageBusClient.PublishNewNotification(new NotificationMessageDTO() { UserId = post.UserId, PostId = post.PostId, Message = $"{user.Name} created a new post", EventType = "NewPost" });
+            await _messageBusClient.PublishNewNotification(new NotificationMessageDTO() { 
+                UserInvoke = post.UserId,
+                PostId = post.PostId,
+                Message = $"{user.Name} created a new post",
+                EventType = "NewPost" });
 
-            return Ok(post.PostId);
+            return Ok(new {postId = post.PostId});
         }
     }
 }

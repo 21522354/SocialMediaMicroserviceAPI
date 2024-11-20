@@ -8,13 +8,15 @@ namespace NotificationService.AsyncDataService
     public class MessageBusSubscriber : BackgroundService
     {
         private readonly IEventProcessor _eventProcessor;
+        private readonly IConfiguration _configuration;
         private IConnection _connection;
         private IModel _chanel;
         private string _queueName;
 
-        public MessageBusSubscriber(IEventProcessor eventProcessor)
+        public MessageBusSubscriber(IEventProcessor eventProcessor, IConfiguration configuration)
         {
             _eventProcessor = eventProcessor;
+            _configuration = configuration;
 
             InitializeRabbitMQ();
         }
@@ -23,8 +25,8 @@ namespace NotificationService.AsyncDataService
         {
             var factory = new ConnectionFactory()
             {
-                HostName = "localhost",
-                Port = 5673
+                HostName = _configuration["RabbitMQHost"],
+                Port = int.Parse(_configuration["RabbitMQPort"])
             };
             _connection = factory.CreateConnection();
             _chanel = _connection.CreateModel();

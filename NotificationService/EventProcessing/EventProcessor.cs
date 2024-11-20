@@ -55,7 +55,7 @@ namespace NotificationService.EventProcessing
 
                 var notificationMessageDTO = JsonSerializer.Deserialize<NotificationReadDTO>(message);
 
-                var listUserFollower = await _userDataClient.GetUserFollower(notificationMessageDTO.UserId);
+                var listUserFollower = await _userDataClient.GetUserFollower(notificationMessageDTO.UserInvoke);
 
                 foreach (var item in listUserFollower)
                 {
@@ -90,7 +90,7 @@ namespace NotificationService.EventProcessing
 
                 var notificationMessageDTO = JsonSerializer.Deserialize<NotificationReadDTO>(message);
 
-                var listUserFollower = await _userDataClient.GetUserFollower(notificationMessageDTO.UserId);
+                var listUserFollower = await _userDataClient.GetUserFollower(notificationMessageDTO.UserInvoke);
 
                 foreach ( var item in listUserFollower)
                 {
