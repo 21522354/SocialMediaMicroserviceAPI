@@ -6,5 +6,7 @@ namespace PostService.Data_Layer.Repository
     {
         Task<IEnumerable<UnseenPost>> GetUnseenPostByUserId(Guid userId);        
         Task CreateAsync(UnseenPost unseenPost);
+        Task<UnseenPost> GetByBothId(Guid postId, Guid userId);
+        Task DeleteAsync(UnseenPost unseenPost);
     }
 }

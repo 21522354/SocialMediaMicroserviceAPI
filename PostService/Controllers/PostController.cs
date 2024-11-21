@@ -151,6 +151,17 @@ namespace PostService.Controllers
             }
             return Ok(feeds);
         }
+        [HttpPost("markViewed")]
+        public async Task<IActionResult> MarkViewed([FromBody] MarkViewedRequest markViewedRequest)
+        {
+            var unseenPost = await _unseenPostRepository.GetByBothId(markViewedRequest.PostId, markViewedRequest.UserId);   
+            if (unseenPost == null)
+            {
+                return BadRequest();
+            }
+            await _unseenPostRepository.DeleteAsync(unseenPost);
+            return Ok("Mark viewed successfully");
+        }
         [HttpPost("likePost")]
         public async Task<IActionResult> LikePost([FromBody] LikePostRequest request)
         {
@@ -284,7 +295,6 @@ namespace PostService.Controllers
                 {
                     PostId = post.PostId,
                     UserId = item.UserId,
-                    IsAlreadySeen = false
                 };
                 await _unseenPostRepository.CreateAsync(unSeenPost);
             }
