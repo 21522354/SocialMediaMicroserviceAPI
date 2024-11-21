@@ -6,5 +6,7 @@ namespace PostService.Data_Layer.Repository
     public interface IPostRepository : IRepository<Post, Guid>
     {    
         Task<IEnumerable<Post>> GetPostsByUserId(Guid id);
+        Task<IEnumerable<Post>> GetAllPostAsync();
+        Task<Post> GetPostByIdAsync(Guid id);
     }
 }

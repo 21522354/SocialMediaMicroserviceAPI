@@ -17,7 +17,7 @@ namespace UserService.DataLayer
                         Name = "Nguyen Van A",
                         Email = "ndam8175@gmail.com",
                         Password = "123123",
-                        Image = "abc.png",
+                        Avatar = "abc.png",
                         FbId = "asdadfasdf"
                     },
                     new User()
@@ -26,7 +26,7 @@ namespace UserService.DataLayer
                         Name = "Nguyen Van B",
                         Email = "ndam8175@gmail.com",
                         Password = "123123",
-                        Image = "abc.png",
+                        Avatar = "abc.png",
                         FbId = "asdadfasdf"
                     },
                     new User()
@@ -35,7 +35,7 @@ namespace UserService.DataLayer
                         Name = "Nguyen Van C",
                         Email = "ndam8175@gmail.com",
                         Password = "123123",
-                        Image = "abc.png",
+                        Avatar = "abc.png",
                         FbId = "asdadfasdf"
                     },
                     new User()
@@ -44,7 +44,7 @@ namespace UserService.DataLayer
                         Name = "Nguyen Van D",
                         Email = "ndam8175@gmail.com",
                         Password = "123123",
-                        Image = "abc.png",
+                        Avatar = "abc.png",
                         FbId = "asdadfasdf"
                     },
                     new User()
@@ -53,7 +53,7 @@ namespace UserService.DataLayer
                         Name = "Nguyen Van E",
                         Email = "ndam8175@gmail.com",
                         Password = "123123",
-                        Image = "abc.png",
+                        Avatar = "abc.png",
                         FbId = "asdadfasdf"
                     });
                 _context.Follows.AddRange(

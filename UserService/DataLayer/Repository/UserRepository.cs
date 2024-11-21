@@ -34,7 +34,7 @@ namespace UserService.DataLayer.Repository
                 throw new BadHttpRequestException("User not found");
             }
             user.Name = newName;
-            user.Image = avatar;    
+            user.Avatar = avatar;    
             await _context.SaveChangesAsync();  
         }
         public async Task<User> GetUserByEmail(string email)

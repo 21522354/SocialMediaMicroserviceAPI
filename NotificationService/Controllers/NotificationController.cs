@@ -39,7 +39,7 @@ namespace NotificationService.Controllers
                     var user = await _userDataClient.GetUserById(item.UserInvoke);
                     newNoti.UserId = item.UserInvoke;
                     newNoti.Name = user.Name;
-                    newNoti.Avatar = user.Image;
+                    newNoti.Avatar = user.Avatar;
                     listNotiReadDTO.Add(newNoti);
                 }
 

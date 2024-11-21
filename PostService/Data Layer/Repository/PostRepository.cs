@@ -19,6 +19,17 @@ namespace PostService.Data_Layer.Repository
             _userDataClient = userDataClient;
             _mapper = mapper;
         }
+
+        public async Task<IEnumerable<Post>> GetAllPostAsync()
+        {
+            return await _context.Posts.ToListAsync();
+        }
+
+        public async Task<Post> GetPostByIdAsync(Guid id)
+        {
+            return await _context.Posts.FindAsync(id);
+        }
+
         public async Task<IEnumerable<Post>> GetPostsByUserId(Guid id)
         {
             var listPost = await _context.Posts.Where(p => p.UserId == id).Include(p => p.PostComments).Include(p => p.PostMedias).Include(p => p.PostLikes).ToListAsync();

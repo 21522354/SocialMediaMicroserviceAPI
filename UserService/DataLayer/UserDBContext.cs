@@ -16,7 +16,7 @@ namespace UserService.DataLayer
             .Property(u => u.FbId)
             .IsRequired(false);  // Đảm bảo rằng nó không bắt buộc
             modelBuilder.Entity<User>()
-                .Property(u => u.Image)
+                .Property(u => u.Avatar)
                 .IsRequired(false);
             modelBuilder.Entity<User>()
                 .Property(u => u.Name)

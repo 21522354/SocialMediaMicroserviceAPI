@@ -51,7 +51,7 @@ namespace PostService.Controllers
         [HttpGet]
         public async Task<IActionResult> GetAllPost()
         {
-            return Ok(await _postRepository.GetAllAsync());
+            return Ok(await _postRepository.GetAllPostAsync());
         }
         [HttpGet("{postId}")]
         public async Task<IActionResult> GetPostByPostId(Guid postId)
@@ -59,7 +59,7 @@ namespace PostService.Controllers
             var post = await _postRepository.GetByIdAsync(postId);
             if (post == null)
             {
-                throw new Exception("Can't find this post");
+                return NotFound("Can't find this post");
             }
             post.PostComments = (ICollection<PostComment>)await _postCommentRepository.GetCommentsByPostId(post.PostId);
             var user = await _userDataClient.GetUserById(post.UserId);
@@ -88,7 +88,7 @@ namespace PostService.Controllers
                     CommentId = item.CommentId,
                     UserId = user.UserId,
                     Name = user.Name,
-                    Avatar = user.Image,
+                    Avatar = user.Avatar,
                     Message = item.Message,
                     NumberOfLike = item.NumberOfLike,
                     ReplyComment = await getReplyComment(item.CommentId)
@@ -111,7 +111,7 @@ namespace PostService.Controllers
                     CommentId = item.ReplyCommentId,
                     UserId = user.UserId,
                     Name = user.Name,
-                    Avatar = user.Image,
+                    Avatar = user.Avatar,
                     Message = item.Message,
                     NumberOfLike = item.NumberOfLike,
                     ReplyComment = await getReplyComment(item.ReplyCommentId)
