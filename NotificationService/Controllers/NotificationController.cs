@@ -7,7 +7,7 @@ using NotificationService.SyncDataService;
 
 namespace NotificationService.Controllers
 {
-    [Route("api/[controller]")]
+    [Route("api/notifications")]
     [ApiController]
     public class NotificationController : ControllerBase
     {
