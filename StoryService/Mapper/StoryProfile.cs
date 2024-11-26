@@ -10,6 +10,7 @@ namespace StoryService.Mapper
         {
             config.NewConfig<(List<Story> stories, UserReadDTO user), StoryReadDTO>()
                 .Map(dest => dest, src => src.user)
+                .Map(dest => dest.Name, src => src.user.NickName)
                 .Map(dest => dest.ListStory, src => src.stories);
         }
     }

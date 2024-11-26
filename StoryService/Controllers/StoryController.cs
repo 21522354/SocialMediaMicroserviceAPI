@@ -86,7 +86,7 @@ namespace StoryService.Controllers
                 UserInvoke = newStory.UserId,
                 StoryId = newStory.StoryId,
                 EventType = "NewStory",
-                Message = $"{user.Name} created a new story",
+                Message = $"{user.NickName} created a new story",
             });
             return Ok(new {storyId = newStory.StoryId});        
         }

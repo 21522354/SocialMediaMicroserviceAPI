@@ -21,6 +21,9 @@ namespace UserService.DataLayer
             modelBuilder.Entity<User>()
                 .Property(u => u.FullName)
                 .IsRequired(false);
+            modelBuilder.Entity<User>()
+                .Property(u => u.NickName)
+                .IsRequired(false);
         }
     }
 }

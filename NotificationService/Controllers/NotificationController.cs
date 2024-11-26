@@ -38,7 +38,7 @@ namespace NotificationService.Controllers
                     var newNoti = _mapper.Map<NotificationRead2DTO>(item);
                     var user = await _userDataClient.GetUserById(item.UserInvoke);
                     newNoti.UserId = item.UserInvoke;
-                    newNoti.Name = user.Name;
+                    newNoti.Name = user.NickName;
                     newNoti.Avatar = user.Avatar;
                     listNotiReadDTO.Add(newNoti);
                 }
