@@ -19,7 +19,7 @@ namespace UserService.DataLayer
                 .Property(u => u.Avatar)
                 .IsRequired(false);
             modelBuilder.Entity<User>()
-                .Property(u => u.Name)
+                .Property(u => u.FullName)
                 .IsRequired(false);
         }
     }

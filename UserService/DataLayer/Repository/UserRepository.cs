@@ -33,7 +33,7 @@ namespace UserService.DataLayer.Repository
             {
                 throw new BadHttpRequestException("User not found");
             }
-            user.Name = newName;
+            user.FullName = newName;
             user.Avatar = avatar;    
             await _context.SaveChangesAsync();  
         }
@@ -89,6 +89,11 @@ namespace UserService.DataLayer.Repository
             _context.Users.Add(user);
             await _context.SaveChangesAsync();
             return user;
+        }
+
+        public async Task<User> GetByNickName(string nickName)
+        {
+            return await _context.Users.FirstOrDefaultAsync(p => p.NickName == nickName);
         }
     }
 }

@@ -87,7 +87,7 @@ namespace PostService.Controllers
                 {
                     CommentId = item.CommentId,
                     UserId = user.UserId,
-                    Name = user.Name,
+                    Name = user.NickName,
                     Avatar = user.Avatar,
                     Message = item.Message,
                     NumberOfLike = item.NumberOfLike,
@@ -110,7 +110,7 @@ namespace PostService.Controllers
                 {
                     CommentId = item.ReplyCommentId,
                     UserId = user.UserId,
-                    Name = user.Name,
+                    Name = user.NickName,
                     Avatar = user.Avatar,
                     Message = item.Message,
                     NumberOfLike = item.NumberOfLike,
@@ -188,7 +188,7 @@ namespace PostService.Controllers
                 UserId = post.UserId,
                 UserInvoke = user.UserId,
                 PostId = post.PostId,
-                Message = $"{user.Name} liked your post",
+                Message = $"{user.NickName} liked your post",
                 EventType = "LikePost" });
 
             return Ok("Like post successfully");
@@ -224,7 +224,7 @@ namespace PostService.Controllers
                 UserInvoke = user.UserId,
                 PostId = post.PostId,
                 CommentId = postComment.CommentId,
-                Message = $"{user.Name} commented on your post",
+                Message = $"{user.NickName} commented on your post",
                 EventType = "CommentPost" });
 
             return Ok("Comment post successfully");
@@ -257,7 +257,7 @@ namespace PostService.Controllers
                 UserInvoke = user.UserId,
                 PostId = request.PostId,
                 CommentId = commentId, 
-                Message = $"{user.Name} responded to your comment",
+                Message = $"{user.NickName} responded to your comment",
                 EventType = "ReplyComment" });
 
             return Ok("Reply comment successfully");
@@ -302,7 +302,7 @@ namespace PostService.Controllers
             await _messageBusClient.PublishNewNotification(new NotificationMessageDTO() { 
                 UserInvoke = post.UserId,
                 PostId = post.PostId,
-                Message = $"{user.Name} created a new post",
+                Message = $"{user.NickName} created a new post",
                 EventType = "NewPost" });
 
             return Ok(new {postId = post.PostId});

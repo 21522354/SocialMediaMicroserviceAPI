@@ -70,6 +70,23 @@ namespace UserService.Controllers
             var user = await _userRepo.SignUp(request.Email, request.Password);
             return Ok(_mapper.Map<UserReadDto>(user));
         }
+        [HttpPost("setNickName")]
+        public async Task<IActionResult> SetNickName([FromBody]SetNickNameRequest request)
+        {
+            var user = await _userRepo.GetByIdAsync(request.UserId);
+            if(user == null)
+            {
+                return NotFound("Can't find this user");
+            }
+            var checkNickName = await _userRepo.GetByNickName(request.NickName);
+            if(checkNickName != null)
+            {
+                return BadRequest("This nickname is already exist!! Please choose other nickname");
+            }
+            user.NickName = request.NickName;
+            await _userRepo.UpdateAsync(user);
+            return Ok("Set nickname successfully");
+        }
         [HttpPost("setNameAndAvatar")]
         public async Task<IActionResult> SetNameAndAvatar([FromBody]SetNameAndAvatarRequest request)
         {

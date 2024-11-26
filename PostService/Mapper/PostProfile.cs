@@ -11,7 +11,7 @@ namespace PostService.Mapper
             config.NewConfig<(Post post, UserReadDTO user), PostReadDTO>()
                 .Map(dest => dest.PostId, src => src.post.PostId)
                 .Map(dest => dest.UserId, src => src.post.UserId)
-                .Map(dest => dest.Name, src => src.user.Name)
+                .Map(dest => dest.Name, src => src.user.NickName)
                 .Map(dest => dest.Avatar, src => src.user.Avatar)
                 .Map(dest => dest.PostTitle, src => src.post.PostTitle)
                 .Map(dest => dest.CreatedDate, src => src.post.CreatedDate)
@@ -25,7 +25,7 @@ namespace PostService.Mapper
                 {
                     PostId = post.PostId,
                     UserId = post.UserId,
-                    Name = src.user.Name,
+                    Name = src.user.NickName,
                     Avatar = src.user.Avatar,
                     PostTitle = post.PostTitle,
                     CreatedDate = post.CreatedDate,

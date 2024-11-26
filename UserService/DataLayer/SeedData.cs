@@ -14,7 +14,8 @@ namespace UserService.DataLayer
                     new User()
                     {
                         UserId = Guid.Parse("e0be4a36-67cd-4dd6-be48-8b800c3123d1"),
-                        Name = "Nguyen Van A",
+                        NickName = "nva_123",
+                        FullName = "Nguyen Van A",
                         Email = "ndam8175@gmail.com",
                         Password = "123123",
                         Avatar = "abc.png",
@@ -23,7 +24,8 @@ namespace UserService.DataLayer
                     new User()
                     {
                         UserId = Guid.Parse("e0be4a36-67cd-4dd6-be48-8b800c3123d2"),
-                        Name = "Nguyen Van B",
+                        NickName = "nvb_123",
+                        FullName = "Nguyen Van B",
                         Email = "ndam8175@gmail.com",
                         Password = "123123",
                         Avatar = "abc.png",
@@ -32,7 +34,8 @@ namespace UserService.DataLayer
                     new User()
                     {
                         UserId = Guid.Parse("e0be4a36-67cd-4dd6-be48-8b800c3123d3"),
-                        Name = "Nguyen Van C",
+                        FullName = "Nguyen Van C",
+                        NickName = "nvc_123",
                         Email = "ndam8175@gmail.com",
                         Password = "123123",
                         Avatar = "abc.png",
@@ -41,7 +44,8 @@ namespace UserService.DataLayer
                     new User()
                     {
                         UserId = Guid.Parse("e0be4a36-67cd-4dd6-be48-8b800c3123d4"),
-                        Name = "Nguyen Van D",
+                        NickName = "nvd_123",
+                        FullName = "Nguyen Van D",
                         Email = "ndam8175@gmail.com",
                         Password = "123123",
                         Avatar = "abc.png",
@@ -50,7 +54,8 @@ namespace UserService.DataLayer
                     new User()
                     {
                         UserId = Guid.Parse("e0be4a36-67cd-4dd6-be48-8b800c3123d5"),
-                        Name = "Nguyen Van E",
+                        NickName = "nve_123",
+                        FullName = "Nguyen Van E",
                         Email = "ndam8175@gmail.com",
                         Password = "123123",
                         Avatar = "abc.png",

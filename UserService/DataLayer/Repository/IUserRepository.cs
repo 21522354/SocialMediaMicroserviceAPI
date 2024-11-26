@@ -8,6 +8,7 @@ namespace UserService.DataLayer.Repository
         Task<User> SignUp(string email, string password);
         Task<User> SignIn(string email, string password);
         Task<User> SignInWithFB(string fbId);
+        Task<User> GetByNickName(string nickName);  
         Task<IEnumerable<User>> GetListUserFollower(Guid userId);
         Task<IEnumerable<User>> GetListUserFollowing(Guid userId);  
         Task<IEnumerable<User>> GetAllUsers();
