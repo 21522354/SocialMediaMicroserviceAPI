@@ -12,5 +12,6 @@
         public ICollection<PostMedia> PostMedias { get; set; }
         public ICollection<UnseenPost> UnseenPosts { get; set; }    
         public ICollection<ReplyComment> ReplyComments { get; set; }
+        public ICollection<PostHagtag> PostHagtags { get; set; }        
     }
 }

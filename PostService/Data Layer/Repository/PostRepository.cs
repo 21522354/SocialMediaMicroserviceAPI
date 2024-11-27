@@ -32,7 +32,7 @@ namespace PostService.Data_Layer.Repository
 
         public async Task<IEnumerable<Post>> GetPostsByUserId(Guid id)
         {
-            var listPost = await _context.Posts.Where(p => p.UserId == id).Include(p => p.PostComments).Include(p => p.PostMedias).Include(p => p.PostLikes).ToListAsync();
+            var listPost = await _context.Posts.Where(p => p.UserId == id).Include(p => p.PostComments).Include(p => p.PostMedias).Include(p => p.PostLikes).Include(p => p.PostHagtags).ToListAsync();
             return listPost;
         }
     }

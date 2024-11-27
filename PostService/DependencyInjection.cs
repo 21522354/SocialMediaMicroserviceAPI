@@ -22,6 +22,7 @@ namespace PostService
             services.AddScoped<IPostLikeRepository, PostLikeRepository>();      
             services.AddScoped<IPostMediaRepository, PostMediaRepository>();    
             services.AddScoped<IReplyCommentRepository, ReplyCommentRepository>();
+            services.AddScoped<IPostHagtagRepository, PostHagtagRepository>();  
             services.AddScoped<IUnseenPostRepository, UnseenPostReposiroty>();
             services.AddScoped<IMessageBusClient, MessageBusClient>();
 

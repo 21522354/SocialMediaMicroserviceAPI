@@ -187,6 +187,12 @@ namespace PostService.Data_Layer
                     _context.UnseenPosts.AddRange(unseenPosts);
 
                     // Save changes to database
+
+                    var hagtag = new PostHagtag() { HagtagName = "NgayDepTroi", PostId = posts[0].PostId, };
+                    var hagtag2 = new PostHagtag() { HagtagName = "NgayXauTroi", PostId = posts[0].PostId, };
+                    _context.PostHagtags.Add(hagtag);
+                    _context.PostHagtags.Add(hagtag2);
+
                     _context.SaveChanges();
                 }
             }

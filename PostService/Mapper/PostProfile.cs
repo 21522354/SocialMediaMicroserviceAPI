@@ -11,13 +11,14 @@ namespace PostService.Mapper
             config.NewConfig<(Post post, UserReadDTO user), PostReadDTO>()
                 .Map(dest => dest.PostId, src => src.post.PostId)
                 .Map(dest => dest.UserId, src => src.post.UserId)
-                .Map(dest => dest.Name, src => src.user.NickName)
+                .Map(dest => dest.NickName, src => src.user.NickName)
                 .Map(dest => dest.Avatar, src => src.user.Avatar)
                 .Map(dest => dest.PostTitle, src => src.post.PostTitle)
                 .Map(dest => dest.CreatedDate, src => src.post.CreatedDate)
                 .Map(dest => dest.ImageAndVideo, src => src.post.PostMedias.Select(pm => pm.Link))
                 .Map(dest => dest.NumberOfLike, src => src.post.PostLikes.Count)
-                .Map(dest => dest.NumberOfComment, src => src.post.PostComments.Count);
+                .Map(dest => dest.NumberOfComment, src => src.post.PostComments.Count)
+                .Map(dest => dest.ListHagtags, src => src.post.PostHagtags.Select(p => p.HagtagName).ToList());
 
             config.NewConfig<(IEnumerable<Post> posts, UserReadDTO user), IEnumerable<PostReadDTO>>()
                 .ConstructUsing(src => new List<PostReadDTO>()) // Chỉ định cách tạo đối tượng danh sách
@@ -25,13 +26,14 @@ namespace PostService.Mapper
                 {
                     PostId = post.PostId,
                     UserId = post.UserId,
-                    Name = src.user.NickName,
+                    NickName = src.user.NickName,
                     Avatar = src.user.Avatar,
                     PostTitle = post.PostTitle,
                     CreatedDate = post.CreatedDate,
                     ImageAndVideo = post.PostMedias.Select(pm => pm.Link).ToList(),
                     NumberOfLike = post.PostLikes.Count,
-                    NumberOfComment = post.PostComments.Count
+                    NumberOfComment = post.PostComments.Count,
+                    ListHagtags = post.PostHagtags.Select(p => p.HagtagName).ToList()
                 }));
 
         }

@@ -3,6 +3,7 @@ using MapsterMapper;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
+using Microsoft.Extensions.Hosting;
 using PostService.AsyncDataService;
 using PostService.Data_Layer.DTOs;
 using PostService.Data_Layer.Models;
@@ -22,6 +23,7 @@ namespace PostService.Controllers
         private readonly IPostMediaRepository _postMediaRepository;
         private readonly IReplyCommentRepository _replyCommentRepository;
         private readonly IUnseenPostRepository _unseenPostRepository;
+        private readonly IPostHagtagRepository _postHagtagRepository;
         private readonly IUserDataClient _userDataClient;
         private readonly IMessageBusClient _messageBusClient;
         private readonly IMapper _mapper;
@@ -33,6 +35,7 @@ namespace PostService.Controllers
             IPostMediaRepository postMediaRepository,
             IReplyCommentRepository replyCommentRepository,
             IUnseenPostRepository unseenPostRepository,
+            IPostHagtagRepository postHagtagRepository,
             IUserDataClient userDataClient,
             IMessageBusClient messageBusClient,
             IMapper mapper
@@ -44,6 +47,7 @@ namespace PostService.Controllers
             _postMediaRepository = postMediaRepository;
             _replyCommentRepository = replyCommentRepository;
             _unseenPostRepository = unseenPostRepository;
+            _postHagtagRepository = postHagtagRepository;
             _userDataClient = userDataClient;
             _messageBusClient = messageBusClient;
             _mapper = mapper;
@@ -150,6 +154,20 @@ namespace PostService.Controllers
                 feeds.Add(postReadDTO);
             }
             return Ok(feeds);
+        }
+        [HttpGet("hagtag/{hagtag}")]
+        public async Task<IActionResult> GetPostByHagtag(string hagtag)
+        {
+            var listPostByHagtag = await _postHagtagRepository.GetPostHagtagsByName(hagtag);
+            var listPost = listPostByHagtag.Select(x => x.Post).ToList();
+            var listPostReadDTO = new List<PostReadDTO>();
+            foreach (var post in listPost)
+            {
+                var user = await _userDataClient.GetUserById(post.UserId);
+                var postReadDTO = (post, user).Adapt<PostReadDTO>();
+                listPostReadDTO.Add(postReadDTO);
+            }
+            return Ok(listPostReadDTO);
         }
         [HttpPost("markViewed")]
         public async Task<IActionResult> MarkViewed([FromBody] MarkViewedRequest markViewedRequest)
@@ -287,6 +305,16 @@ namespace PostService.Controllers
                 };
                 await _postMediaRepository.CreateAsync(postMedia);
                 i++;
+            }
+
+            foreach (var item in request.ListHagtag)
+            {
+                var postHagtag = new PostHagtag()
+                {
+                    HagtagName = item,
+                    PostId = post.PostId
+                };
+                await _postHagtagRepository.AddAsync(postHagtag);
             }
 
             foreach (var item in listUserFollower)
