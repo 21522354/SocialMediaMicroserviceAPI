@@ -243,6 +243,7 @@ namespace PostService.Controllers
                 PostId = post.PostId,
                 CommentId = postComment.CommentId,
                 Message = $"{user.NickName} commented on your post",
+                CheckTag = postComment.Message,
                 EventType = "CommentPost" });
 
             return Ok("Comment post successfully");
@@ -276,6 +277,7 @@ namespace PostService.Controllers
                 PostId = request.PostId,
                 CommentId = commentId, 
                 Message = $"{user.NickName} responded to your comment",
+                CheckTag = newReplyComment.Message,
                 EventType = "ReplyComment" });
 
             return Ok("Reply comment successfully");
@@ -331,6 +333,7 @@ namespace PostService.Controllers
                 UserInvoke = post.UserId,
                 PostId = post.PostId,
                 Message = $"{user.NickName} created a new post",
+                CheckTag = post.PostTitle,
                 EventType = "NewPost" });
 
             return Ok(new {postId = post.PostId});

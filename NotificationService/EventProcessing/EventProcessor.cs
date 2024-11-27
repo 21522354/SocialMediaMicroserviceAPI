@@ -46,6 +46,38 @@ namespace NotificationService.EventProcessing
             }
         }
 
+        private async void LikePostEvent(string message)
+        {
+            using (var scope = _serviceScopeFactory.CreateScope())
+            {
+                var _repo = scope.ServiceProvider.GetRequiredService<INotificationRepository>();
+
+                var notificationMessageDTO = JsonSerializer.Deserialize<NotificationReadDTO>(message);
+
+                try
+                {
+                    var noti = _mapper.Map<Notification>(notificationMessageDTO);
+                    noti.Id = Guid.NewGuid();
+                    noti.CreatedDate = DateTime.Now;
+                    noti.IsAlreadySeen = false;
+                    await _repo.AddNew(noti);
+
+                    var notificationMessage = _mapper.Map<NotificationMessageDTO>(noti);
+                    List<Guid> listUserReceive = new List<Guid>() { noti.UserId };
+                    notificationMessage.ListUserReceiveMessage = listUserReceive;
+                    notificationMessage.EventType = "LikePost";
+                    var notificationMessageJson = JsonSerializer.Serialize(notificationMessage);
+
+                    await _hubContext.Clients.All.SendAsync("ReceiveNotification", notificationMessageJson);
+                }
+                catch (Exception ex)
+                {
+                    Console.WriteLine($"--> Could not add Notification to DB {ex.Message}");
+                }
+                Console.WriteLine(message);
+            }
+        }
+
         private async void NewStoryEvent(string message)
         {
             using (var scope = _serviceScopeFactory.CreateScope())
@@ -97,6 +129,7 @@ namespace NotificationService.EventProcessing
                 var _userDataClient = scope.ServiceProvider.GetRequiredService<IUserDataClient>();
 
                 var notificationMessageDTO = JsonSerializer.Deserialize<NotificationReadDTO>(message);
+                var userInvoke = await _userDataClient.GetUserById(notificationMessageDTO.UserInvoke);
 
                 var listUserFollower = await _userDataClient.GetUserFollower(notificationMessageDTO.UserInvoke);
 
@@ -121,12 +154,56 @@ namespace NotificationService.EventProcessing
                     }
                 }
 
+                // send new post event
                 var notificationMessage = _mapper.Map<NotificationMessageDTO>(notificationMessageDTO);
                 notificationMessage.ListUserReceiveMessage = listUserReceive;
                 notificationMessage.EventType = "NewPost";
 
                 var notificationMessageJson = JsonSerializer.Serialize(notificationMessage);
 
+                await _hubContext.Clients.All.SendAsync("ReceiveNotification", notificationMessageJson);
+
+                // check if tag user exist and send tag event
+
+                var listUserNickName = CheckAndGetTag(notificationMessageDTO.CheckTag);
+                if (listUserNickName.Count == 0)
+                {
+                    Console.WriteLine("Don't have any tag user");
+                    return;
+                }
+                Console.WriteLine($"Have {listUserNickName.Count} tag user");
+                var listUserReadDTO = new List<UserReadDTO>();
+                foreach ( var nickName in listUserNickName)
+                {
+                    var user = await _userDataClient.GetUserByNickName(nickName);
+                    listUserReadDTO.Add(user);
+                }
+                listUserReceive = new List<Guid>();
+                foreach (var user in listUserReadDTO)
+                {
+                    try
+                    {
+                        var noti = _mapper.Map<Notification>(notificationMessageDTO);
+                        noti.Id = Guid.NewGuid();
+                        noti.UserId = user.UserId;
+                        noti.CreatedDate = DateTime.Now;
+                        noti.IsAlreadySeen = false;
+                        noti.Message = $"{userInvoke.NickName} tagged you in a new post";
+                        await _repo.AddNew(noti);
+
+                        listUserReceive.Add(noti.UserId);
+                    }
+                    catch (Exception ex)
+                    {
+                        Console.WriteLine($"--> Could not add Notification to DB {ex.Message}");
+                    }
+                }
+                notificationMessage = _mapper.Map<NotificationMessageDTO>(notificationMessageDTO);
+                notificationMessage.ListUserReceiveMessage = listUserReceive;
+                notificationMessage.Message = $"{userInvoke.NickName} tagged you in a new post";
+                notificationMessage.EventType = "TagInPost";
+
+                notificationMessageJson = JsonSerializer.Serialize(notificationMessage);
                 await _hubContext.Clients.All.SendAsync("ReceiveNotification", notificationMessageJson);
 
             }
@@ -137,7 +214,10 @@ namespace NotificationService.EventProcessing
             {
                 var _repo = scope.ServiceProvider.GetRequiredService<INotificationRepository>();
 
+                var _userDataClient = scope.ServiceProvider.GetRequiredService<IUserDataClient>();
+
                 var notificationMessageDTO = JsonSerializer.Deserialize<NotificationReadDTO>(message);
+                var userInvoke = await _userDataClient.GetUserById(notificationMessageDTO.UserInvoke);
 
                 try
                 {
@@ -147,19 +227,63 @@ namespace NotificationService.EventProcessing
                     noti.IsAlreadySeen = false;
                     await _repo.AddNew(noti);
 
-                    var notificationMessage = _mapper.Map<NotificationMessageDTO>(noti);
-                    List<Guid> listUserReceive = new List<Guid>() { noti.UserId };
-                    notificationMessage.ListUserReceiveMessage = listUserReceive;
-                    notificationMessage.EventType = "LikePost";
-                    var notificationMessageJson = JsonSerializer.Serialize(notificationMessage);
+                    var notificationMessage1 = _mapper.Map<NotificationMessageDTO>(noti);
+                    List<Guid> listUserReceive1 = new List<Guid>() { noti.UserId };
+                    notificationMessage1.ListUserReceiveMessage = listUserReceive1;
+                    notificationMessage1.EventType = "ReplyComment";
+                    var notificationMessageJson1 = JsonSerializer.Serialize(notificationMessage1);
 
-                    await _hubContext.Clients.All.SendAsync("ReceiveNotification", notificationMessageJson);
+                    await _hubContext.Clients.All.SendAsync("ReceiveNotification", notificationMessageJson1);
                 }
                 catch (Exception ex)
                 {
                     Console.WriteLine($"--> Could not add Notification to DB {ex.Message}");
                 }
                 Console.WriteLine(message);
+
+
+                // check if tag user exist and send tag event
+
+                var listUserNickName = CheckAndGetTag(notificationMessageDTO.CheckTag);
+                if (listUserNickName.Count == 0)
+                {
+                    Console.WriteLine("Don't have any tag user");
+                    return;
+                }
+                Console.WriteLine($"Have {listUserNickName.Count} tag user");
+                var listUserReadDTO = new List<UserReadDTO>();
+                foreach (var nickName in listUserNickName)
+                {
+                    var user = await _userDataClient.GetUserByNickName(nickName);
+                    listUserReadDTO.Add(user);
+                }
+                var listUserReceive = new List<Guid>();
+                foreach (var user in listUserReadDTO)
+                {
+                    try
+                    {
+                        var noti = _mapper.Map<Notification>(notificationMessageDTO);
+                        noti.Id = Guid.NewGuid();
+                        noti.UserId = user.UserId;
+                        noti.CreatedDate = DateTime.Now;
+                        noti.IsAlreadySeen = false;
+                        noti.Message = $"{userInvoke.NickName} tagged you in a new post";
+                        await _repo.AddNew(noti);
+
+                        listUserReceive.Add(noti.UserId);
+                    }
+                    catch (Exception ex)
+                    {
+                        Console.WriteLine($"--> Could not add Notification to DB {ex.Message}");
+                    }
+                }
+                var notificationMessage = _mapper.Map<NotificationMessageDTO>(notificationMessageDTO);
+                notificationMessage.ListUserReceiveMessage = listUserReceive;
+                notificationMessage.Message = $"{userInvoke.NickName} tagged you in a comment";
+                notificationMessage.EventType = "TagInComment";
+
+                var notificationMessageJson = JsonSerializer.Serialize(notificationMessage);
+                await _hubContext.Clients.All.SendAsync("ReceiveNotification", notificationMessageJson);
             }
         }
         private async void CommentPostEvent(string message)
@@ -168,7 +292,10 @@ namespace NotificationService.EventProcessing
             {
                 var _repo = scope.ServiceProvider.GetRequiredService<INotificationRepository>();
 
+                var _userDataClient = scope.ServiceProvider.GetRequiredService<IUserDataClient>();
+
                 var notificationMessageDTO = JsonSerializer.Deserialize<NotificationReadDTO>(message);
+                var userInvoke = await _userDataClient.GetUserById(notificationMessageDTO.UserInvoke);
 
                 try
                 {
@@ -178,53 +305,88 @@ namespace NotificationService.EventProcessing
                     noti.IsAlreadySeen = false;
                     await _repo.AddNew(noti);
 
-                    var notificationMessage = _mapper.Map<NotificationMessageDTO>(noti);
-                    List<Guid> listUserReceive = new List<Guid>() { noti.UserId };
-                    notificationMessage.ListUserReceiveMessage = listUserReceive;
-                    notificationMessage.EventType = "LikePost";
-                    var notificationMessageJson = JsonSerializer.Serialize(notificationMessage);
+                    var notificationMessage1 = _mapper.Map<NotificationMessageDTO>(noti);
+                    List<Guid> listUserReceive1 = new List<Guid>() { noti.UserId };
+                    notificationMessage1.ListUserReceiveMessage = listUserReceive1;
+                    notificationMessage1.EventType = "CommentPost";
+                    var notificationMessageJson1 = JsonSerializer.Serialize(notificationMessage1);
 
-                    await _hubContext.Clients.All.SendAsync("ReceiveNotification", notificationMessageJson);
+                    await _hubContext.Clients.All.SendAsync("ReceiveNotification", notificationMessageJson1);
+                    Console.WriteLine("Send first notification successfully");
                 }
                 catch (Exception ex)
                 {
                     Console.WriteLine($"--> Could not add Notification to DB {ex.Message}");
                 }
-                Console.WriteLine(message);
+
+                Console.WriteLine("Continue to check tag");
+
+                // check if tag user exist and send tag event
+
+                var listUserNickName = CheckAndGetTag(notificationMessageDTO.CheckTag);
+                if (listUserNickName.Count == 0)
+                {
+                    Console.WriteLine("Don't have any tag user");
+                    return;
+                }
+                Console.WriteLine($"Have {listUserNickName.Count} tag user");
+                var listUserReadDTO = new List<UserReadDTO>();
+                foreach (var nickName in listUserNickName)
+                {
+                    var user = await _userDataClient.GetUserByNickName(nickName);
+                    listUserReadDTO.Add(user);
+                }
+                var listUserReceive = new List<Guid>();
+                foreach (var user in listUserReadDTO)
+                {
+                    try
+                    {
+                        var noti = _mapper.Map<Notification>(notificationMessageDTO);
+                        noti.Id = Guid.NewGuid();
+                        noti.UserId = user.UserId;
+                        noti.CreatedDate = DateTime.Now;
+                        noti.IsAlreadySeen = false;
+                        noti.Message = $"{userInvoke.NickName} tagged you in a new post";
+                        await _repo.AddNew(noti);
+
+                        listUserReceive.Add(noti.UserId);
+                    }
+                    catch (Exception ex)
+                    {
+                        Console.WriteLine($"--> Could not add Notification to DB {ex.Message}");
+                    }
+                }
+                var notificationMessage = _mapper.Map<NotificationMessageDTO>(notificationMessageDTO);
+                notificationMessage.ListUserReceiveMessage = listUserReceive;
+                notificationMessage.Message = $"{userInvoke.NickName} tagged you in a comment";
+                notificationMessage.EventType = "TagInComment";
+
+                var notificationMessageJson = JsonSerializer.Serialize(notificationMessage);
+                await _hubContext.Clients.All.SendAsync("ReceiveNotification", notificationMessageJson);
             }
         }
-        private async void LikePostEvent(string message)
+
+        private List<string> CheckAndGetTag(string message)
         {
-            using (var scope = _serviceScopeFactory.CreateScope())
+            // Tách chuỗi thành các từ dựa trên khoảng trắng
+            string[] segments = message.Split(' ', StringSplitOptions.RemoveEmptyEntries);
+
+            // Danh sách để lưu kết quả
+            List<string> users = new List<string>();
+
+            // Lặp qua từng phần tử
+            foreach (string segment in segments)
             {
-                var _repo = scope.ServiceProvider.GetRequiredService<INotificationRepository>();
-
-                var notificationMessageDTO = JsonSerializer.Deserialize<NotificationReadDTO>(message);
-
-                try
+                if (segment.StartsWith("@") && segment.EndsWith("@"))
                 {
-                    var noti = _mapper.Map<Notification>(notificationMessageDTO);
-                    noti.Id = Guid.NewGuid();
-                    noti.CreatedDate = DateTime.Now;
-                    noti.IsAlreadySeen = false;
-                    await _repo.AddNew(noti);
-
-                    var notificationMessage = _mapper.Map<NotificationMessageDTO>(noti);
-                    List<Guid> listUserReceive = new List<Guid>() { noti.UserId };
-                    notificationMessage.ListUserReceiveMessage = listUserReceive;
-                    notificationMessage.EventType = "LikePost";
-                    var notificationMessageJson = JsonSerializer.Serialize(notificationMessage);
-
-                    await _hubContext.Clients.All.SendAsync("ReceiveNotification", notificationMessageJson);
+                    // Loại bỏ ký tự @ ở đầu và cuối
+                    string tag = segment.Trim('@');
+                    users.Add(tag);
                 }
-                catch (Exception ex)
-                {
-                    Console.WriteLine($"--> Could not add Notification to DB {ex.Message}");
-                }
-                Console.WriteLine(message);
             }
-        }
 
+            return users;
+        }
 
         private EventType DetermineEvent(string notificationMessage)
         {

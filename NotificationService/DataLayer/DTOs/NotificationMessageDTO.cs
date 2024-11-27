@@ -7,6 +7,7 @@
         public string Message { get; set; }
         public Guid PostId { get; set; }
         public Guid StoryId { get; set; }
+        public Guid CommentId { get; set; } 
         public string EventType { get; set; }       
     }
 }

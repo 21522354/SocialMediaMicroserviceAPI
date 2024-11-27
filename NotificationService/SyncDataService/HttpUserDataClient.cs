@@ -29,6 +29,22 @@ namespace NotificationService.SyncDataService
             }
         }
 
+        public async Task<UserReadDTO> GetUserByNickName(string nickName)
+        {
+            var response = await _httpClient.GetAsync($"{_configuration["UserServiceEndpoint"]}/nickName/{nickName}");
+            if (response.IsSuccessStatusCode)
+            {
+                var content = await response.Content.ReadAsStringAsync();
+                var user = JsonSerializer.Deserialize<UserReadDTO>(content, new JsonSerializerOptions { PropertyNameCaseInsensitive = true });
+                return user;
+            }
+            else
+            {
+                throw new HttpRequestException($"Failed to get user by nickname: {response.StatusCode}");
+            }
+
+        }
+
         public async Task<List<UserReadDTO>> GetUserFollower(Guid id)
         {
             var response = await _httpClient.GetAsync($"{_configuration["UserServiceEndpoint"]}/followers/{id}");

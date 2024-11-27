@@ -32,7 +32,17 @@ namespace UserService.Controllers
             var user = await _userRepo.GetByIdAsync(id);
             if (user == null)
             {
-                return NotFound();      
+                return NotFound("Can't find this user");      
+            }
+            return Ok(_mapper.Map<UserReadDto>(user));
+        }
+        [HttpGet("nickName/{nickName}")]
+        public async Task<IActionResult> GetUserByNickName(string nickName)
+        {
+            var user = await _userRepo.GetByNickName(nickName);
+            if(user == null)
+            {
+                return NotFound("Can't find this user");
             }
             return Ok(_mapper.Map<UserReadDto>(user));
         }
