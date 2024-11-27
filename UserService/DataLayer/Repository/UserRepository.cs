@@ -95,5 +95,14 @@ namespace UserService.DataLayer.Repository
         {
             return await _context.Users.FirstOrDefaultAsync(p => p.NickName == nickName);
         }
+
+        public async Task<IEnumerable<User>> GetRelateNickNameUser(string nickName)
+        {
+            var listUser = await _context.Users
+                .Where(u => EF.Functions.Like(u.NickName, $"%{nickName}%"))
+                .ToListAsync();
+
+            return listUser;
+        }
     }
 }

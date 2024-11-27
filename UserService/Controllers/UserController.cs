@@ -58,6 +58,31 @@ namespace UserService.Controllers
             }
             return Ok(_mapper.Map<UserReadDto>(user));
         }
+        [HttpGet("friends/{userId}/{searchName}")]
+        public async Task<IActionResult> GetFriendsForTag(string searchName, Guid userId)
+        {
+            var user = _userRepo.GetByIdAsync(userId);
+            if(user == null)
+            {
+                return BadRequest("Can't find this user");
+            }
+            var listFriends = await _userRepo.GetListUserFollowing(userId);
+            if (!String.IsNullOrEmpty(searchName))
+            {
+                listFriends = listFriends.Where(p => p.FullName.ToLower().Contains(searchName.ToLower())).ToList();
+            }
+            return Ok(listFriends);
+        }
+        [HttpGet("search/{searchNickName}")]
+        public async Task<IActionResult> SearchGlobalUser(string searchNickName)
+        {
+            if (string.IsNullOrEmpty(searchNickName))
+                return BadRequest("Search nickname cannot be empty.");
+
+            var listUser = await _userRepo.GetRelateNickNameUser(searchNickName);
+            return Ok(listUser);
+        }
+
         [HttpPost("login")]
         public async Task<IActionResult> Login([FromBody] SignUpAndSignInRequest request)
         {
