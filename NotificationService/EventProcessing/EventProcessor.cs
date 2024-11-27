@@ -57,6 +57,8 @@ namespace NotificationService.EventProcessing
 
                 var listUserFollower = await _userDataClient.GetUserFollower(notificationMessageDTO.UserInvoke);
 
+                var listUserReceive = new List<Guid>();
+
                 foreach (var item in listUserFollower)
                 {
                     try
@@ -68,15 +70,21 @@ namespace NotificationService.EventProcessing
                         noti.IsAlreadySeen = false;
                         await _repo.AddNew(noti);
 
-                        var messageToClient = _mapper.Map<NotificationReadDTO>(noti);
-                        var messageJson = JsonSerializer.Serialize(messageToClient);
-                        await _hubContext.Clients.All.SendAsync("ReceiveNotification", messageJson);
+                        listUserReceive.Add(noti.UserId);
                     }
                     catch (Exception ex)
                     {
                         Console.WriteLine($"--> Could not add Notification to DB {ex.Message}");
                     }
                 }
+
+                var notificationMessage = _mapper.Map<NotificationMessageDTO>(notificationMessageDTO);
+                notificationMessage.ListUserReceiveMessage = listUserReceive;
+                notificationMessage.EventType = "NewStory";
+
+                var notificationMessageJson = JsonSerializer.Serialize(notificationMessage);
+
+                await _hubContext.Clients.All.SendAsync("ReceiveNotification", notificationMessageJson);
 
             }
         }
@@ -92,6 +100,8 @@ namespace NotificationService.EventProcessing
 
                 var listUserFollower = await _userDataClient.GetUserFollower(notificationMessageDTO.UserInvoke);
 
+                var listUserReceive = new List<Guid>();
+
                 foreach ( var item in listUserFollower)
                 {
                     try
@@ -103,15 +113,21 @@ namespace NotificationService.EventProcessing
                         noti.IsAlreadySeen = false;
                         await _repo.AddNew(noti);
 
-                        var messageToClient = _mapper.Map<NotificationReadDTO>(noti);
-                        var messageJson = JsonSerializer.Serialize(messageToClient);
-                        await _hubContext.Clients.All.SendAsync("ReceiveNotification", messageJson);
+                        listUserReceive.Add(noti.UserId);
                     }
                     catch (Exception ex)
                     {
                         Console.WriteLine($"--> Could not add Notification to DB {ex.Message}");
                     }
                 }
+
+                var notificationMessage = _mapper.Map<NotificationMessageDTO>(notificationMessageDTO);
+                notificationMessage.ListUserReceiveMessage = listUserReceive;
+                notificationMessage.EventType = "NewPost";
+
+                var notificationMessageJson = JsonSerializer.Serialize(notificationMessage);
+
+                await _hubContext.Clients.All.SendAsync("ReceiveNotification", notificationMessageJson);
 
             }
         }
@@ -130,7 +146,14 @@ namespace NotificationService.EventProcessing
                     noti.CreatedDate = DateTime.Now;
                     noti.IsAlreadySeen = false;
                     await _repo.AddNew(noti);
-                    await _hubContext.Clients.All.SendAsync("ReceiveNotification", message);
+
+                    var notificationMessage = _mapper.Map<NotificationMessageDTO>(noti);
+                    List<Guid> listUserReceive = new List<Guid>() { noti.UserId };
+                    notificationMessage.ListUserReceiveMessage = listUserReceive;
+                    notificationMessage.EventType = "LikePost";
+                    var notificationMessageJson = JsonSerializer.Serialize(notificationMessage);
+
+                    await _hubContext.Clients.All.SendAsync("ReceiveNotification", notificationMessageJson);
                 }
                 catch (Exception ex)
                 {
@@ -154,7 +177,14 @@ namespace NotificationService.EventProcessing
                     noti.CreatedDate = DateTime.Now;
                     noti.IsAlreadySeen = false;
                     await _repo.AddNew(noti);
-                    await _hubContext.Clients.All.SendAsync("ReceiveNotification", message);
+
+                    var notificationMessage = _mapper.Map<NotificationMessageDTO>(noti);
+                    List<Guid> listUserReceive = new List<Guid>() { noti.UserId };
+                    notificationMessage.ListUserReceiveMessage = listUserReceive;
+                    notificationMessage.EventType = "LikePost";
+                    var notificationMessageJson = JsonSerializer.Serialize(notificationMessage);
+
+                    await _hubContext.Clients.All.SendAsync("ReceiveNotification", notificationMessageJson);
                 }
                 catch (Exception ex)
                 {
@@ -178,7 +208,14 @@ namespace NotificationService.EventProcessing
                     noti.CreatedDate = DateTime.Now;
                     noti.IsAlreadySeen = false;
                     await _repo.AddNew(noti);
-                    await _hubContext.Clients.All.SendAsync("ReceiveNotification", message);
+
+                    var notificationMessage = _mapper.Map<NotificationMessageDTO>(noti);
+                    List<Guid> listUserReceive = new List<Guid>() { noti.UserId };
+                    notificationMessage.ListUserReceiveMessage = listUserReceive;
+                    notificationMessage.EventType = "LikePost";
+                    var notificationMessageJson = JsonSerializer.Serialize(notificationMessage);
+
+                    await _hubContext.Clients.All.SendAsync("ReceiveNotification", notificationMessageJson);
                 }
                 catch (Exception ex)
                 {
