@@ -27,6 +27,8 @@
 
   <ItemGroup>
     <Folder Include="Controllers\" />
+    <Folder Include="DataLayer\DTO\" />
+    <Folder Include="DataLayer\Repository\" />
   </ItemGroup>
 
 </Project>
