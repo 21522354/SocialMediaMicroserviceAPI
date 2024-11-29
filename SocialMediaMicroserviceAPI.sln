@@ -9,7 +9,9 @@ Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "PostService", "PostService\
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "StoryService", "StoryService\StoryService.csproj", "{FDDB1197-C0D4-4CBD-BB4F-F440E4105752}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "NotificationService", "NotificationService\NotificationService.csproj", "{52DC12D9-2154-46C7-9129-121F57F7A6AE}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "NotificationService", "NotificationService\NotificationService.csproj", "{52DC12D9-2154-46C7-9129-121F57F7A6AE}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "ChatService", "ChatService\ChatService.csproj", "{BAD4B170-4EED-46C8-BDE1-C85231A55305}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
@@ -33,6 +35,10 @@ Global
 		{52DC12D9-2154-46C7-9129-121F57F7A6AE}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{52DC12D9-2154-46C7-9129-121F57F7A6AE}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{52DC12D9-2154-46C7-9129-121F57F7A6AE}.Release|Any CPU.Build.0 = Release|Any CPU
+		{BAD4B170-4EED-46C8-BDE1-C85231A55305}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{BAD4B170-4EED-46C8-BDE1-C85231A55305}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{BAD4B170-4EED-46C8-BDE1-C85231A55305}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{BAD4B170-4EED-46C8-BDE1-C85231A55305}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
