@@ -35,5 +35,19 @@ namespace PostService.Data_Layer.Repository
             var listPost = await _context.Posts.Where(p => p.UserId == id).Include(p => p.PostComments).Include(p => p.PostMedias).Include(p => p.PostLikes).Include(p => p.PostHagtags).ToListAsync();
             return listPost;
         }
+
+        public async Task<IEnumerable<Post>> GetRandomPost(Guid userId)
+        {
+            var listUserFollowing = await _userDataClient.GetUserFollowing(userId);
+            var listUserGuid = listUserFollowing.Select(p => p.UserId).ToList();
+
+            var listPost = await _context.Posts
+                .Where(p => p.UserId != userId && !listUserGuid.Contains(p.UserId))
+                .Include(p => p.PostComments).Include(p => p.PostLikes).Include(p => p.PostHagtags)
+                .Include(p => p.PostMedias)
+                .ToListAsync();
+
+            return listPost;
+        }
     }
 }

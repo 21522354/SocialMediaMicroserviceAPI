@@ -79,6 +79,19 @@ namespace PostService.Controllers
             var listPostReadDTO = listPost.Select(post => (post, user).Adapt<PostReadDTO>()).ToList();
             return Ok(listPostReadDTO);
         }
+        [HttpGet("explore/{userId}")]
+        public async Task<IActionResult> GetRandomPost(Guid userId)
+        {
+            var listPost = await _postRepository.GetRandomPost(userId);
+            var listPostReadDTO = new List<PostReadDTO>();
+            foreach (var post in listPost)
+            {
+                var user = await _userDataClient.GetUserById(post.UserId);
+                var postReadDTO = (post, user).Adapt<PostReadDTO>();
+                listPostReadDTO.Add(postReadDTO);
+            }
+            return Ok(listPostReadDTO);
+        }
         [HttpGet("{postId}/comments")]
         public async Task<IActionResult> GetPostComments(Guid postId)
         {

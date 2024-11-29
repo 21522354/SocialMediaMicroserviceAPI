@@ -44,5 +44,21 @@ namespace PostService.SyncDataService
                 throw new HttpRequestException($"Failed to get user by ID: {response.StatusCode}");
             }
         }
+
+        public async Task<List<UserReadDTO>> GetUserFollowing(Guid id)
+        {
+            var response = await _httpClient.GetAsync($"{_configuration["UserServiceEndpoint"]}/following/{id}");
+
+            if (response.IsSuccessStatusCode)
+            {
+                var content = await response.Content.ReadAsStringAsync();
+                var listUser = JsonSerializer.Deserialize<List<UserReadDTO>>(content, new JsonSerializerOptions { PropertyNameCaseInsensitive = true });
+                return listUser;
+            }
+            else
+            {
+                throw new HttpRequestException($"Failed to get user by ID: {response.StatusCode}");
+            }
+        }
     }
 }
