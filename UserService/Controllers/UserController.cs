@@ -58,6 +58,39 @@ namespace UserService.Controllers
             var listUser = await _userRepo.GetListUserFollowing(id);
             return Ok(_mapper.Map<IEnumerable<UserReadDto>>(listUser));
         }
+        [HttpGet("recommend/{userId}")]
+        public async Task<IActionResult> GetRecommendFriend(Guid userId)
+        {
+            var listUserFollowing = await _userRepo.GetListUserFollowing(userId);
+            var listUserRecommend = new List<UserReadDto>();
+            int count = 0;
+            foreach (var user in listUserFollowing)
+            {
+                var friendFollowing = await _userRepo.GetListUserFollowing(user.UserId);
+                foreach (var friend in friendFollowing)
+                {
+                    if (!listUserFollowing.Contains(friend) && friend.UserId != userId)
+                    {
+                        listUserRecommend.Add(_mapper.Map<UserReadDto>(friend));
+                        count++;
+                    }
+                    if (count == 5) break;
+                }
+            }
+            if(count < 5)
+            {
+                var users = await _userRepo.GetAllUsers();
+                users = users.Where(p => p.UserId != userId && !listUserFollowing.Contains(p)
+                && !listUserRecommend.Select(u => u.UserId).Contains(p.UserId));
+
+                foreach (var user in users)
+                {
+                    listUserRecommend.Add(_mapper.Map<UserReadDto>(user));
+                    if(count == 5) break;
+                }
+            }
+            return Ok(listUserRecommend);
+        }
         [HttpGet("email={email}")]
         public async Task<IActionResult> GetUserByEmail(string email)
         {
