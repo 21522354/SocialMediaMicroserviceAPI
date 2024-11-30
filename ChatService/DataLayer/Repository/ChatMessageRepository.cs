@@ -26,7 +26,7 @@ namespace ChatService.DataLayer.Repository
         public async Task<List<ChatMessage>> GetAllChatByChatRoomId(Guid chatRoomId)
         {
             var listMessage = await _context.ChatMessages
-                .Where(p => p.ChatRoomId == chatRoomId).OrderBy(p => p.SendDate).ToListAsync();
+                .Where(p => p.ChatRoomId == chatRoomId).Include(p => p.ChatRoom).OrderBy(p => p.SendDate).ToListAsync();
             return listMessage; 
         }
 
