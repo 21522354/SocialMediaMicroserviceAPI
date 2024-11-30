@@ -1,17 +1,26 @@
 ﻿using ChatService.DataLayer;
+using ChatService.DataLayer.Repository;
+using ChatService.SyncDataService;
+using Mapster;
 using Microsoft.EntityFrameworkCore;
 
 namespace ChatService
 {
     public static class DependencyInjection
     {
-        public static IServiceCollection AddApplicationService(this IServiceCollection service)
+        public static IServiceCollection AddApplicationService(this IServiceCollection services)
         {
-            service.AddDbContext<ChatServiceDBContext>(options =>
+            services.AddDbContext<ChatServiceDBContext>(options =>
             {
                 options.UseInMemoryDatabase("InMem");
             });
-            return service;
+
+            services.AddMapster();
+            services.AddHttpClient<IUserDataClient, HttpUserDataClient>();
+            services.AddScoped<IChatMessageRepository, ChatMessageRepository>();
+            services.AddScoped<IChatRoomRepository, ChatRoomRepository>();  
+
+            return services;
         }
     }
 }
