@@ -19,12 +19,12 @@ namespace NotificationService
 
             builder.Services.AddCors(options =>
             {
-                options.AddPolicy("AllowSpecificOrigins", policy =>
+                options.AddPolicy("AllowAll", policy =>
                 {
-                    policy.WithOrigins("https://localhost:7270") // Thay bằng origin của frontend
+                    policy.AllowAnyOrigin()
                           .AllowAnyHeader()
                           .AllowAnyMethod()
-                          .AllowCredentials(); // Quan trọng với SignalR
+                          .AllowCredentials(); // Chỉ sử dụng AllowCredentials nếu bạn có lý do cụ thể (SignalR)
                 });
             });
 

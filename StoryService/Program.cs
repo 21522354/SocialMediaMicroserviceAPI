@@ -1,4 +1,4 @@
-
+﻿
 using StoryService.Data_Layer;
 
 namespace StoryService
@@ -17,6 +17,17 @@ namespace StoryService
             builder.Services.AddSwaggerGen();
             builder.Services.AddApplicationService();
             builder.Services.AddSignalR();
+
+            builder.Services.AddCors(options =>
+            {
+                options.AddPolicy("AllowAll", policy =>
+                {
+                    policy.AllowAnyOrigin()
+                          .AllowAnyHeader()
+                          .AllowAnyMethod()
+                          .AllowCredentials(); // Chỉ sử dụng AllowCredentials nếu bạn có lý do cụ thể (SignalR)
+                });
+            });
 
             var app = builder.Build();
 

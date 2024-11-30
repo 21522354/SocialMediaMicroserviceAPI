@@ -1,4 +1,4 @@
-
+﻿
 using PostService.Data_Layer;
 using PostService.Mapper;
 
@@ -18,6 +18,17 @@ namespace PostService
             builder.Services.AddSwaggerGen();
             builder.Services.AddMapping();
             builder.Services.AddApplicationService();
+
+            builder.Services.AddCors(options =>
+            {
+                options.AddPolicy("AllowAll", policy =>
+                {
+                    policy.AllowAnyOrigin()
+                          .AllowAnyHeader()
+                          .AllowAnyMethod()
+                          .AllowCredentials(); // Chỉ sử dụng AllowCredentials nếu bạn có lý do cụ thể (SignalR)
+                });
+            });
 
             var app = builder.Build();
 

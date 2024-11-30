@@ -15,6 +15,17 @@ namespace ChatService
             builder.Services.AddSwaggerGen();
             builder.Services.AddApplicationService();
 
+            builder.Services.AddCors(options =>
+            {
+                options.AddPolicy("AllowAll", policy =>
+                {
+                    policy.AllowAnyOrigin()
+                          .AllowAnyHeader()
+                          .AllowAnyMethod()
+                          .AllowCredentials(); // Ch? s? d?ng AllowCredentials n?u b?n có lý do c? th? (SignalR)
+                });
+            });
+
             var app = builder.Build();
 
             // Configure the HTTP request pipeline.
