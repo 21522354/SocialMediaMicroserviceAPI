@@ -11,14 +11,15 @@ builder.Services.AddEndpointsApiExplorer();
 builder.Services.AddSwaggerGen();
 builder.Services.AddApplicationService();
 
+// Thêm CORS
 builder.Services.AddCors(options =>
 {
-    options.AddPolicy("AllowAll", policy =>
+    options.AddPolicy("AllowSpecificOrigins", policy =>
     {
-        policy.AllowAnyOrigin()
+        policy.WithOrigins("http://localhost:3000") // Thay bằng origin của frontend
               .AllowAnyHeader()
               .AllowAnyMethod()
-              .AllowCredentials(); // Chỉ sử dụng AllowCredentials nếu bạn có lý do cụ thể (SignalR)
+              .AllowCredentials(); // Quan trọng với SignalR
     });
 });
 
@@ -34,6 +35,9 @@ if (app.Environment.IsDevelopment())
 app.UseHttpsRedirection();
 
 app.UseAuthorization();
+
+// Sử dụng CORS
+app.UseCors("AllowSpecificOrigins");
 
 app.UseExceptionHandler("/error");
 

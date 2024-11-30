@@ -19,15 +19,14 @@ namespace NotificationService
 
             builder.Services.AddCors(options =>
             {
-                options.AddPolicy("AllowAll", policy =>
+                options.AddPolicy("AllowSpecificOrigins", policy =>
                 {
-                    policy.AllowAnyOrigin()
+                    policy.WithOrigins("http://localhost:3000") // Thay bằng origin của frontend
                           .AllowAnyHeader()
                           .AllowAnyMethod()
-                          .AllowCredentials(); // Chỉ sử dụng AllowCredentials nếu bạn có lý do cụ thể (SignalR)
+                          .AllowCredentials(); // Quan trọng với SignalR
                 });
             });
-
             builder.Services.AddSignalR();
 
             Console.WriteLine($"{builder.Configuration["RabbitMQHost"]}/{builder.Configuration["RabbitMQPort"]}");
