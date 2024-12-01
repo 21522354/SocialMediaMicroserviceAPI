@@ -41,9 +41,17 @@ namespace NotificationService.EventProcessing
                 case EventType.NewStory:
                     NewStoryEvent(message);
                     break;
+                case EventType.NewMessage:
+                    NewMessageEvent(message);
+                    break;
                 default:
                     break;
             }
+        }
+
+        private async void NewMessageEvent(string message)
+        {
+            await _hubContext.Clients.All.SendAsync("ReceiveNotification", message);
         }
 
         private async void LikePostEvent(string message)
@@ -405,6 +413,8 @@ namespace NotificationService.EventProcessing
                     return EventType.ReplyComment;
                 case "NewStory":
                     return EventType.NewStory;
+                case "NewMessage":
+                    return EventType.NewMessage;
                 default:
                     Console.WriteLine("--> Could not determine Event type");
                     return EventType.Undetermined;
@@ -418,6 +428,7 @@ namespace NotificationService.EventProcessing
         CommentPost,
         ReplyComment,
         NewStory,
+        NewMessage,
         Undetermined,
     }
 }
