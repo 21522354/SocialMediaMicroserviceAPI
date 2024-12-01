@@ -9,8 +9,8 @@ namespace ChatService.DataLayer.Mapper
         public void Register(TypeAdapterConfig config)
         {
             config.NewConfig<(UserReadDTO user, ChatRoom chatRoom), ChatRoomReadDTO>()
-                .Map(dest => dest, src => src.user)
-                .Map(dest => dest, src => src.chatRoom);
+                .Map(dest => dest.ChatRoomId, src => src.chatRoom.ChatRoomId)
+                .Map(dest => dest, src => src.user);
 
             config.NewConfig<(UserReadDTO user, ChatMessage chatMessage),ChatMessageReadDTO>()
                 .Map(dest => dest, src => src.user)

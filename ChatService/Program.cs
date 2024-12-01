@@ -1,4 +1,6 @@
 
+using ChatService.DataLayer.Mapper;
+
 namespace ChatService
 {
     public class Program
@@ -14,6 +16,7 @@ namespace ChatService
             builder.Services.AddEndpointsApiExplorer();
             builder.Services.AddSwaggerGen();
             builder.Services.AddApplicationService();
+            builder.Services.AddMapping();
 
             builder.Services.AddCors(options =>
             {
@@ -38,7 +41,6 @@ namespace ChatService
             app.UseHttpsRedirection();
 
             app.UseAuthorization();
-
 
             app.MapControllers();
 

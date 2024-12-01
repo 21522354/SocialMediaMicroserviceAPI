@@ -1,4 +1,5 @@
-﻿using ChatService.DataLayer;
+﻿using ChatService.AsyncDataService;
+using ChatService.DataLayer;
 using ChatService.DataLayer.Repository;
 using ChatService.SyncDataService;
 using Mapster;
@@ -19,6 +20,7 @@ namespace ChatService
             services.AddHttpClient<IUserDataClient, HttpUserDataClient>();
             services.AddScoped<IChatMessageRepository, ChatMessageRepository>();
             services.AddScoped<IChatRoomRepository, ChatRoomRepository>();  
+            services.AddScoped<IMessageBusClient, MessageBusClient>();
 
             return services;
         }
