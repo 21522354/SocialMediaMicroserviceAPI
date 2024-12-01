@@ -52,6 +52,7 @@ namespace NotificationService.EventProcessing
         private async void NewMessageEvent(string message)
         {
             await _hubContext.Clients.All.SendAsync("ReceiveNotification", message);
+            Console.WriteLine(message); 
         }
 
         private async void LikePostEvent(string message)

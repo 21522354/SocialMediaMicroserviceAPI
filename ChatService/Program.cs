@@ -20,12 +20,12 @@ namespace ChatService
 
             builder.Services.AddCors(options =>
             {
-                options.AddPolicy("AllowAll", policy =>
+                options.AddPolicy("AllowSpecificOrigins", policy =>
                 {
-                    policy.AllowAnyOrigin()
+                    policy.WithOrigins("http://localhost:3000") 
                           .AllowAnyHeader()
                           .AllowAnyMethod()
-                          .AllowCredentials(); // Ch? s? d?ng AllowCredentials n?u b?n có lý do c? th? (SignalR)
+                          .AllowCredentials(); 
                 });
             });
 
@@ -38,6 +38,7 @@ namespace ChatService
                 app.UseSwaggerUI();
             }
 
+            app.UseCors("AllowSpecificOrigins");
             app.UseHttpsRedirection();
 
             app.UseAuthorization();
