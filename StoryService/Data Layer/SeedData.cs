@@ -1,4 +1,5 @@
-﻿using StoryService.Data_Layer.Models;
+﻿using Microsoft.EntityFrameworkCore;
+using StoryService.Data_Layer.Models;
 
 namespace StoryService.Data_Layer
 {
@@ -9,6 +10,9 @@ namespace StoryService.Data_Layer
             using (var serviceScope = app.ApplicationServices.CreateScope())
             {
                 var _context = serviceScope.ServiceProvider.GetService<StoryServiceDBContext>();
+
+                _context.Database.Migrate();
+
                 Console.WriteLine("Seeding data");
 
                 // List of predefined User IDs

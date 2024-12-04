@@ -9,11 +9,11 @@ namespace StoryService
 {
     public static class DependencyInjection
     {
-        public static void AddApplicationService(this IServiceCollection services)
+        public static void AddApplicationService(this IServiceCollection services, IConfiguration configuration)
         {
             services.AddDbContext<StoryServiceDBContext>(options =>
             {
-                options.UseInMemoryDatabase("InMem");
+                options.UseSqlServer(configuration.GetConnectionString("StoryServiceConnection"));
             });
 
             services.AddHttpClient<IUserDataClient, HttpUserDataClient>();
