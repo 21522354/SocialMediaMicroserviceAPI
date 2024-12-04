@@ -1,4 +1,5 @@
 
+using ChatService.DataLayer;
 using ChatService.DataLayer.Mapper;
 
 namespace ChatService
@@ -15,7 +16,7 @@ namespace ChatService
             // Learn more about configuring Swagger/OpenAPI at https://aka.ms/aspnetcore/swashbuckle
             builder.Services.AddEndpointsApiExplorer();
             builder.Services.AddSwaggerGen();
-            builder.Services.AddApplicationService();
+            builder.Services.AddApplicationService(builder.Configuration);
             builder.Services.AddMapping();
 
             builder.Services.AddCors(options =>
@@ -40,7 +41,7 @@ namespace ChatService
 
             app.UseCors("AllowSpecificOrigins");
             app.UseHttpsRedirection();
-
+            app.MigrateDatabase();
             app.UseAuthorization();
 
             app.MapControllers();

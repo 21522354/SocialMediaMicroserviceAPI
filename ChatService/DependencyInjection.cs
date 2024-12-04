@@ -9,11 +9,11 @@ namespace ChatService
 {
     public static class DependencyInjection
     {
-        public static IServiceCollection AddApplicationService(this IServiceCollection services)
+        public static IServiceCollection AddApplicationService(this IServiceCollection services, IConfiguration configuration)
         {
             services.AddDbContext<ChatServiceDBContext>(options =>
             {
-                options.UseInMemoryDatabase("InMem");
+                options.UseSqlServer(configuration.GetConnectionString("ChatServiceConnection"));
             });
 
             services.AddMapster();
