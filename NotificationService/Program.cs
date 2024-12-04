@@ -1,4 +1,5 @@
 ﻿
+using NotificationService.DataLayer;
 using NotificationService.Hubs;
 
 namespace NotificationService
@@ -15,7 +16,7 @@ namespace NotificationService
             // Learn more about configuring Swagger/OpenAPI at https://aka.ms/aspnetcore/swashbuckle
             builder.Services.AddEndpointsApiExplorer();
             builder.Services.AddSwaggerGen();
-            builder.Services.AddApplicationService();
+            builder.Services.AddApplicationService(builder.Configuration);
 
             builder.Services.AddCors(options =>
             {
@@ -47,6 +48,8 @@ namespace NotificationService
             app.UseCors("AllowSpecificOrigins");
 
             app.MapControllers();
+
+            app.MigrateDatabase();
 
             app.MapHub<NotificationHub>("/notificationHub");
 

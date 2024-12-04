@@ -10,11 +10,11 @@ namespace NotificationService
 {
     public static class DependencyInjection
     {
-        public static IServiceCollection AddApplicationService(this IServiceCollection services)
+        public static IServiceCollection AddApplicationService(this IServiceCollection services, IConfiguration configuration)
         {
             services.AddDbContext<NotificationServiceDBContext>(options =>
             {
-                options.UseInMemoryDatabase("Inmem");
+                options.UseSqlServer(configuration.GetConnectionString("NotificationServiceConnection"));
             });
 
             services.AddSingleton<IEventProcessor, EventProcessor>();
@@ -23,7 +23,6 @@ namespace NotificationService
             services.AddHttpClient<IUserDataClient, HttpUserDataClient>();
 
             services.AddHostedService<MessageBusSubscriber>();
-
 
             return services;
         }
