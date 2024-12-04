@@ -17,7 +17,7 @@ namespace PostService
             builder.Services.AddEndpointsApiExplorer();
             builder.Services.AddSwaggerGen();
             builder.Services.AddMapping();
-            builder.Services.AddApplicationService();
+            builder.Services.AddApplicationService(builder.Configuration);
 
             builder.Services.AddCors(options =>
             {

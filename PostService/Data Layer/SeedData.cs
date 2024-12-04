@@ -1,4 +1,5 @@
-﻿using PostService.Data_Layer.Models;
+﻿using Microsoft.EntityFrameworkCore;
+using PostService.Data_Layer.Models;
 
 namespace PostService.Data_Layer
 {
@@ -9,6 +10,9 @@ namespace PostService.Data_Layer
             using(var serviceScope = app.ApplicationServices.CreateScope())
             {
                 var _context = serviceScope.ServiceProvider.GetService<PostServiceDBContext>();
+
+                _context.Database.Migrate();
+
                 Console.WriteLine("Seeding data");
                 // Check if data already exists
                 if (!_context.Posts.Any())
@@ -83,6 +87,7 @@ namespace PostService.Data_Layer
 
                     var comment1 = new ReplyComment()
                     {
+                        PostId = posts[0].PostId,
                         ReplyCommentId = Guid.NewGuid(),
                         UserId = Guid.Parse("e0be4a36-67cd-4dd6-be48-8b800c3123d1"),
                         Message = "asdfasdf",
@@ -92,6 +97,7 @@ namespace PostService.Data_Layer
                     replyComments.Add(comment1);
                     var comment2 = new ReplyComment()
                     {
+                        PostId = posts[1].PostId,
                         ReplyCommentId = Guid.NewGuid(),
                         UserId = Guid.Parse("e0be4a36-67cd-4dd6-be48-8b800c3123d1"),
                         Message = "asdfasdf",
@@ -101,6 +107,7 @@ namespace PostService.Data_Layer
                     replyComments.Add(comment2);
                     var comment3 = new ReplyComment()
                     {
+                        PostId = posts[0].PostId,
                         ReplyCommentId = Guid.NewGuid(),
                         UserId = Guid.Parse("e0be4a36-67cd-4dd6-be48-8b800c3123d2"),
                         Message = "asdfasdf",
