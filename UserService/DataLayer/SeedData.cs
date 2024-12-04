@@ -1,4 +1,6 @@
-﻿using UserService.DataLayer.Models;
+﻿using Microsoft.EntityFrameworkCore;
+using Microsoft.EntityFrameworkCore.Migrations;
+using UserService.DataLayer.Models;
 
 namespace UserService.DataLayer
 {
@@ -9,6 +11,9 @@ namespace UserService.DataLayer
             using (var serviceScope = app.ApplicationServices.CreateScope())
             {
                 var _context = serviceScope.ServiceProvider.GetService<UserDBContext>();
+
+                _context.Database.Migrate();
+
                 Console.WriteLine("Seeding data");
                 _context.Users.AddRange(
                     new User()

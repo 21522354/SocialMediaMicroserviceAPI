@@ -24,6 +24,19 @@ namespace UserService.DataLayer
             modelBuilder.Entity<User>()
                 .Property(u => u.NickName)
                 .IsRequired(false);
+
+            modelBuilder.Entity<UserFollow>()
+                .HasOne(f => f.UserFrom)
+                .WithMany()
+                .HasForeignKey(f => f.UserFromId)
+                .OnDelete(DeleteBehavior.Restrict); // hoặc .OnDelete(DeleteBehavior.NoAction);
+
+            modelBuilder.Entity<UserFollow>()
+                .HasOne(f => f.UserTo)
+                .WithMany()
+                .HasForeignKey(f => f.UserToId)
+                .OnDelete(DeleteBehavior.Restrict); // hoặc .OnDelete(DeleteBehavior.NoAction);
+
         }
     }
 }
