@@ -35,5 +35,11 @@ namespace PostService.Data_Layer.Repository
             var listPostHagtagForPost = await _context.PostHagtags.Where(p => p.PostId == postId).ToListAsync();
             return listPostHagtagForPost;
         }
+
+        public async Task<List<PostHagtag>> GetRelatedHagtag(string name)
+        {
+            var listRelatedHagtag = await _context.PostHagtags.Where(p => p.HagtagName.ToLower().Contains(name.ToLower())).ToListAsync();
+            return listRelatedHagtag;
+        }
     }
 }

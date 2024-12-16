@@ -7,5 +7,6 @@ namespace PostService.Data_Layer.Repository
         Task AddAsync(PostHagtag postHagtag);   
         Task<List<PostHagtag>> GetPostHagtagsByName(string name);
         Task<List<PostHagtag>> GetPostHagtagsByPost(Guid postId);
+        Task<List<PostHagtag>> GetRelatedHagtag(string name);
     }
 }

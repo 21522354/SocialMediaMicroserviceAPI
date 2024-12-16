@@ -114,6 +114,24 @@ namespace PostService.Controllers
             }
             return Ok(listPostCommentReadDTO);
         }
+        [HttpGet("hagtags/find/{hagtag}")]
+        public async Task<IActionResult> FindPostHagtag(string hagtag)
+        {
+            var listHagtagRelated = await _postHagtagRepository.GetRelatedHagtag(hagtag);   
+            var listRelatedPostHagtagReadDTO = new List<RelatedPostHagtagReadDTO>();
+            foreach (var item in listHagtagRelated)
+            {
+                var listPostByHagtag = await _postHagtagRepository.GetPostHagtagsByName(item.HagtagName);
+                var listPost = listPostByHagtag.Select(x => x.Post).ToList();
+                var relatedPostHagtagReadDTO = new RelatedPostHagtagReadDTO()
+                {
+                    HagtagName = item.HagtagName,
+                    Total = listPost.Count
+                };
+                listRelatedPostHagtagReadDTO.Add(relatedPostHagtagReadDTO);
+            }
+            return Ok(listRelatedPostHagtagReadDTO);
+        }
 
         private async Task<IEnumerable<PostCommentReadDTO>> getReplyComment(Guid commentId)
         {
