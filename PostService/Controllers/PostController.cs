@@ -324,6 +324,7 @@ namespace PostService.Controllers
                 UserId = request.UserId,
                 PostTitle = request.PostTitle,
                 CreatedDate = DateTime.UtcNow,
+                IsReel = false,
                 NumberOfShare = 0,
             };
             await _postRepository.CreateAsync(post);
@@ -368,6 +369,79 @@ namespace PostService.Controllers
                 EventType = "NewPost" });
 
             return Ok(new {postId = post.PostId});
+        }
+        [HttpPost("create/reel")]
+        public async Task<IActionResult> CreateNewReel([FromBody] ReelCreateRequest request)
+        {
+            var listUserFollower = await _userDataClient.GetUserFollower(request.UserId);
+            var user = await _userDataClient.GetUserById(request.UserId);
+            var post = new Post()
+            {
+                PostId = Guid.NewGuid(),
+                UserId = request.UserId,
+                PostTitle = request.PostTitle,
+                CreatedDate = DateTime.UtcNow,
+                IsReel = true,
+                NumberOfShare = 0,
+            };
+            await _postRepository.CreateAsync(post);
+            var postMedia = new PostMedia()
+            {
+                Link = request.Video,
+                STT = 1,
+                PostId = post.PostId,
+            };
+            await _postMediaRepository.CreateAsync(postMedia);
+
+            foreach (var item in request.ListHagtag)
+            {
+                var postHagtag = new PostHagtag()
+                {
+                    HagtagName = item,
+                    PostId = post.PostId
+                };
+                await _postHagtagRepository.AddAsync(postHagtag);
+            }
+
+            foreach (var item in listUserFollower)
+            {
+                var unSeenPost = new UnseenPost()
+                {
+                    PostId = post.PostId,
+                    UserId = item.UserId,
+                };
+                await _unseenPostRepository.CreateAsync(unSeenPost);
+            }
+
+            await _messageBusClient.PublishNewNotification(new NotificationMessageDTO()
+            {
+                UserInvoke = post.UserId,
+                PostId = post.PostId,
+                Message = $"{user.NickName} created a new post",
+                CheckTag = post.PostTitle,
+                EventType = "NewPost"
+            });
+
+            return Ok(new { postId = post.PostId });
+        }
+        [HttpPost("reels/{userId}")]
+        public async Task<IActionResult> GetReels(Guid userId)
+        {
+            var listReel = await _postRepository.GetReels(userId);
+
+            var reels = new List<PostReadDTO>();
+            foreach (var item in listReel)
+            {
+                var post = await _postRepository.GetByIdAsync(item.PostId);
+                if (post == null)
+                {
+                    throw new Exception("Can't find this post with id = " + item.PostId);
+                }
+                var user = await _userDataClient.GetUserById(post.UserId);
+                var postReadDTO = (post, user).Adapt<PostReadDTO>();
+                reels.Add(postReadDTO);
+            }
+            return Ok(reels);
         }
     }
 }

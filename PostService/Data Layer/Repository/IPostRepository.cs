@@ -8,6 +8,7 @@ namespace PostService.Data_Layer.Repository
         Task<IEnumerable<Post>> GetPostsByUserId(Guid id);
         Task<IEnumerable<Post>> GetAllPostAsync();
         Task<IEnumerable<Post>> GetRandomPost(Guid userId);
+        Task<IEnumerable<Post>> GetReels(Guid userId);
         Task<Post> GetPostByIdAsync(Guid id);
     }
 }

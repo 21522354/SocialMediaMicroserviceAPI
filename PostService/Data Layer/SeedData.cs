@@ -52,8 +52,35 @@ namespace PostService.Data_Layer
                                 CreatedDate = DateTime.Now,
                             });
                         }
+                       
+
                         _context.Posts.AddRange(posts);
 
+                        // add Reels
+
+                        for (int i = 0; i < 20; i++)
+                        {
+                            var userId = i % 2 == 0 ? Guid.Parse("e0be4a36-67cd-4dd6-be48-8b800c3123d1") : Guid.Parse("e0be4a36-67cd-4dd6-be48-8b800c3123d2");
+
+                            var reel = new Post
+                            {
+                                PostId = Guid.NewGuid(),
+                                UserId = userId,
+                                IsReel = true,
+                                PostTitle = $"Post Title abcd",
+                                CreatedDate = DateTime.Now,
+                            };
+                            var reelImage = new PostMedia
+                            {
+                                Link = "https://cdn.pixabay.com/video/2024/08/20/227567_large.mp4",
+                                STT = 1,
+                                PostId = reel.PostId,
+                                Post = reel,
+                            };
+                            _context.Posts.Add(reel);
+                            _context.PostMedias.Add(reelImage);
+                        }
+                        _context.SaveChanges();
                         // Seed PostComments
                         var comments = new List<PostComment>();
                         foreach (var post in posts)

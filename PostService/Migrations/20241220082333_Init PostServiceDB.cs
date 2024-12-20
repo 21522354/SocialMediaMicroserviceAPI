@@ -19,7 +19,8 @@ namespace PostService.Migrations
                     UserId = table.Column<Guid>(type: "uniqueidentifier", nullable: false),
                     PostTitle = table.Column<string>(type: "nvarchar(max)", nullable: false),
                     CreatedDate = table.Column<DateTime>(type: "datetime2", nullable: false),
-                    NumberOfShare = table.Column<int>(type: "int", nullable: false)
+                    NumberOfShare = table.Column<int>(type: "int", nullable: false),
+                    IsReel = table.Column<bool>(type: "bit", nullable: false)
                 },
                 constraints: table =>
                 {
@@ -107,6 +108,24 @@ namespace PostService.Migrations
                 });
 
             migrationBuilder.CreateTable(
+                name: "SeenReels",
+                columns: table => new
+                {
+                    UserId = table.Column<Guid>(type: "uniqueidentifier", nullable: false),
+                    PostId = table.Column<Guid>(type: "uniqueidentifier", nullable: false)
+                },
+                constraints: table =>
+                {
+                    table.PrimaryKey("PK_SeenReels", x => new { x.PostId, x.UserId });
+                    table.ForeignKey(
+                        name: "FK_SeenReels_Posts_PostId",
+                        column: x => x.PostId,
+                        principalTable: "Posts",
+                        principalColumn: "PostId",
+                        onDelete: ReferentialAction.Cascade);
+                });
+
+            migrationBuilder.CreateTable(
                 name: "UnseenPosts",
                 columns: table => new
                 {
@@ -149,7 +168,7 @@ namespace PostService.Migrations
                         column: x => x.PostId,
                         principalTable: "Posts",
                         principalColumn: "PostId",
-                        onDelete: ReferentialAction.NoAction);
+                        onDelete: ReferentialAction.Cascade);
                 });
 
             migrationBuilder.CreateIndex(
@@ -192,6 +211,9 @@ namespace PostService.Migrations
 
             migrationBuilder.DropTable(
                 name: "ReplyComments");
+
+            migrationBuilder.DropTable(
+                name: "SeenReels");
 
             migrationBuilder.DropTable(
                 name: "UnseenPosts");

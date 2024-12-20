@@ -12,7 +12,8 @@ namespace PostService.Data_Layer
         public DbSet<PostComment> PostComments { get; set; }
         public DbSet<UnseenPost> UnseenPosts { get; set; }
         public DbSet<ReplyComment> ReplyComments { get; set; }
-        public DbSet<PostHagtag> PostHagtags { get; set; }      
+        public DbSet<PostHagtag> PostHagtags { get; set; }
+        public DbSet<SeenReels> SeenReels { get; set; }
         protected override void OnModelCreating(ModelBuilder modelBuilder)
         {
             base.OnModelCreating(modelBuilder);
@@ -44,6 +45,7 @@ namespace PostService.Data_Layer
                 .HasMany(p => p.PostHagtags)
                 .WithOne(p => p.Post)
                 .HasForeignKey(p => p.PostId);
+           
 
             modelBuilder.Entity<PostComment>()
                 .HasKey(p => p.CommentId);
@@ -61,6 +63,13 @@ namespace PostService.Data_Layer
                 .HasKey(p => p.Id);
             modelBuilder.Entity<UnseenPost>()
                 .HasKey(p => new { p.PostId, p.UserId });
+            modelBuilder.Entity<SeenReels>()
+                .HasKey(p => new {p.PostId, p.UserId});
+
+            modelBuilder.Entity<SeenReels>()
+                .HasOne(p => p.Post)
+                .WithMany()
+                .HasForeignKey(p => p.PostId);
 
             modelBuilder.Entity<PostHagtag>()
                 .HasKey(p => p.Id);
@@ -68,6 +77,8 @@ namespace PostService.Data_Layer
             modelBuilder.Entity<PostHagtag>()
                 .Property(p => p.Id)
                 .ValueGeneratedOnAdd();
+
+            
         }
     }
 }

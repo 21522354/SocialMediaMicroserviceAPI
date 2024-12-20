@@ -31,6 +31,9 @@ namespace PostService.Migrations
                     b.Property<DateTime>("CreatedDate")
                         .HasColumnType("datetime2");
 
+                    b.Property<bool>("IsReel")
+                        .HasColumnType("bit");
+
                     b.Property<int>("NumberOfShare")
                         .HasColumnType("int");
 
@@ -163,6 +166,19 @@ namespace PostService.Migrations
                     b.ToTable("ReplyComments");
                 });
 
+            modelBuilder.Entity("PostService.Data_Layer.Models.SeenReels", b =>
+                {
+                    b.Property<Guid>("PostId")
+                        .HasColumnType("uniqueidentifier");
+
+                    b.Property<Guid>("UserId")
+                        .HasColumnType("uniqueidentifier");
+
+                    b.HasKey("PostId", "UserId");
+
+                    b.ToTable("SeenReels");
+                });
+
             modelBuilder.Entity("PostService.Data_Layer.Models.UnseenPost", b =>
                 {
                     b.Property<Guid>("PostId")
@@ -235,6 +251,17 @@ namespace PostService.Migrations
                         .IsRequired();
 
                     b.Navigation("Comment");
+
+                    b.Navigation("Post");
+                });
+
+            modelBuilder.Entity("PostService.Data_Layer.Models.SeenReels", b =>
+                {
+                    b.HasOne("PostService.Data_Layer.Models.Post", "Post")
+                        .WithMany()
+                        .HasForeignKey("PostId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
 
                     b.Navigation("Post");
                 });

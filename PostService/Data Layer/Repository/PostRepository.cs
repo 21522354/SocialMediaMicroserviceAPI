@@ -49,5 +49,23 @@ namespace PostService.Data_Layer.Repository
 
             return listPost;
         }
+
+        public async Task<IEnumerable<Post>> GetReels(Guid userId)
+        {
+            var listReel = await _context.Posts
+                .Where(p => p.IsReel == true && p.UserId != userId)
+                .ToListAsync();
+
+            var listSeenReels = await _context.SeenReels
+                .Where(p => p.UserId == userId)
+                .Select(p => p.PostId)
+                .ToListAsync();
+
+            var unseenReels = listReel
+                .Where(p => !listSeenReels.Contains(p.PostId))
+                .ToList();
+
+            return unseenReels;
+        }
     }
 }
