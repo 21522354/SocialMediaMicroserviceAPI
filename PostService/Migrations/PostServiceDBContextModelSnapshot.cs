@@ -247,7 +247,7 @@ namespace PostService.Migrations
                     b.HasOne("PostService.Data_Layer.Models.Post", "Post")
                         .WithMany("ReplyComments")
                         .HasForeignKey("PostId")
-                        .OnDelete(DeleteBehavior.Cascade)
+                        .OnDelete(DeleteBehavior.Restrict)
                         .IsRequired();
 
                     b.Navigation("Comment");

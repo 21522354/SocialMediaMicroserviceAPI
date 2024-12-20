@@ -32,7 +32,8 @@ namespace PostService.Data_Layer
             modelBuilder.Entity<Post>()
                 .HasMany(p => p.ReplyComments)
                 .WithOne(p => p.Post)
-                .HasForeignKey(p => p.PostId);
+                .HasForeignKey(p => p.PostId)
+                .OnDelete(DeleteBehavior.Restrict);
             modelBuilder.Entity<Post>()
                 .HasMany(p => p.PostLikes)
                 .WithOne(p => p.Post)

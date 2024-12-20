@@ -12,8 +12,8 @@ using PostService.Data_Layer;
 namespace PostService.Migrations
 {
     [DbContext(typeof(PostServiceDBContext))]
-    [Migration("20241220082333_Init PostServiceDB")]
-    partial class InitPostServiceDB
+    [Migration("20241220083656_init postservicedb")]
+    partial class initpostservicedb
     {
         /// <inheritdoc />
         protected override void BuildTargetModel(ModelBuilder modelBuilder)
@@ -250,7 +250,7 @@ namespace PostService.Migrations
                     b.HasOne("PostService.Data_Layer.Models.Post", "Post")
                         .WithMany("ReplyComments")
                         .HasForeignKey("PostId")
-                        .OnDelete(DeleteBehavior.Cascade)
+                        .OnDelete(DeleteBehavior.Restrict)
                         .IsRequired();
 
                     b.Navigation("Comment");

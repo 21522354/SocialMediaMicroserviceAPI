@@ -424,7 +424,7 @@ namespace PostService.Controllers
 
             return Ok(new { postId = post.PostId });
         }
-        [HttpPost("reels/{userId}")]
+        [HttpGet("reels/{userId}")]
         public async Task<IActionResult> GetReels(Guid userId)
         {
             var listReel = await _postRepository.GetReels(userId);
