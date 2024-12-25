@@ -1,4 +1,5 @@
 ﻿using ChatService.AsyncDataService;
+using ChatService.DataLayer;
 using ChatService.DataLayer.DTO;
 using ChatService.DataLayer.Model;
 using ChatService.DataLayer.Repository;
@@ -7,6 +8,7 @@ using Mapster;
 using MapsterMapper;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
+using Microsoft.EntityFrameworkCore;
 
 namespace ChatService.Controllers
 {
@@ -19,18 +21,21 @@ namespace ChatService.Controllers
         private readonly IUserDataClient _userDataClient;
         private readonly IMapper _mapper;
         private readonly IMessageBusClient _messageBusClient;
+        private readonly ChatServiceDBContext _context;
 
         public ChatController(IChatRoomRepository chatRoomRepository,
             IChatMessageRepository chatMessageRepository,
             IUserDataClient userDataClient,
             IMapper mapper,
-            IMessageBusClient messageBusClient)
+            IMessageBusClient messageBusClient,
+            ChatServiceDBContext context)
         {
             _chatRoomRepository = chatRoomRepository;
             _chatMessageRepository = chatMessageRepository;
             _userDataClient = userDataClient;
             _mapper = mapper;
             _messageBusClient = messageBusClient;
+            _context = context;
         }
         [HttpGet("users/{userId}/chatRooms")]
         public async Task<IActionResult> GetAllChatRoomForUser(Guid userId)
@@ -41,62 +46,106 @@ namespace ChatService.Controllers
                 return BadRequest("Can't find this user");
             }
 
-            var chatRooms = await _chatRoomRepository.GetALlChatRoomForUser(userId);
+            var chatRooms = await _context.ChatRooms.Where(
+                p => p.FirstUserId == userId || p.SecondUserId == userId).ToListAsync();
             var listChatRoomReadDTO = new List<ChatRoomReadDTO>();
-            foreach (var room in chatRooms)
+            foreach (var chatRoom in chatRooms)
             {
-                var friendId = userId == room.FirstUserId ? room.SecondUserId : room.FirstUserId;
-                var friendReadDTO = await _userDataClient.GetUserById(friendId);
-                var chatRoomReadDTO = (friendReadDTO, room).Adapt<ChatRoomReadDTO>();
+                var userID = userId == chatRoom.FirstUserId ? chatRoom.SecondUserId : chatRoom.FirstUserId;
+                var friend = await _userDataClient.GetUserById(userID);
+                if (friend == null)
+                {
+                    return BadRequest("Can't find this user");
+                }
+                var lastMessage = await _context.ChatMessages.Where(p => p.ChatRoomId == chatRoom.ChatRoomId).OrderByDescending(p => p.SendDate).FirstOrDefaultAsync();
+                var chatRoomReadDTO = new ChatRoomReadDTO()
+                {
+                    ChatRoomId = chatRoom.ChatRoomId,
+                    UserId = friend.UserId,
+                    Avatar = friend.Avatar,
+                    Name = friend.FullName,
+                    IsOnline = false,
+                };
+                if (lastMessage != null)
+                {
+                    chatRoomReadDTO.LastMessage = lastMessage.Message;
+                    chatRoomReadDTO.LastMessageTime = lastMessage.SendDate;
+                }
                 listChatRoomReadDTO.Add(chatRoomReadDTO);
             }
-
-            return Ok(listChatRoomReadDTO); 
+            listChatRoomReadDTO = listChatRoomReadDTO.OrderByDescending(p => p.LastMessageTime).ToList();
+            return Ok(listChatRoomReadDTO);
         }
         [HttpGet("chatRooms/{chatRoomId}")]
         public async Task<IActionResult> GetSpecificChatRoom(Guid chatRoomId)
         {
-            var chatMessages = await _chatMessageRepository.GetAllChatByChatRoomId(chatRoomId); 
-            var chatRoom = await _chatRoomRepository.GetChatRoomById(chatRoomId);
-            var firstUserReadDTO = await _userDataClient.GetUserById(chatRoom.FirstUserId);
-            var secondUserReadDTO = await _userDataClient.GetUserById(chatRoom.SecondUserId);
-            var listChatMessageReadDTO = new List<ChatMessageReadDTO>();    
-            foreach (var chatMessage in chatMessages)
+            var listChatMessage = await _context.ChatMessages.Where(p => p.ChatRoomId == chatRoomId).ToListAsync();
+            var listChatMessageReadDTO = new List<ChatMessageReadDTO>();
+            var chatRoom = await _context.ChatRooms.FindAsync(chatRoomId);
+            if (chatRoom == null)
             {
-                var userSend = chatMessage.UserId == firstUserReadDTO.UserId ? firstUserReadDTO : secondUserReadDTO;
-                listChatMessageReadDTO.Add(_mapper.Map<ChatMessageReadDTO>((userSend, chatMessage)));
+                return BadRequest("Can't found this ChatRoom");
             }
-            return Ok(listChatMessageReadDTO);  
+            var firstUser = await _userDataClient.GetUserById(chatRoom.FirstUserId);
+            var secondUser = await _userDataClient.GetUserById(chatRoom.SecondUserId);
+            foreach (var chatMessage in listChatMessage)
+            {
+                var user = chatMessage.UserSendId == firstUser.UserId ? firstUser : secondUser;
+                var chatMessageReadDTO = new ChatMessageReadDTO()
+                {
+                    UserSendId = chatMessage.UserSendId,
+                    Avatar = user.Avatar,
+                    ChatMessageId = chatMessage.ChatMessageId,
+                    MediaLink = chatMessage.MediaLink,
+                    Message = chatMessage.Message,
+                    SendDate = DateTime.Now,
+                    Type = chatMessage.Type,
+                };
+                listChatMessageReadDTO.Add(chatMessageReadDTO);
+            }
+            return Ok(listChatMessageReadDTO);
         }
         [HttpPost("sendText")]
         public async Task<IActionResult> SendText(SendTextRequest request)
         {
-            var chatRoom = await _chatRoomRepository.GetChatRoomByUserInChatRoom(request.UserSendId, request.UserReceiveId);
+            var firstUser = await _userDataClient.GetUserById(request.UserSendId);
+            var secondUser = await _userDataClient.GetUserById(request.UserReceiveId);
+            if (firstUser == null || secondUser == null)
+            {
+                return BadRequest("Can't find this user");
+            }
+            var chatRoom = await _context.ChatRooms.Where(
+                p => p.FirstUserId == request.UserSendId && p.SecondUserId == request.UserReceiveId ||
+                    p.FirstUserId == request.UserReceiveId && p.SecondUserId == request.UserSendId).FirstOrDefaultAsync();
             if (chatRoom == null)
             {
-                chatRoom = new ChatRoom() { ChatRoomId = Guid.NewGuid(), FirstUserId = request.UserSendId, SecondUserId = request.UserReceiveId };
-                await _chatRoomRepository.AddChatRoom(chatRoom);    
+                chatRoom = new ChatRoom()
+                {
+                    ChatRoomId = Guid.NewGuid(),
+                    FirstUserId = request.UserSendId,
+                    SecondUserId = request.UserReceiveId,
+                };
+                await _context.ChatRooms.AddAsync(chatRoom);
             }
-
-            var userInvoke = await _userDataClient.GetUserById(request.UserSendId);
-
             var chatMessage = new ChatMessage()
             {
                 ChatMessageId = Guid.NewGuid(),
                 ChatRoomId = chatRoom.ChatRoomId,
+                MediaLink = null,
                 Message = request.Message,
-                UserId = request.UserSendId,
-                SendDate = DateTime.Now,
+                UserSendId = request.UserSendId,
+                SendDate = DateTime.UtcNow,
                 Type = "Text"
             };
-            await _chatMessageRepository.AddAsync(chatMessage);
+            await _context.ChatMessages.AddAsync(chatMessage);
+            await _context.SaveChangesAsync();
 
             await _messageBusClient.PublishNewNotification(new NotificationMessageDTO()
             {
                 UserId = request.UserReceiveId,
                 UserInvoke = request.UserSendId,
                 EventType = "NewMessage",
-                Message = $"{userInvoke.NickName} sent you a message"
+                Message = $"{firstUser.NickName} sent you a message"
             });
 
             Console.WriteLine("Published new notification to message bus");
@@ -106,34 +155,47 @@ namespace ChatService.Controllers
         [HttpPost("sendMedia")]
         public async Task<IActionResult> SendMedias(SendMediaRequest request)
         {
-            var chatRoom = await _chatRoomRepository.GetChatRoomByUserInChatRoom(request.UserSendId, request.UserReceiveId);
+            var firstUser = await _userDataClient.GetUserById(request.UserSendId);
+            var secondUser = await _userDataClient.GetUserById(request.UserReceiveId);
+            if (firstUser == null || secondUser == null)
+            {
+                return BadRequest("Can't find this user");
+            }
+            var chatRoom = await _context.ChatRooms.Where(
+                p => p.FirstUserId == request.UserSendId && p.SecondUserId == request.UserReceiveId ||
+                    p.FirstUserId == request.UserReceiveId && p.SecondUserId == request.UserSendId).FirstOrDefaultAsync();
             if (chatRoom == null)
             {
-                chatRoom = new ChatRoom() { ChatRoomId = Guid.NewGuid(), FirstUserId = request.UserSendId, SecondUserId = request.UserReceiveId };
-                await _chatRoomRepository.AddChatRoom(chatRoom);
-            };
-            var userInvoke = await _userDataClient.GetUserById(request.UserSendId);
-            foreach (var link in request.mediaFiles)
+                chatRoom = new ChatRoom()
+                {
+                    ChatRoomId = Guid.NewGuid(),
+                    FirstUserId = request.UserSendId,
+                    SecondUserId = request.UserReceiveId,
+                };
+                await _context.ChatRooms.AddAsync(chatRoom);
+            }
+            foreach (var img in request.Images)
             {
                 var chatMessage = new ChatMessage()
                 {
                     ChatMessageId = Guid.NewGuid(),
                     ChatRoomId = chatRoom.ChatRoomId,
+                    MediaLink = img,
                     Message = null,
-                    MediaLink = link,
-                    UserId = request.UserSendId,
-                    SendDate = DateTime.Now,
+                    UserSendId = request.UserSendId,
+                    SendDate = DateTime.UtcNow,
                     Type = "Media"
                 };
-                await _chatMessageRepository.AddAsync(chatMessage);
+                await _context.ChatMessages.AddAsync(chatMessage);
             }
+            await _context.SaveChangesAsync();
 
             await _messageBusClient.PublishNewNotification(new NotificationMessageDTO()
             {
                 UserId = request.UserReceiveId,
                 UserInvoke = request.UserSendId,
                 EventType = "NewMessage",
-                Message = $"{userInvoke.NickName} sent you a message"
+                Message = $"{firstUser.NickName} sent you a message"
             });
 
             Console.WriteLine("Published new notification to message bus");

@@ -6,7 +6,7 @@ using Microsoft.EntityFrameworkCore.Migrations;
 namespace ChatService.Migrations
 {
     /// <inheritdoc />
-    public partial class cls : Migration
+    public partial class initchatservicedb : Migration
     {
         /// <inheritdoc />
         protected override void Up(MigrationBuilder migrationBuilder)
@@ -30,7 +30,7 @@ namespace ChatService.Migrations
                 {
                     ChatMessageId = table.Column<Guid>(type: "uniqueidentifier", nullable: false),
                     ChatRoomId = table.Column<Guid>(type: "uniqueidentifier", nullable: false),
-                    UserId = table.Column<Guid>(type: "uniqueidentifier", nullable: false),
+                    UserSendId = table.Column<Guid>(type: "uniqueidentifier", nullable: false),
                     SendDate = table.Column<DateTime>(type: "datetime2", nullable: false),
                     Message = table.Column<string>(type: "nvarchar(max)", nullable: true),
                     MediaLink = table.Column<string>(type: "nvarchar(max)", nullable: true),

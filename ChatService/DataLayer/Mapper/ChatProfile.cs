@@ -14,7 +14,7 @@ namespace ChatService.DataLayer.Mapper
 
             config.NewConfig<(UserReadDTO user, ChatMessage chatMessage),ChatMessageReadDTO>()
                 .Map(dest => dest, src => src.user)
-                .Map(dest => dest.UserSendId, src => src.chatMessage.UserId)
+                .Map(dest => dest.UserSendId, src => src.chatMessage.UserSendId)
                 .Map(dest => dest, src => src.chatMessage); 
         }
     }

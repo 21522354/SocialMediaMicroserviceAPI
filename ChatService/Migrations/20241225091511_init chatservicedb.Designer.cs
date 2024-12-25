@@ -12,8 +12,8 @@ using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 namespace ChatService.Migrations
 {
     [DbContext(typeof(ChatServiceDBContext))]
-    [Migration("20241204085959_cls")]
-    partial class cls
+    [Migration("20241225091511_init chatservicedb")]
+    partial class initchatservicedb
     {
         /// <inheritdoc />
         protected override void BuildTargetModel(ModelBuilder modelBuilder)
@@ -47,7 +47,7 @@ namespace ChatService.Migrations
                         .IsRequired()
                         .HasColumnType("nvarchar(max)");
 
-                    b.Property<Guid>("UserId")
+                    b.Property<Guid>("UserSendId")
                         .HasColumnType("uniqueidentifier");
 
                     b.HasKey("ChatMessageId");

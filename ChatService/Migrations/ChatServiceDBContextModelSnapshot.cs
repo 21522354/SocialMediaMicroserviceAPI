@@ -44,7 +44,7 @@ namespace ChatService.Migrations
                         .IsRequired()
                         .HasColumnType("nvarchar(max)");
 
-                    b.Property<Guid>("UserId")
+                    b.Property<Guid>("UserSendId")
                         .HasColumnType("uniqueidentifier");
 
                     b.HasKey("ChatMessageId");

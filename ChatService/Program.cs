@@ -41,10 +41,12 @@ namespace ChatService
 
             app.UseCors("AllowSpecificOrigins");
             app.UseHttpsRedirection();
-            app.MigrateDatabase();
+
             app.UseAuthorization();
 
             app.MapControllers();
+
+            app.MigrateDatabase();
 
             app.Run();
         }

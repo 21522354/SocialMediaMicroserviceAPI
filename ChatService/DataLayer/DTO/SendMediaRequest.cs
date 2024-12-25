@@ -4,6 +4,6 @@
     {
         public Guid UserSendId { get; set; }
         public Guid UserReceiveId { get; set; }
-        public List<string> mediaFiles { get; set; }    
+        public List<string> Images { get; set; }    
     }
 }

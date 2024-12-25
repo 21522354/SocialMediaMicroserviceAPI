@@ -14,6 +14,7 @@ namespace ChatService
             services.AddDbContext<ChatServiceDBContext>(options =>
             {
                 options.UseSqlServer(configuration.GetConnectionString("ChatServiceConnection"));
+                //options.UseInMemoryDatabase("InMem");
             });
 
             services.AddMapster();

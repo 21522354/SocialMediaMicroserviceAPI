@@ -11,6 +11,8 @@ namespace ChatService.DataLayer
                 var _context = serviceScope.ServiceProvider.GetService<ChatServiceDBContext>();
 
                 _context.Database.Migrate();
+
+                Console.WriteLine("Migrated database");
             }
         }
     }
