@@ -24,53 +24,62 @@ namespace PostService.Data_Layer
             modelBuilder.Entity<Post>()
                 .HasMany(p => p.PostMedias)
                 .WithOne(p => p.Post)
-                .HasForeignKey(p => p.PostId);
+                .HasForeignKey(p => p.PostId)
+                .OnDelete(DeleteBehavior.Cascade);
+
             modelBuilder.Entity<Post>()
                 .HasMany(p => p.PostComments)
                 .WithOne(p => p.Post)
-                .HasForeignKey(p => p.PostId);
-            modelBuilder.Entity<Post>()
-                .HasMany(p => p.ReplyComments)
-                .WithOne(p => p.Post)
                 .HasForeignKey(p => p.PostId)
-                .OnDelete(DeleteBehavior.Restrict);
+                .OnDelete(DeleteBehavior.Cascade);
+
             modelBuilder.Entity<Post>()
                 .HasMany(p => p.PostLikes)
                 .WithOne(p => p.Post)
-                .HasForeignKey(p => p.PostId);
+                .HasForeignKey(p => p.PostId)
+                .OnDelete(DeleteBehavior.Cascade);
+
             modelBuilder.Entity<Post>()
                 .HasMany(p => p.UnseenPosts)
                 .WithOne(p => p.Post)
-                .HasForeignKey(p => p.PostId);
+                .HasForeignKey(p => p.PostId)
+                .OnDelete(DeleteBehavior.Cascade);
+
             modelBuilder.Entity<Post>()
                 .HasMany(p => p.PostHagtags)
                 .WithOne(p => p.Post)
-                .HasForeignKey(p => p.PostId);
-           
+                .HasForeignKey(p => p.PostId)
+                .OnDelete(DeleteBehavior.Cascade);
 
             modelBuilder.Entity<PostComment>()
                 .HasKey(p => p.CommentId);
+
             modelBuilder.Entity<PostComment>()
                 .HasMany(p => p.ReplyComments)
                 .WithOne(p => p.Comment)
-                .HasForeignKey(p => p.CommentId);
+                .HasForeignKey(p => p.CommentId)
+                .OnDelete(DeleteBehavior.Cascade);
 
             modelBuilder.Entity<ReplyComment>()
                 .HasKey(p => p.ReplyCommentId);
 
             modelBuilder.Entity<PostLike>()
                 .HasKey(p => new { p.PostId, p.UserId });
+
             modelBuilder.Entity<PostMedia>()
                 .HasKey(p => p.Id);
+
             modelBuilder.Entity<UnseenPost>()
                 .HasKey(p => new { p.PostId, p.UserId });
+
             modelBuilder.Entity<SeenReels>()
-                .HasKey(p => new {p.PostId, p.UserId});
+                .HasKey(p => new { p.PostId, p.UserId });
 
             modelBuilder.Entity<SeenReels>()
                 .HasOne(p => p.Post)
                 .WithMany()
-                .HasForeignKey(p => p.PostId);
+                .HasForeignKey(p => p.PostId)
+                .OnDelete(DeleteBehavior.Cascade);
 
             modelBuilder.Entity<PostHagtag>()
                 .HasKey(p => p.Id);
@@ -78,8 +87,7 @@ namespace PostService.Data_Layer
             modelBuilder.Entity<PostHagtag>()
                 .Property(p => p.Id)
                 .ValueGeneratedOnAdd();
-
-            
         }
+
     }
 }
