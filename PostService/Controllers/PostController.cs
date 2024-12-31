@@ -424,6 +424,46 @@ namespace PostService.Controllers
 
             return Ok(new { postId = post.PostId });
         }
+        [HttpPut]
+        public async Task<IActionResult> UpdatePost(PostUpdateRequest request)
+        {
+            var post = await _postRepository.GetByIdAsync(request.PostId);  
+            if (post == null)
+            {
+                return BadRequest("Can't find this post");
+            }
+            var user = await _userDataClient.GetUserById(request.UserId);
+            post.PostTitle = request.PostTitle;
+            await _postHagtagRepository.DeleteAsync(request.PostId);        
+            await _postMediaRepository.DeleteByPostId(request.PostId);
+            await _postRepository.UpdateAsync(post);
+
+            int i = 1;
+            foreach (var item in request.ImageAndVideo)
+            {
+                var postMedia = new PostMedia()
+                {
+                    Link = item,
+                    STT = i,
+                    PostId = post.PostId,
+                };
+                await _postMediaRepository.CreateAsync(postMedia);
+                i++;
+            }
+
+            foreach (var item in request.ListHagtag)
+            {
+                var postHagtag = new PostHagtag()
+                {
+                    HagtagName = item,
+                    PostId = post.PostId
+                };
+                await _postHagtagRepository.AddAsync(postHagtag);
+            }
+
+            return Ok(new { postId = post.PostId });
+
+        }
         [HttpGet("reels/{userId}")]
         public async Task<IActionResult> GetReels(Guid userId)
         {
@@ -442,6 +482,17 @@ namespace PostService.Controllers
                 reels.Add(postReadDTO);
             }
             return Ok(reels);
+        }
+        [HttpDelete("{postId}")]
+        public async Task<IActionResult> DeletePost(Guid postId)
+        {
+            var post = await _postRepository.GetByIdAsync(postId);
+            if(post == null)
+            {
+                return BadRequest("Can't find this post");
+            }
+            await _postRepository.DeleteAsync(postId);
+            return Ok("Delete post successfully");
         }
     }
 }

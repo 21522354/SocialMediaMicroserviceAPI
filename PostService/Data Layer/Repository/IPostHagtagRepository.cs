@@ -8,5 +8,6 @@ namespace PostService.Data_Layer.Repository
         Task<List<PostHagtag>> GetPostHagtagsByName(string name);
         Task<List<PostHagtag>> GetPostHagtagsByPost(Guid postId);
         Task<List<PostHagtag>> GetRelatedHagtag(string name);
+        Task DeleteAsync(Guid postId);  
     }
 }

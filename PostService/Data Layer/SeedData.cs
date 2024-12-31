@@ -5,15 +5,17 @@ namespace PostService.Data_Layer
 {
     public static class SeedData
     {
-        public static void seedData(this IApplicationBuilder app)
+        public static void seedData(this IApplicationBuilder app, IHostEnvironment environment)
         {
             using(var serviceScope = app.ApplicationServices.CreateScope())
             {
                 var _context = serviceScope.ServiceProvider.GetService<PostServiceDBContext>();
 
 
-
-                _context.Database.Migrate();
+                if (environment.IsProduction())
+                {
+                    _context.Database.Migrate();
+                }
 
                 Console.WriteLine("Seeding data");
                 // Check if data already exists

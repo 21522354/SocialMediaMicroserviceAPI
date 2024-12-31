@@ -11,15 +11,19 @@ namespace PostService
 {
     public static class DependencyInjection
     {
-        public static void AddApplicationService(this IServiceCollection services, IConfiguration configuration)
+        public static void AddApplicationService(this IServiceCollection services, IConfiguration configuration, IHostEnvironment environment)
         {
             services.AddMapping();
-            //services.AddDbContext<PostServiceDBContext>(options =>
-            //    options.UseInMemoryDatabase("PostServiceInMemoryDb"));
-            services.AddDbContext<PostServiceDBContext>(options =>
+            if (environment.IsDevelopment())
             {
-                options.UseSqlServer(configuration.GetConnectionString("PostServiceConnection"));
-            });
+                services.AddDbContext<PostServiceDBContext>(options =>
+                    options.UseInMemoryDatabase("PostServiceInMemoryDb"));
+            }
+            else
+            {
+                services.AddDbContext<PostServiceDBContext>(options =>
+                    options.UseSqlServer(configuration.GetConnectionString("PostServiceConnection")));
+            }
             services.AddHttpClient<IUserDataClient, HttpUserDataClient>();
             services.AddScoped<IPostRepository, PostRepository>();
             services.AddScoped<IPostCommentRepository, PostCommentRepository>();

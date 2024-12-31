@@ -17,7 +17,7 @@ namespace PostService
             builder.Services.AddEndpointsApiExplorer();
             builder.Services.AddSwaggerGen();
             builder.Services.AddMapping();
-            builder.Services.AddApplicationService(builder.Configuration);
+            builder.Services.AddApplicationService(builder.Configuration, builder.Environment);
 
             builder.Services.AddCors(options =>
             {
@@ -47,7 +47,7 @@ namespace PostService
 
             app.MapControllers();
 
-            app.seedData();
+            app.seedData(builder.Environment);
 
             app.Run();
         }

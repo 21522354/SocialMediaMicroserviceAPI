@@ -17,6 +17,16 @@ namespace PostService.Data_Layer.Repository
             await _context.SaveChangesAsync();  
         }
 
+        public async Task DeleteAsync(Guid postId)
+        {
+            var listHagtag = await _context.PostHagtags.Where(p => p.PostId == postId).ToListAsync();
+            foreach (var item in listHagtag)
+            {
+                _context.PostHagtags.Remove(item);
+            }
+            await _context.SaveChangesAsync();
+        }
+
         public async Task<List<PostHagtag>> GetPostHagtagsByName(string name)
         {
             var listPostWithHagtagName = await _context.PostHagtags
