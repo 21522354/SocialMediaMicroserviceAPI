@@ -249,6 +249,17 @@ namespace PostService.Controllers
 
             return Ok("Like comment successfully");
         }
+        [HttpDelete("deleteComment/{commentId}")]
+        public async Task<IActionResult> DeleteComment(Guid commentId)
+        {
+            var comment = await _postCommentRepository.GetByIdAsync(commentId); 
+            if(comment == null)
+            {
+                return BadRequest("Can't find this comment");
+            }
+            await _postCommentRepository.DeleteAsync(commentId);
+            return Ok("Deleted comment successfully");
+        }
         [HttpPost("commentPost")]
         public async Task<IActionResult> CommentPost([FromBody] CommentPostRequest request)
         {
@@ -278,6 +289,18 @@ namespace PostService.Controllers
                 EventType = "CommentPost" });
 
             return Ok("Comment post successfully");
+        }
+        [HttpPut("updateComment")]
+        public async Task<IActionResult> UpdateComment([FromBody] UpdateCommentRequest request)
+        {
+            var comment = await _postCommentRepository.GetByIdAsync(request.CommentId); 
+            if(comment == null)
+            {
+                return BadRequest("Can't find this comment");
+            }
+            comment.Message = request.Message;
+            await _postCommentRepository.UpdateAsync(comment);
+            return Ok("Update comment successfully");
         }
         [HttpPost("replyComment")]
         public async Task<IActionResult> ReplyComment([FromBody] ReplyCommentRequest request)
