@@ -35,6 +35,9 @@ namespace StoryService.Migrations
                         .IsRequired()
                         .HasColumnType("nvarchar(max)");
 
+                    b.Property<bool>("IsSaved")
+                        .HasColumnType("bit");
+
                     b.Property<string>("Sound")
                         .IsRequired()
                         .HasColumnType("nvarchar(max)");

@@ -14,6 +14,7 @@ namespace StoryService
             services.AddDbContext<StoryServiceDBContext>(options =>
             {
                 options.UseSqlServer(configuration.GetConnectionString("StoryServiceConnection"));
+                //options.UseInMemoryDatabase("InMem");
             });
 
             services.AddHttpClient<IUserDataClient, HttpUserDataClient>();

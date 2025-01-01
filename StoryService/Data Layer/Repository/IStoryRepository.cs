@@ -8,5 +8,6 @@ namespace StoryService.Data_Layer.Repository
         Task<Story> GetByIdAsync(Guid storyId);
         Task<List<Story>> GetFriendStory(Guid userId);
         Task<Story> CreateStory(Story story);
+        Task<List<Story>> GetSavedStories(Guid userId);
     }
 }

@@ -6,6 +6,7 @@
         public Guid UserId { get; set; }
         public string Image { get; set; }
         public string Sound { get; set; }
+        public bool IsSaved { get; set; }           
         public DateTime CreatedDate { get; set; }   
         public ICollection<UserAlreadySeenStory> UserAlreadySeenStories { get; set; }
     }

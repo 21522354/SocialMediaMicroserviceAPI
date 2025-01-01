@@ -6,7 +6,7 @@ using Microsoft.EntityFrameworkCore.Migrations;
 namespace StoryService.Migrations
 {
     /// <inheritdoc />
-    public partial class InitStoryServiceDB : Migration
+    public partial class init_storyservicedb : Migration
     {
         /// <inheritdoc />
         protected override void Up(MigrationBuilder migrationBuilder)
@@ -19,6 +19,7 @@ namespace StoryService.Migrations
                     UserId = table.Column<Guid>(type: "uniqueidentifier", nullable: false),
                     Image = table.Column<string>(type: "nvarchar(max)", nullable: false),
                     Sound = table.Column<string>(type: "nvarchar(max)", nullable: false),
+                    IsSaved = table.Column<bool>(type: "bit", nullable: false),
                     CreatedDate = table.Column<DateTime>(type: "datetime2", nullable: false)
                 },
                 constraints: table =>

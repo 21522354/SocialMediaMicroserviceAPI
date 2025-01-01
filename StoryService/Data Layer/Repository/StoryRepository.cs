@@ -39,12 +39,20 @@ namespace StoryService.Data_Layer.Repository
 
         public async Task<List<Story>> GetFriendStory(Guid userId)
         {
-            var user = _userDataClient.GetUserById(userId);
             var friendStories = await _context.Stories
             .Where(p => p.UserId == userId && p.CreatedDate > DateTime.Now.AddHours(-24))
             .OrderBy(p => p.CreatedDate)
             .ToListAsync();
             return friendStories;
+        }
+
+        public async Task<List<Story>> GetSavedStories(Guid userId)
+        {
+            var stories = await _context.Stories
+                .Where(p => p.UserId == userId && p.IsSaved == true)
+                .OrderBy(p => p.CreatedDate)
+                .ToListAsync();
+            return stories; 
         }
     }
 }

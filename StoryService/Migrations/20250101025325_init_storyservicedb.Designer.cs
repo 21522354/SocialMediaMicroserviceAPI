@@ -12,8 +12,8 @@ using StoryService.Data_Layer;
 namespace StoryService.Migrations
 {
     [DbContext(typeof(StoryServiceDBContext))]
-    [Migration("20241204083519_Init StoryServiceDB")]
-    partial class InitStoryServiceDB
+    [Migration("20250101025325_init_storyservicedb")]
+    partial class init_storyservicedb
     {
         /// <inheritdoc />
         protected override void BuildTargetModel(ModelBuilder modelBuilder)
@@ -37,6 +37,9 @@ namespace StoryService.Migrations
                     b.Property<string>("Image")
                         .IsRequired()
                         .HasColumnType("nvarchar(max)");
+
+                    b.Property<bool>("IsSaved")
+                        .HasColumnType("bit");
 
                     b.Property<string>("Sound")
                         .IsRequired()

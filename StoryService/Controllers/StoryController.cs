@@ -66,6 +66,15 @@ namespace StoryService.Controllers
             }
             return Ok(friendsStories);
         }
+        [HttpGet("user/savedStories/{userId}")]
+        public async Task<IActionResult> GetSavedStoriesByUserId(Guid userId)
+        {
+            var user = await _userDataClient.GetUserById(userId);
+            var stories = await _storyRepository.GetSavedStories(userId);
+            var storyRead = _mapper.Map<StoryReadDTO>((stories, user)); 
+            storyRead.Index = 0;
+            return Ok(storyRead);
+        }
         [HttpPost("alreadySeen")]
         public async Task<IActionResult> CreateUserAlreadySeenStory([FromBody]CreateUserAlreadySeenStoryRequest request)
         {
