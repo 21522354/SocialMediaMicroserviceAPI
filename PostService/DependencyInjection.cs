@@ -14,16 +14,10 @@ namespace PostService
         public static void AddApplicationService(this IServiceCollection services, IConfiguration configuration, IHostEnvironment environment)
         {
             services.AddMapping();
-            if (environment.IsDevelopment())
-            {
-                services.AddDbContext<PostServiceDBContext>(options =>
-                    options.UseInMemoryDatabase("PostServiceInMemoryDb"));
-            }
-            else
-            {
-                services.AddDbContext<PostServiceDBContext>(options =>
-                    options.UseSqlServer(configuration.GetConnectionString("PostServiceConnection")));
-            }
+
+            services.AddDbContext<PostServiceDBContext>(options =>
+                options.UseSqlServer(configuration.GetConnectionString("PostServiceConnection")));
+
             services.AddHttpClient<IUserDataClient, HttpUserDataClient>();
             services.AddScoped<IPostRepository, PostRepository>();
             services.AddScoped<IPostCommentRepository, PostCommentRepository>();

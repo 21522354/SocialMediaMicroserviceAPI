@@ -6,7 +6,7 @@ using Microsoft.EntityFrameworkCore.Migrations;
 namespace PostService.Migrations
 {
     /// <inheritdoc />
-    public partial class initpostservicedb : Migration
+    public partial class init_postservicedb : Migration
     {
         /// <inheritdoc />
         protected override void Up(MigrationBuilder migrationBuilder)
@@ -108,6 +108,26 @@ namespace PostService.Migrations
                 });
 
             migrationBuilder.CreateTable(
+                name: "SavePosts",
+                columns: table => new
+                {
+                    Id = table.Column<int>(type: "int", nullable: false)
+                        .Annotation("SqlServer:Identity", "1, 1"),
+                    UserId = table.Column<Guid>(type: "uniqueidentifier", nullable: false),
+                    PostId = table.Column<Guid>(type: "uniqueidentifier", nullable: false)
+                },
+                constraints: table =>
+                {
+                    table.PrimaryKey("PK_SavePosts", x => x.Id);
+                    table.ForeignKey(
+                        name: "FK_SavePosts_Posts_PostId",
+                        column: x => x.PostId,
+                        principalTable: "Posts",
+                        principalColumn: "PostId",
+                        onDelete: ReferentialAction.Cascade);
+                });
+
+            migrationBuilder.CreateTable(
                 name: "SeenReels",
                 columns: table => new
                 {
@@ -162,13 +182,13 @@ namespace PostService.Migrations
                         column: x => x.CommentId,
                         principalTable: "PostComments",
                         principalColumn: "CommentId",
-                        onDelete: ReferentialAction.Cascade);
+                        onDelete: ReferentialAction.NoAction);
                     table.ForeignKey(
                         name: "FK_ReplyComments_Posts_PostId",
                         column: x => x.PostId,
                         principalTable: "Posts",
                         principalColumn: "PostId",
-                        onDelete: ReferentialAction.Restrict);
+                        onDelete: ReferentialAction.Cascade);
                 });
 
             migrationBuilder.CreateIndex(
@@ -195,6 +215,11 @@ namespace PostService.Migrations
                 name: "IX_ReplyComments_PostId",
                 table: "ReplyComments",
                 column: "PostId");
+
+            migrationBuilder.CreateIndex(
+                name: "IX_SavePosts_PostId",
+                table: "SavePosts",
+                column: "PostId");
         }
 
         /// <inheritdoc />
@@ -211,6 +236,9 @@ namespace PostService.Migrations
 
             migrationBuilder.DropTable(
                 name: "ReplyComments");
+
+            migrationBuilder.DropTable(
+                name: "SavePosts");
 
             migrationBuilder.DropTable(
                 name: "SeenReels");

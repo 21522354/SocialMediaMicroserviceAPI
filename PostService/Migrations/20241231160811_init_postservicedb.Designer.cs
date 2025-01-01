@@ -12,8 +12,8 @@ using PostService.Data_Layer;
 namespace PostService.Migrations
 {
     [DbContext(typeof(PostServiceDBContext))]
-    [Migration("20241220083656_init postservicedb")]
-    partial class initpostservicedb
+    [Migration("20241231160811_init_postservicedb")]
+    partial class init_postservicedb
     {
         /// <inheritdoc />
         protected override void BuildTargetModel(ModelBuilder modelBuilder)
@@ -169,6 +169,27 @@ namespace PostService.Migrations
                     b.ToTable("ReplyComments");
                 });
 
+            modelBuilder.Entity("PostService.Data_Layer.Models.SavePost", b =>
+                {
+                    b.Property<int>("Id")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("int");
+
+                    SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("Id"));
+
+                    b.Property<Guid>("PostId")
+                        .HasColumnType("uniqueidentifier");
+
+                    b.Property<Guid>("UserId")
+                        .HasColumnType("uniqueidentifier");
+
+                    b.HasKey("Id");
+
+                    b.HasIndex("PostId");
+
+                    b.ToTable("SavePosts");
+                });
+
             modelBuilder.Entity("PostService.Data_Layer.Models.SeenReels", b =>
                 {
                     b.Property<Guid>("PostId")
@@ -250,10 +271,21 @@ namespace PostService.Migrations
                     b.HasOne("PostService.Data_Layer.Models.Post", "Post")
                         .WithMany("ReplyComments")
                         .HasForeignKey("PostId")
-                        .OnDelete(DeleteBehavior.Restrict)
+                        .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
 
                     b.Navigation("Comment");
+
+                    b.Navigation("Post");
+                });
+
+            modelBuilder.Entity("PostService.Data_Layer.Models.SavePost", b =>
+                {
+                    b.HasOne("PostService.Data_Layer.Models.Post", "Post")
+                        .WithMany()
+                        .HasForeignKey("PostId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
 
                     b.Navigation("Post");
                 });

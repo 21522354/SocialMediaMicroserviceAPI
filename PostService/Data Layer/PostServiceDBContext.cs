@@ -14,6 +14,7 @@ namespace PostService.Data_Layer
         public DbSet<ReplyComment> ReplyComments { get; set; }
         public DbSet<PostHagtag> PostHagtags { get; set; }
         public DbSet<SeenReels> SeenReels { get; set; }
+        public DbSet<SavePost> SavePosts { get; set; }      
         protected override void OnModelCreating(ModelBuilder modelBuilder)
         {
             base.OnModelCreating(modelBuilder);
@@ -51,6 +52,12 @@ namespace PostService.Data_Layer
                 .HasForeignKey(p => p.PostId)
                 .OnDelete(DeleteBehavior.Cascade);
 
+            modelBuilder.Entity<Post>()
+                .HasMany(p => p.ReplyComments)
+                .WithOne(p => p.Post)
+                .HasForeignKey(p => p.PostId)
+                .OnDelete(DeleteBehavior.Cascade);
+
             modelBuilder.Entity<PostComment>()
                 .HasKey(p => p.CommentId);
 
@@ -76,6 +83,12 @@ namespace PostService.Data_Layer
                 .HasKey(p => new { p.PostId, p.UserId });
 
             modelBuilder.Entity<SeenReels>()
+                .HasOne(p => p.Post)
+                .WithMany()
+                .HasForeignKey(p => p.PostId)
+                .OnDelete(DeleteBehavior.Cascade);
+
+            modelBuilder.Entity<SavePost>()
                 .HasOne(p => p.Post)
                 .WithMany()
                 .HasForeignKey(p => p.PostId)

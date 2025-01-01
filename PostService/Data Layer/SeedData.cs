@@ -12,10 +12,7 @@ namespace PostService.Data_Layer
                 var _context = serviceScope.ServiceProvider.GetService<PostServiceDBContext>();
 
 
-                if (environment.IsProduction())
-                {
-                    _context.Database.Migrate();
-                }
+                _context.Database.Migrate();
 
                 Console.WriteLine("Seeding data");
                 // Check if data already exists

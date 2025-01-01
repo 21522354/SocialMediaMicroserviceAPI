@@ -5,6 +5,7 @@ using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Hosting;
 using PostService.AsyncDataService;
+using PostService.Data_Layer;
 using PostService.Data_Layer.DTOs;
 using PostService.Data_Layer.Models;
 using PostService.Data_Layer.Repository;
@@ -27,6 +28,7 @@ namespace PostService.Controllers
         private readonly IUserDataClient _userDataClient;
         private readonly IMessageBusClient _messageBusClient;
         private readonly IMapper _mapper;
+        private readonly PostServiceDBContext _context;
 
         public PostController(
             IPostRepository postRepository,
@@ -38,7 +40,8 @@ namespace PostService.Controllers
             IPostHagtagRepository postHagtagRepository,
             IUserDataClient userDataClient,
             IMessageBusClient messageBusClient,
-            IMapper mapper
+            IMapper mapper,
+            PostServiceDBContext context
             )
         {
             _postRepository = postRepository;
@@ -51,6 +54,7 @@ namespace PostService.Controllers
             _userDataClient = userDataClient;
             _messageBusClient = messageBusClient;
             _mapper = mapper;
+            _context = context;
         }
         [HttpGet]
         public async Task<IActionResult> GetAllPost()
@@ -516,6 +520,62 @@ namespace PostService.Controllers
             }
             await _postRepository.DeleteAsync(postId);
             return Ok("Delete post successfully");
+        }
+
+        [HttpPost("savePost")]
+        public async Task<IActionResult> SavePost([FromBody] SavePostDTO request)
+        {
+            var checkUser = await _userDataClient.GetUserById(request.UserId);
+            var savePost = new SavePost()
+            {
+                PostId = request.PostId,
+                UserId = request.UserId,
+            };
+            await _context.SavePosts.AddAsync(savePost);
+            await _context.SaveChangesAsync();
+            return Ok("Save post successfully");
+        }
+        [HttpDelete("unSavePost")]
+        public async Task<IActionResult> UnSavePost([FromBody] SavePostDTO request)
+        {
+            var checkUser = await _userDataClient.GetUserById(request.UserId);
+            var savePost = await _context.SavePosts
+                .FirstOrDefaultAsync(p => p.UserId == request.UserId && p.PostId == request.PostId);
+            if (savePost != null)
+            {
+                _context.SavePosts.Remove(savePost);
+                await _context.SaveChangesAsync();
+            }
+            return Ok("Removed this post from save posts");
+        }
+
+        [HttpGet("savePost/{userId}")]
+        public async Task<IActionResult> GetSavedPost(Guid userId)
+        {
+            var checkUser = _userDataClient.GetUserById(userId);
+            var listPost = await _context.SavePosts
+                .Include(p => p.Post) // Include Post đầu tiên
+                    .ThenInclude(post => post.PostComments) // Include PostComments từ Post
+                .Include(p => p.Post) // Include Post lại để thêm các liên quan khác
+                    .ThenInclude(post => post.PostLikes) // Include PostLikes từ Post
+                .Include(p => p.Post)
+                    .ThenInclude(post => post.PostHagtags) // Include PostHashtags từ Post
+                .Include(p => p.Post)
+                    .ThenInclude(post => post.PostMedias) // Include PostMedias từ Post
+                .Where(p => p.UserId == userId)
+                .Select(p => p.Post) // Chỉ lấy phần Post
+                .ToListAsync();
+
+
+
+            var listPostReadDTO = new List<PostReadDTO>();
+            foreach (var post in listPost)
+            {
+                var user = await _userDataClient.GetUserById(post.UserId);
+                var postReadDTO = (post, user).Adapt<PostReadDTO>();
+                listPostReadDTO.Add(postReadDTO);
+            }
+            return Ok(listPostReadDTO);
         }
     }
 }
