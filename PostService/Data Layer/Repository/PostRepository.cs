@@ -42,7 +42,7 @@ namespace PostService.Data_Layer.Repository
             var listUserGuid = listUserFollowing.Select(p => p.UserId).ToList();
 
             var listPost = await _context.Posts
-                .Where(p => p.UserId != userId && !listUserGuid.Contains(p.UserId))
+                .Where(p => p.UserId != userId && !listUserGuid.Contains(p.UserId) && p.IsReel == false)
                 .Include(p => p.PostComments).Include(p => p.PostLikes).Include(p => p.PostHagtags)
                 .Include(p => p.PostMedias)
                 .ToListAsync();

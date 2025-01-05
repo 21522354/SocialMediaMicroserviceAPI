@@ -16,7 +16,9 @@ namespace PostService
             services.AddMapping();
 
             services.AddDbContext<PostServiceDBContext>(options =>
-                options.UseSqlServer(configuration.GetConnectionString("PostServiceConnection")));
+                options.UseSqlServer(configuration.GetConnectionString("PostServiceConnection"))
+                //options.UseInMemoryDatabase("Inmem")
+                );
 
 
             services.AddHttpClient<IUserDataClient, HttpUserDataClient>();

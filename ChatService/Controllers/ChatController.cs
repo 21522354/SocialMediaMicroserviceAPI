@@ -153,6 +153,18 @@ namespace ChatService.Controllers
 
             return Ok("Sent text successfully"); 
         }
+        [HttpDelete("{chatRoomId}")]
+        public async Task<IActionResult> DeleteChatRoom(Guid chatRoomId)
+        {
+            var chatRoom = await _context.ChatRooms.FindAsync(chatRoomId);
+            if(chatRoom == null)
+            {
+                return BadRequest("Can't find this chat room");
+            }
+            _context.ChatRooms.Remove(chatRoom);
+            _context.SaveChanges();
+            return Ok("Delete chatroom successfully");
+        }
         [HttpPost("sendMedia")]
         public async Task<IActionResult> SendMedias(SendMediaRequest request)
         {

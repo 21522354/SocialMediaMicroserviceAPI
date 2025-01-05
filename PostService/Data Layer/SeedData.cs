@@ -5,7 +5,7 @@ namespace PostService.Data_Layer
 {
     public static class SeedData
     {
-        public static void seedData(this IApplicationBuilder app, IHostEnvironment environment)
+        public static async void seedData(this IApplicationBuilder app, IHostEnvironment environment)
         {
             using(var serviceScope = app.ApplicationServices.CreateScope())
             {
@@ -118,6 +118,45 @@ namespace PostService.Data_Layer
                                 });
                             }
                         }
+
+                        var listReels = await _context.Posts.Where(p => p.IsReel == true).ToListAsync();
+
+                        foreach (var post in listReels)
+                        {
+                            for (int i = 1; i <= 10; i++)
+                            {
+                                Guid userId;
+                                switch (i % 4)
+                                {
+                                    case 0:
+                                        userId = Guid.Parse("e0be4a36-67cd-4dd6-be48-8b800c3123d1");
+                                        break;
+                                    case 1:
+                                        userId = Guid.Parse("e0be4a36-67cd-4dd6-be48-8b800c3123d2");
+                                        break;
+                                    case 2:
+                                        userId = Guid.Parse("e0be4a36-67cd-4dd6-be48-8b800c3123d4");
+                                        break;
+                                    case 3:
+                                        userId = Guid.Parse("e0be4a36-67cd-4dd6-be48-8b800c3123d5");
+                                        break;
+                                    default:
+                                        userId = Guid.Parse("e0be4a36-67cd-4dd6-be48-8b800c3123d1");
+                                        break;
+                                }
+                                comments.Add(new PostComment
+                                {
+                                    CommentId = Guid.NewGuid(),
+                                    PostId = post.PostId,
+                                    UserId = userId,
+                                    Message = $"Comment {i} on post {post.PostTitle}",
+                                    NumberOfLike = i
+                                });
+                            }
+                        }
+
+
+
                         _context.PostComments.AddRange(comments);
 
                         var replyComments = new List<ReplyComment>();
@@ -185,6 +224,37 @@ namespace PostService.Data_Layer
                                 UserId = Guid.Parse("e0be4a36-67cd-4dd6-be48-8b800c3123d5")
                             });
                         }
+
+                        foreach (var post in listReels)
+                        {
+
+                            likes.Add(new PostLike
+                            {
+                                PostId = post.PostId,
+                                UserId = Guid.Parse("e0be4a36-67cd-4dd6-be48-8b800c3123d1")
+                            });
+                            likes.Add(new PostLike
+                            {
+                                PostId = post.PostId,
+                                UserId = Guid.Parse("e0be4a36-67cd-4dd6-be48-8b800c3123d2")
+                            });
+                            likes.Add(new PostLike
+                            {
+                                PostId = post.PostId,
+                                UserId = Guid.Parse("e0be4a36-67cd-4dd6-be48-8b800c3123d3")
+                            });
+                            likes.Add(new PostLike
+                            {
+                                PostId = post.PostId,
+                                UserId = Guid.Parse("e0be4a36-67cd-4dd6-be48-8b800c3123d4")
+                            });
+                            likes.Add(new PostLike
+                            {
+                                PostId = post.PostId,
+                                UserId = Guid.Parse("e0be4a36-67cd-4dd6-be48-8b800c3123d5")
+                            });
+                        }
+
                         _context.PostLikes.AddRange(likes);
 
                         // Seed PostMedia

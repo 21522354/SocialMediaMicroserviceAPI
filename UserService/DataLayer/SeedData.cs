@@ -23,9 +23,9 @@ namespace UserService.DataLayer
                             UserId = Guid.Parse("e0be4a36-67cd-4dd6-be48-8b800c3123d1"),
                             NickName = "nva_123",
                             FullName = "Nguyen Van A",
-                            Email = "ndam8175@gmail.com",
+                            Email = "ndam8176@gmail.com",
                             Password = "123123",
-                            Avatar = "abc.png",
+                            Avatar = "https://www.vietnamworks.com/hrinsider/wp-content/uploads/2023/12/hinh-anh-cute-anime-008.jpg",
                             FbId = "asdadfasdf"
                         },
                         new User()
@@ -33,9 +33,9 @@ namespace UserService.DataLayer
                             UserId = Guid.Parse("e0be4a36-67cd-4dd6-be48-8b800c3123d2"),
                             NickName = "nvb_123",
                             FullName = "Nguyen Van B",
-                            Email = "ndam8175@gmail.com",
+                            Email = "ndam8177@gmail.com",
                             Password = "123123",
-                            Avatar = "abc.png",
+                            Avatar = "https://www.vietnamworks.com/hrinsider/wp-content/uploads/2023/12/hinh-anh-cute-anime-018.jpg",
                             FbId = "asdadfasdf"
                         },
                         new User()
@@ -43,9 +43,9 @@ namespace UserService.DataLayer
                             UserId = Guid.Parse("e0be4a36-67cd-4dd6-be48-8b800c3123d3"),
                             FullName = "Nguyen Van C",
                             NickName = "nvc_123",
-                            Email = "ndam8175@gmail.com",
+                            Email = "ndam8178@gmail.com",
                             Password = "123123",
-                            Avatar = "abc.png",
+                            Avatar = "https://www.vietnamworks.com/hrinsider/wp-content/uploads/2023/12/hinh-anh-cute-anime-017.jpg",
                             FbId = "asdadfasdf"
                         },
                         new User()
@@ -53,9 +53,9 @@ namespace UserService.DataLayer
                             UserId = Guid.Parse("e0be4a36-67cd-4dd6-be48-8b800c3123d4"),
                             NickName = "nvd_123",
                             FullName = "Nguyen Van D",
-                            Email = "ndam8175@gmail.com",
+                            Email = "ndam8179@gmail.com",
                             Password = "123123",
-                            Avatar = "abc.png",
+                            Avatar = "https://www.vietnamworks.com/hrinsider/wp-content/uploads/2023/12/hinh-anh-cute-anime-022.jpg",
                             FbId = "asdadfasdf"
                         },
                         new User()
@@ -63,9 +63,9 @@ namespace UserService.DataLayer
                             UserId = Guid.Parse("e0be4a36-67cd-4dd6-be48-8b800c3123d5"),
                             NickName = "nve_123",
                             FullName = "Nguyen Van E",
-                            Email = "ndam8175@gmail.com",
+                            Email = "ndam8180@gmail.com",
                             Password = "123123",
-                            Avatar = "abc.png",
+                            Avatar = "https://www.vietnamworks.com/hrinsider/wp-content/uploads/2023/12/hinh-anh-cute-anime-029.jpg",
                             FbId = "asdadfasdf"
                         });
                     _context.Follows.AddRange(

@@ -581,5 +581,24 @@ namespace PostService.Controllers
             }
             return Ok(listPostReadDTO);
         }
+        [HttpGet("likePosts/{userId}")]
+        public async Task<IActionResult> GetLikesPostForUser(Guid userId)
+        {
+            var listPost = await _context.PostLikes.Include(p => p.Post).Where(p => p.UserId == userId).Select(p => p.Post).ToListAsync();
+            listPost = listPost.Where(p => p.IsReel == false).ToList();
+            var feeds = new List<PostReadDTO>();
+            foreach (var item in listPost)
+            {
+                var post = await _postRepository.GetByIdAsync(item.PostId);
+                if (post == null)
+                {
+                    throw new Exception("Can't find this post with id = " + item.PostId);
+                }
+                var user = await _userDataClient.GetUserById(post.UserId);
+                var postReadDTO = (post, user).Adapt<PostReadDTO>();
+                feeds.Add(postReadDTO);
+            }
+            return Ok(feeds);
+        }
     }
 }

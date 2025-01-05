@@ -2,6 +2,7 @@
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 using StoryService.AsyncDataService;
+using StoryService.Data_Layer;
 using StoryService.Data_Layer.DTOs;
 using StoryService.Data_Layer.Models;
 using StoryService.Data_Layer.Repository;
@@ -18,18 +19,21 @@ namespace StoryService.Controllers
         private readonly IUserDataClient _userDataClient;
         private readonly IMessageBusClient _messageBusClient;
         private readonly IMapper _mapper;
+        private readonly StoryServiceDBContext _context;
 
         public StoryController(IStoryRepository storyRepository,
-            IUserAlreadySeenStoryRepository userAlreadySeenStoryRepository, 
+            IUserAlreadySeenStoryRepository userAlreadySeenStoryRepository,
             IUserDataClient userDataClient,
             IMessageBusClient messageBusClient,
-            IMapper mapper)
+            IMapper mapper,
+            StoryServiceDBContext context)
         {
             _storyRepository = storyRepository;
             _userAlreadySeenStoryRepository = userAlreadySeenStoryRepository;
             _userDataClient = userDataClient;
             _messageBusClient = messageBusClient;
             _mapper = mapper;
+            _context = context;
         }
         [HttpGet("{storyId}")]
         public async Task<IActionResult> GetStoryById(Guid storyId)
@@ -38,12 +42,12 @@ namespace StoryService.Controllers
             var user = await _userDataClient.GetUserById(story.UserId);
             var stories = new List<Story>();
             stories.Add(story);
-            return Ok(_mapper.Map<StoryReadDTO>((stories, user)));   
+            return Ok(_mapper.Map<StoryReadDTO>((stories, user)));
         }
         [HttpGet]
         public async Task<IActionResult> GetAll()
         {
-            return Ok(await _storyRepository.GetAllAsync());    
+            return Ok(await _storyRepository.GetAllAsync());
         }
         [HttpGet("user/{userId}")]
         public async Task<IActionResult> GetFriendStories(Guid userId)
@@ -62,7 +66,7 @@ namespace StoryService.Controllers
                 }
                 var friendStories = _mapper.Map<StoryReadDTO>((stories, friend));
                 friendStories.Index = count;
-                friendsStories.Add(friendStories);  
+                friendsStories.Add(friendStories);
             }
             return Ok(friendsStories);
         }
@@ -71,16 +75,40 @@ namespace StoryService.Controllers
         {
             var user = await _userDataClient.GetUserById(userId);
             var stories = await _storyRepository.GetSavedStories(userId);
-            var storyRead = _mapper.Map<StoryReadDTO>((stories, user)); 
+            var storyRead = _mapper.Map<StoryReadDTO>((stories, user));
             storyRead.Index = 0;
             return Ok(storyRead);
         }
         [HttpPost("alreadySeen")]
-        public async Task<IActionResult> CreateUserAlreadySeenStory([FromBody]CreateUserAlreadySeenStoryRequest request)
+        public async Task<IActionResult> CreateUserAlreadySeenStory([FromBody] CreateUserAlreadySeenStoryRequest request)
         {
             var userAlreadySeen = _mapper.Map<UserAlreadySeenStory>(request);
             await _userAlreadySeenStoryRepository.CreateUserAlreadySeenStory(userAlreadySeen);
             return Ok("Seen story successfully");
+        }
+        [HttpPost("markSaved")]
+        public async Task<IActionResult> MarkSavedStory(MarkSaveStoryDTO request)
+        {
+            var story = await _context.Stories.FindAsync(request.StoryId);
+            if(story == null)
+            {
+                return BadRequest("Can't find this story");
+            }
+            story.IsSaved = true;
+            _context.SaveChanges();
+            return Ok("This story is saved");
+        }
+        [HttpDelete("{storyId}")]
+        public async Task<IActionResult> DeleteStory(Guid storyId)
+        {
+            var story = await _context.Stories.FindAsync(storyId);
+            if (story == null)
+            {
+                return BadRequest("Can't find this story");
+            }
+            _context.Stories.Remove(story);
+            await _context.SaveChangesAsync();
+            return Ok("Delete story successfully");
         }
         [HttpPost]
         public async Task<IActionResult> CreateStory([FromBody]CreateStoryRequest request)

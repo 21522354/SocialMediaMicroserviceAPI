@@ -26,6 +26,11 @@ namespace NotificationService
                           .AllowAnyHeader()
                           .AllowAnyMethod()
                           .AllowCredentials(); // Quan trọng với SignalR
+
+                    policy.WithOrigins("http://localhost:5216")
+                             .AllowAnyMethod()                    // Allow all HTTP methods
+                          .AllowAnyHeader()                    // Allow all headers
+                          .AllowCredentials();
                 });
             });
             builder.Services.AddSignalR();
@@ -51,7 +56,7 @@ namespace NotificationService
 
             app.MigrateDatabase();
 
-            app.MapHub<NotificationHub>("/notificationHub");
+            app.MapHub<NotificationHub>("/notificationHub").RequireCors("AllowSpecificOrigins");
 
             app.Run();
         }
