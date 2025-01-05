@@ -51,7 +51,7 @@ namespace NotificationService.EventProcessing
 
         private async void NewMessageEvent(string message)
         {
-            await _hubContext.Clients.All.SendAsync("ReceiveNotification", message);
+            await _hubContext.Clients.All.SendAsync("ReceiveMessage", message);
             Console.WriteLine(message); 
         }
 

@@ -136,7 +136,6 @@ namespace PostService.Controllers
             }
             return Ok(listRelatedPostHagtagReadDTO);
         }
-
         private async Task<IEnumerable<PostCommentReadDTO>> getReplyComment(Guid commentId)
         {
             var listReplyComment = await _replyCommentRepository.GetReplyComments(commentId);
@@ -496,6 +495,8 @@ namespace PostService.Controllers
         {
             var listReel = await _postRepository.GetReels(userId);
 
+            listReel = listReel.Take(3).ToList();
+
             var reels = new List<PostReadDTO>();
             foreach (var item in listReel)
             {
@@ -507,7 +508,10 @@ namespace PostService.Controllers
                 var user = await _userDataClient.GetUserById(post.UserId);
                 var postReadDTO = (post, user).Adapt<PostReadDTO>();
                 reels.Add(postReadDTO);
+                await _context.SeenReels.AddAsync(new SeenReels() { UserId = userId, PostId = post.PostId });
+                await _context.SaveChangesAsync();
             }
+
             return Ok(reels);
         }
         [HttpDelete("{postId}")]

@@ -18,6 +18,7 @@ namespace PostService
             services.AddDbContext<PostServiceDBContext>(options =>
                 options.UseSqlServer(configuration.GetConnectionString("PostServiceConnection")));
 
+
             services.AddHttpClient<IUserDataClient, HttpUserDataClient>();
             services.AddScoped<IPostRepository, PostRepository>();
             services.AddScoped<IPostCommentRepository, PostCommentRepository>();
