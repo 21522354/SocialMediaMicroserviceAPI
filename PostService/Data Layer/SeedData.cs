@@ -47,12 +47,11 @@ namespace PostService.Data_Layer
                             {
                                 PostId = Guid.NewGuid(),
                                 UserId = userId,
-                                PostTitle = $"Post Title {i}",
+                                PostTitle = $"Today is a good dayy!!!{i}",
                                 CreatedDate = DateTime.Now,
                             });
                         }
                        
-
                         _context.Posts.AddRange(posts);
 
                         // add Reels
@@ -66,7 +65,7 @@ namespace PostService.Data_Layer
                                 PostId = Guid.NewGuid(),
                                 UserId = userId,
                                 IsReel = true,
-                                PostTitle = $"Post Title abcd",
+                                PostTitle = $"Look at this video {i}",
                                 CreatedDate = DateTime.Now,
                             };
                             var reelImage = new PostMedia
@@ -76,6 +75,10 @@ namespace PostService.Data_Layer
                                 PostId = reel.PostId,
                                 Post = reel,
                             };
+                            if (i % 4 == 1) reelImage.Link = "https://cdn.pixabay.com/video/2024/06/09/215926_large.mp4";
+                            if (i % 4 == 2) reelImage.Link = "https://cdn.pixabay.com/video/2022/03/12/110548-689510287_tiny.mp4";
+                            if (i % 4 == 3) reelImage.Link = "https://cdn.pixabay.com/video/2018/01/31/14035-254146872_tiny.mp4";
+                            if (i % 4 == 0) reelImage.Link = "https://cdn.pixabay.com/video/2017/01/07/7128-198606859_tiny.mp4";
                             _context.Posts.Add(reel);
                             _context.PostMedias.Add(reelImage);
                         }
@@ -124,7 +127,7 @@ namespace PostService.Data_Layer
                             PostId = posts[0].PostId,
                             ReplyCommentId = Guid.NewGuid(),
                             UserId = Guid.Parse("e0be4a36-67cd-4dd6-be48-8b800c3123d1"),
-                            Message = "asdfasdf",
+                            Message = "Nice post !!!!",
                             NumberOfLike = 4,
                             CommentId = comments[1].CommentId
                         };
@@ -134,7 +137,7 @@ namespace PostService.Data_Layer
                             PostId = posts[1].PostId,
                             ReplyCommentId = Guid.NewGuid(),
                             UserId = Guid.Parse("e0be4a36-67cd-4dd6-be48-8b800c3123d1"),
-                            Message = "asdfasdf",
+                            Message = "Nice post !!!!",
                             NumberOfLike = 4,
                             CommentId = comments[1].CommentId
                         };
@@ -144,7 +147,7 @@ namespace PostService.Data_Layer
                             PostId = posts[0].PostId,
                             ReplyCommentId = Guid.NewGuid(),
                             UserId = Guid.Parse("e0be4a36-67cd-4dd6-be48-8b800c3123d2"),
-                            Message = "asdfasdf",
+                            Message = "Nice post !!!!",
                             NumberOfLike = 4,
                             CommentId = comments[2].CommentId
                         };
@@ -188,14 +191,18 @@ namespace PostService.Data_Layer
                         var medias = new List<PostMedia>();
                         foreach (var post in posts)
                         {
-                            for (int i = 1; i <= 10; i++)
+                            for (int i = 1; i <= 3; i++)
                             {
-                                medias.Add(new PostMedia
+                                var postMedia = new PostMedia()
                                 {
                                     PostId = post.PostId,
-                                    STT = i,
-                                    Link = $"https://image{i}.com",
-                                });
+                                    STT = i
+                                };
+                                if (i % 4 == 0) postMedia.Link = "https://www.vietnamworks.com/hrinsider/wp-content/uploads/2023/12/hinh-thien-nhien-3d-002.jpg";
+                                else if (i % 4 == 1) postMedia.Link = "https://www.vietnamworks.com/hrinsider/wp-content/uploads/2023/12/hinh-thien-nhien-3d-005.jpg";
+                                else if (i % 4 == 2) postMedia.Link = "https://www.vietnamworks.com/hrinsider/wp-content/uploads/2023/12/hinh-anh-thien-nhien-dep-3d-001.jpg";
+                                else if (i % 4 == 3) postMedia.Link = "https://www.vietnamworks.com/hrinsider/wp-content/uploads/2023/12/hinh-nen-3d-thien-nhien-004.jpg";
+                                medias.Add(postMedia);  
                             }
                         }
                         _context.PostMedias.AddRange(medias);
