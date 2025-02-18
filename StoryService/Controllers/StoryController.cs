@@ -70,6 +70,15 @@ namespace StoryService.Controllers
             }
             return Ok(friendsStories);
         }
+        [HttpGet("self/{userId}")]
+        public async Task<IActionResult> GetSelfStory(Guid userId)
+        {
+            var user = await _userDataClient.GetUserById(userId);
+            var stories = await _storyRepository.GetFriendStory(userId);
+            var selfStories = _mapper.Map<StoryReadDTO>((stories, user));
+            selfStories.Index = 0;
+            return Ok(selfStories); 
+        }
         [HttpGet("user/savedStories/{userId}")]
         public async Task<IActionResult> GetSavedStoriesByUserId(Guid userId)
         {

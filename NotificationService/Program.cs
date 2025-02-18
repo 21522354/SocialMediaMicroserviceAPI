@@ -20,17 +20,24 @@ namespace NotificationService
 
             builder.Services.AddCors(options =>
             {
-                options.AddPolicy("AllowSpecificOrigins", policy =>
+                options.AddPolicy("AllowAll", policy =>
                 {
-                    policy.WithOrigins("http://localhost:3000") // Thay bằng origin của frontend
+                    policy.WithOrigins("http://localhost:3000",
+                        "http://localhost:5216",
+                        "http://192.168.1.1",
+                        "http://192.168.1.2",
+                        "http://192.168.1.3",
+                        "http://192.168.1.4",
+                        "http://192.168.1.5",
+                        "http://192.168.1.6",
+                        "http://192.168.1.7",
+                        "http://192.168.1.8",
+                        "http://192.168.1.9",
+                        "http://192.168.1.10"
+                        ) // Thêm các origin cụ thể
                           .AllowAnyHeader()
                           .AllowAnyMethod()
-                          .AllowCredentials(); // Quan trọng với SignalR
-
-                    policy.WithOrigins("http://localhost:5216")
-                             .AllowAnyMethod()                    // Allow all HTTP methods
-                          .AllowAnyHeader()                    // Allow all headers
-                          .AllowCredentials();
+                          .AllowCredentials(); // Cho phép gửi thông tin đăng nhập
                 });
             });
             builder.Services.AddSignalR();
@@ -50,13 +57,13 @@ namespace NotificationService
 
             app.UseAuthorization();
 
-            app.UseCors("AllowSpecificOrigins");
+            app.UseCors("AllowAll");
 
             app.MapControllers();
 
             app.MigrateDatabase();
 
-            app.MapHub<NotificationHub>("/notificationHub").RequireCors("AllowSpecificOrigins");
+            app.MapHub<NotificationHub>("/notificationHub").RequireCors("AllowAll");
 
             app.Run();
         }

@@ -10,5 +10,6 @@
         public Guid CommentId { get; set; }
         public Guid StoryId { get; set; }
         public string EventType { get; set; }
+        public DateTime CreatedDate { get; set; }
     }
 }

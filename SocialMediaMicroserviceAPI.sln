@@ -11,7 +11,7 @@ Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "StoryService", "StoryServic
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "NotificationService", "NotificationService\NotificationService.csproj", "{52DC12D9-2154-46C7-9129-121F57F7A6AE}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "ChatService", "ChatService\ChatService.csproj", "{BAD4B170-4EED-46C8-BDE1-C85231A55305}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "ChatService", "ChatService\ChatService.csproj", "{BAD4B170-4EED-46C8-BDE1-C85231A55305}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution

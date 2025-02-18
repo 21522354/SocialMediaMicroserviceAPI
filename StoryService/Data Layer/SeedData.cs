@@ -33,10 +33,12 @@ namespace StoryService.Data_Layer
                     {
                         StoryId = Guid.NewGuid(),
                         UserId = userIds[i % userIds.Count],
-                        Image = $"https://example.com/images/story_{i + 1}.jpg",
                         Sound = $"https://example.com/sounds/story_{i + 1}.mp3",
                         CreatedDate = DateTime.UtcNow.AddMinutes(-i * 10),
                     };
+                    if (i % 3 == 0) story.Image = "https://images.pexels.com/photos/799443/pexels-photo-799443.jpeg?auto=compress&cs=tinysrgb&w=600";
+                    else if (i % 3 == 1) story.Image = "https://images.pexels.com/photos/2486168/pexels-photo-2486168.jpeg?auto=compress&cs=tinysrgb&w=600";
+                    else story.Image = "https://images.pexels.com/photos/1226302/pexels-photo-1226302.jpeg?auto=compress&cs=tinysrgb&w=600";
                     stories.Add(story);
                 }
                 _context.Stories.AddRange(stories);

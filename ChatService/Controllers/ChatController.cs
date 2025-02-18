@@ -103,7 +103,7 @@ namespace ChatService.Controllers
                 };
                 listChatMessageReadDTO.Add(chatMessageReadDTO);
             }
-            listChatMessage = listChatMessage.OrderBy(p => p.SendDate).ToList();
+            listChatMessageReadDTO = listChatMessageReadDTO.OrderBy(p => p.SendDate).ToList();
             return Ok(listChatMessageReadDTO);
         }
         [HttpPost("sendText")]

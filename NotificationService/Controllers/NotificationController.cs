@@ -40,8 +40,10 @@ namespace NotificationService.Controllers
                     newNoti.UserId = item.UserInvoke;
                     newNoti.Name = user.NickName;
                     newNoti.Avatar = user.Avatar;
+                    newNoti.CreatedDate = item.CreatedDate;
                     listNotiReadDTO.Add(newNoti);
                 }
+                listNotiReadDTO = listNotiReadDTO.OrderByDescending(x => x.CreatedDate).ToList();
 
                 return Ok(listNotiReadDTO);
             }

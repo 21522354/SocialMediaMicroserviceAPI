@@ -83,6 +83,28 @@ namespace PostService.Controllers
             var listPostReadDTO = listPost.Select(post => (post, user).Adapt<PostReadDTO>()).ToList();
             return Ok(listPostReadDTO);
         }
+        [HttpGet("personalPage/reels/{userId}")]
+        public async Task<IActionResult> GetPersonalPageReel(Guid userId)
+        {
+            var listPost = await _postRepository.GetPostsByUserId(userId);
+            listPost = listPost.Where(p => p.IsReel == true);
+            var user = await _userDataClient.GetUserById(userId);
+            // Sử dụng ánh xạ cho từng post trong danh sách
+            var listPostReadDTO = listPost.Select(post => (post, user).Adapt<PostReadDTO>()).ToList();
+            listPostReadDTO = listPostReadDTO.OrderByDescending(p => p.CreatedDate).ToList();
+            return Ok(listPostReadDTO);
+        }
+        [HttpGet("personalPage/posts/{userId}")]
+        public async Task<IActionResult> GetPersonalPagePost(Guid userId)
+        {
+            var listPost = await _postRepository.GetPostsByUserId(userId);
+            listPost = listPost.Where(p => p.IsReel == false);
+            var user = await _userDataClient.GetUserById(userId);
+            // Sử dụng ánh xạ cho từng post trong danh sách
+            var listPostReadDTO = listPost.Select(post => (post, user).Adapt<PostReadDTO>()).ToList();
+            listPostReadDTO = listPostReadDTO.OrderByDescending(p => p.CreatedDate).ToList();
+            return Ok(listPostReadDTO);
+        }
         [HttpGet("explore/{userId}")]
         public async Task<IActionResult> GetRandomPost(Guid userId)
         {

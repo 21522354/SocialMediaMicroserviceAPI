@@ -121,6 +121,8 @@ namespace PostService.Data_Layer
 
                         var listReels = await _context.Posts.Where(p => p.IsReel == true).ToListAsync();
 
+                        listReels = listReels.Take(3).ToList();
+
                         foreach (var post in listReels)
                         {
                             for (int i = 1; i <= 10; i++)
