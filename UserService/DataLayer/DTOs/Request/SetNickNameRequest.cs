@@ -1,8 +1,8 @@
-﻿namespace UserService.DataLayer.DTOs
+﻿namespace UserService.DataLayer.DTOs.Request
 {
     public class SetNickNameRequest
     {
-        public Guid UserId { get; set; }
+        public int UserId { get; set; }
         public string NickName { get; set; }        
     }
 }

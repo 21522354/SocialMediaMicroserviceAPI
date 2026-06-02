@@ -12,7 +12,7 @@ namespace UserService.DataLayer
             {
                 var _context = serviceScope.ServiceProvider.GetService<UserDBContext>();
 
-                _context.Database.Migrate();
+                //_context.Database.Migrate();
 
                 if(!_context.Users.Any())
                 {
@@ -20,7 +20,7 @@ namespace UserService.DataLayer
                     _context.Users.AddRange(
                         new User()
                         {
-                            UserId = Guid.Parse("e0be4a36-67cd-4dd6-be48-8b800c3123d1"),
+                            UserId = 1,
                             NickName = "nva_123",
                             FullName = "Nguyen Van A",
                             Email = "ndam8176@gmail.com",
@@ -30,7 +30,7 @@ namespace UserService.DataLayer
                         },
                         new User()
                         {
-                            UserId = Guid.Parse("e0be4a36-67cd-4dd6-be48-8b800c3123d2"),
+                            UserId = 2,
                             NickName = "nvb_123",
                             FullName = "Nguyen Van B",
                             Email = "ndam8177@gmail.com",
@@ -40,7 +40,7 @@ namespace UserService.DataLayer
                         },
                         new User()
                         {
-                            UserId = Guid.Parse("e0be4a36-67cd-4dd6-be48-8b800c3123d3"),
+                            UserId = 3,
                             FullName = "Nguyen Van C",
                             NickName = "nvc_123",
                             Email = "ndam8178@gmail.com",
@@ -50,7 +50,7 @@ namespace UserService.DataLayer
                         },
                         new User()
                         {
-                            UserId = Guid.Parse("e0be4a36-67cd-4dd6-be48-8b800c3123d4"),
+                            UserId = 4,
                             NickName = "nvd_123",
                             FullName = "Nguyen Van D",
                             Email = "ndam8179@gmail.com",
@@ -60,49 +60,13 @@ namespace UserService.DataLayer
                         },
                         new User()
                         {
-                            UserId = Guid.Parse("e0be4a36-67cd-4dd6-be48-8b800c3123d5"),
+                            UserId = 5,
                             NickName = "nve_123",
                             FullName = "Nguyen Van E",
                             Email = "ndam8180@gmail.com",
                             Password = "123123",
                             Avatar = "https://www.vietnamworks.com/hrinsider/wp-content/uploads/2023/12/hinh-anh-cute-anime-029.jpg",
                             FbId = "asdadfasdf"
-                        });
-                    _context.Follows.AddRange(
-                        new UserFollow()
-                        {
-                            UserFromId = Guid.Parse("e0be4a36-67cd-4dd6-be48-8b800c3123d1"),
-                            UserToId = Guid.Parse("e0be4a36-67cd-4dd6-be48-8b800c3123d2")
-                        },
-                        new UserFollow()
-                        {
-                            UserFromId = Guid.Parse("e0be4a36-67cd-4dd6-be48-8b800c3123d1"),
-                            UserToId = Guid.Parse("e0be4a36-67cd-4dd6-be48-8b800c3123d3")
-                        },
-                        new UserFollow()
-                        {
-                            UserFromId = Guid.Parse("e0be4a36-67cd-4dd6-be48-8b800c3123d1"),
-                            UserToId = Guid.Parse("e0be4a36-67cd-4dd6-be48-8b800c3123d4")
-                        },
-                        new UserFollow()
-                        {
-                            UserFromId = Guid.Parse("e0be4a36-67cd-4dd6-be48-8b800c3123d2"),
-                            UserToId = Guid.Parse("e0be4a36-67cd-4dd6-be48-8b800c3123d4")
-                        },
-                        new UserFollow()
-                        {
-                            UserFromId = Guid.Parse("e0be4a36-67cd-4dd6-be48-8b800c3123d2"),
-                            UserToId = Guid.Parse("e0be4a36-67cd-4dd6-be48-8b800c3123d1")
-                        },
-                        new UserFollow()
-                        {
-                            UserFromId = Guid.Parse("e0be4a36-67cd-4dd6-be48-8b800c3123d2"),
-                            UserToId = Guid.Parse("e0be4a36-67cd-4dd6-be48-8b800c3123d3")
-                        },
-                        new UserFollow()
-                        {
-                            UserFromId = Guid.Parse("e0be4a36-67cd-4dd6-be48-8b800c3123d3"),
-                            UserToId = Guid.Parse("e0be4a36-67cd-4dd6-be48-8b800c3123d4")
                         });
                     _context.SaveChanges();
                 }

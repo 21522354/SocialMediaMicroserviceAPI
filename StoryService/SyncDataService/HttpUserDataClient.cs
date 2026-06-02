@@ -31,7 +31,7 @@ namespace StoryService.SyncDataService
 
         public async Task<List<UserReadDTO>> GetUsersFollowing(Guid userId)
         {
-            var response = await _httpClient.GetAsync($"{_configuration["UserServiceEndpoint"]}/following/{userId}");
+            var response = await _httpClient.GetAsync($"{_configuration["UserServiceEndpoint"]}/{userId}/following");
             if (response.IsSuccessStatusCode)
             {
                 var content = await response.Content.ReadAsStringAsync();

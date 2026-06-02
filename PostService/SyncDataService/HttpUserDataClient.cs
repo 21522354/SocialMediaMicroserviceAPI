@@ -31,7 +31,7 @@ namespace PostService.SyncDataService
 
         public async Task<List<UserReadDTO>> GetUserFollower(Guid id)
         {
-            var response = await _httpClient.GetAsync($"{_configuration["UserServiceEndpoint"]}/followers/{id}");
+            var response = await _httpClient.GetAsync($"{_configuration["UserServiceEndpoint"]}/{id}/followers");
 
             if (response.IsSuccessStatusCode)
             {
@@ -47,7 +47,7 @@ namespace PostService.SyncDataService
 
         public async Task<List<UserReadDTO>> GetUserFollowing(Guid id)
         {
-            var response = await _httpClient.GetAsync($"{_configuration["UserServiceEndpoint"]}/following/{id}");
+            var response = await _httpClient.GetAsync($"{_configuration["UserServiceEndpoint"]}/{id}/following");
 
             if (response.IsSuccessStatusCode)
             {

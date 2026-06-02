@@ -7,8 +7,7 @@ namespace UserService.DataLayer
     public class UserDBContext : DbContext
     {
         public UserDBContext(DbContextOptions<UserDBContext> options) : base(options) { }
-        public DbSet<User> Users { get; set; }              
-        public DbSet<UserFollow> Follows { get; set; }
+        public DbSet<User> Users { get; set; }
         protected override void OnModelCreating(ModelBuilder modelBuilder)
         {
             base.OnModelCreating(modelBuilder);
@@ -24,19 +23,6 @@ namespace UserService.DataLayer
             modelBuilder.Entity<User>()
                 .Property(u => u.NickName)
                 .IsRequired(false);
-
-            modelBuilder.Entity<UserFollow>()
-                .HasOne(f => f.UserFrom)
-                .WithMany()
-                .HasForeignKey(f => f.UserFromId)
-                .OnDelete(DeleteBehavior.Restrict); // hoặc .OnDelete(DeleteBehavior.NoAction);
-
-            modelBuilder.Entity<UserFollow>()
-                .HasOne(f => f.UserTo)
-                .WithMany()
-                .HasForeignKey(f => f.UserToId)
-                .OnDelete(DeleteBehavior.Restrict); // hoặc .OnDelete(DeleteBehavior.NoAction);
-
         }
     }
 }

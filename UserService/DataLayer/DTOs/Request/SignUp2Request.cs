@@ -1,4 +1,4 @@
-﻿namespace UserService.DataLayer.DTOs
+﻿namespace UserService.DataLayer.DTOs.Request
 {
     public class SignUp2Request
     {

@@ -1,8 +1,8 @@
-﻿namespace UserService.DataLayer.DTOs
+﻿namespace UserService.DataLayer.DTOs.Request
 {
     public class ChangePasswordRequest
     {
-        public Guid UserId { get; set; }
+        public int UserId { get; set; }
         public string OldPassword { get; set; }
         public string NewPassword { get; set; }     
     }

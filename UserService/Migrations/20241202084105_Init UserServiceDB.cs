@@ -15,7 +15,8 @@ namespace UserService.Migrations
                 name: "Users",
                 columns: table => new
                 {
-                    UserId = table.Column<Guid>(type: "uniqueidentifier", nullable: false),
+                    UserId = table.Column<int>(type: "int", nullable: false)
+                        .Annotation("SqlServer:Identity", "1, 1"),
                     Email = table.Column<string>(type: "nvarchar(50)", maxLength: 50, nullable: false),
                     Password = table.Column<string>(type: "nvarchar(max)", nullable: false),
                     NickName = table.Column<string>(type: "nvarchar(max)", nullable: true),
@@ -34,8 +35,8 @@ namespace UserService.Migrations
                 {
                     Id = table.Column<int>(type: "int", nullable: false)
                         .Annotation("SqlServer:Identity", "1, 1"),
-                    UserFromId = table.Column<Guid>(type: "uniqueidentifier", nullable: false),
-                    UserToId = table.Column<Guid>(type: "uniqueidentifier", nullable: false)
+                    UserFromId = table.Column<int>(type: "int", nullable: false),
+                    UserToId = table.Column<int>(type: "int", nullable: false)
                 },
                 constraints: table =>
                 {

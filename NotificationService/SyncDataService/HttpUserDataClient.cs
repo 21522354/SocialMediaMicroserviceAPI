@@ -31,7 +31,7 @@ namespace NotificationService.SyncDataService
 
         public async Task<UserReadDTO> GetUserByNickName(string nickName)
         {
-            var response = await _httpClient.GetAsync($"{_configuration["UserServiceEndpoint"]}/nickName/{nickName}");
+            var response = await _httpClient.GetAsync($"{_configuration["UserServiceEndpoint"]}?nickname={Uri.EscapeDataString(nickName)}");
             if (response.IsSuccessStatusCode)
             {
                 var content = await response.Content.ReadAsStringAsync();
@@ -47,7 +47,7 @@ namespace NotificationService.SyncDataService
 
         public async Task<List<UserReadDTO>> GetUserFollower(Guid id)
         {
-            var response = await _httpClient.GetAsync($"{_configuration["UserServiceEndpoint"]}/followers/{id}");
+            var response = await _httpClient.GetAsync($"{_configuration["UserServiceEndpoint"]}/{id}/followers");
 
             if (response.IsSuccessStatusCode)
             {

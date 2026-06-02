@@ -6,7 +6,7 @@ namespace UserService.DataLayer.Models
     public class User
     {
         [Key]
-        public Guid UserId { get; set; }
+        public int UserId { get; set; }
         [Required]
         [StringLength(50)]
         public string Email { get; set; }
@@ -15,6 +15,6 @@ namespace UserService.DataLayer.Models
         public string NickName { get; set; }        
         public string FullName { get; set; }        
         public string Avatar { get; set; }
-        public string FbId { get; set; }
+        public string? FbId { get; set; }
     }
 }
