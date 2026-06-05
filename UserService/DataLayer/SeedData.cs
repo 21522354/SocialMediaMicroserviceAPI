@@ -10,7 +10,7 @@ namespace UserService.DataLayer
         {
             using (var serviceScope = app.ApplicationServices.CreateScope())
             {
-                var _context = serviceScope.ServiceProvider.GetService<UserDBContext>();
+                var _context = serviceScope.ServiceProvider.GetRequiredService<UserDBContext>();
 
                 //_context.Database.Migrate();
 
@@ -20,7 +20,6 @@ namespace UserService.DataLayer
                     _context.Users.AddRange(
                         new User()
                         {
-                            UserId = 1,
                             NickName = "nva_123",
                             FullName = "Nguyen Van A",
                             Email = "ndam8176@gmail.com",
@@ -30,7 +29,6 @@ namespace UserService.DataLayer
                         },
                         new User()
                         {
-                            UserId = 2,
                             NickName = "nvb_123",
                             FullName = "Nguyen Van B",
                             Email = "ndam8177@gmail.com",
@@ -40,7 +38,6 @@ namespace UserService.DataLayer
                         },
                         new User()
                         {
-                            UserId = 3,
                             FullName = "Nguyen Van C",
                             NickName = "nvc_123",
                             Email = "ndam8178@gmail.com",
@@ -50,7 +47,6 @@ namespace UserService.DataLayer
                         },
                         new User()
                         {
-                            UserId = 4,
                             NickName = "nvd_123",
                             FullName = "Nguyen Van D",
                             Email = "ndam8179@gmail.com",
@@ -60,7 +56,6 @@ namespace UserService.DataLayer
                         },
                         new User()
                         {
-                            UserId = 5,
                             NickName = "nve_123",
                             FullName = "Nguyen Van E",
                             Email = "ndam8180@gmail.com",

@@ -7,19 +7,27 @@ namespace UserService
 {
     public static class DependencyInjection
     {
-        public static void AddApplicationService(this IServiceCollection services, IConfiguration configuration)
+        public static void AddApplicationService(
+        this IServiceCollection services,
+        IConfiguration configuration,
+        IHostEnvironment environment)
         {
             services.AddMapping();
+
             services.AddDbContext<UserDBContext>(options =>
             {
-                options.UseInMemoryDatabase("InMem");
+                if (environment.IsDevelopment())
+                {
+                    options.UseInMemoryDatabase("InMem");
+                }
+                else
+                {
+                    options.UseSqlServer(
+                        configuration.GetConnectionString("UserServiceConnection"));
+                }
             });
-            //services.AddDbContext<UserDBContext>(options =>
-            //     options.UseSqlServer(configuration.GetConnectionString("UserServiceConnection")));
 
             services.AddScoped<IUserService, S_User>();
-            services.AddScoped<IUserFollowService, S_UserFollow>();
-
         }
     }
 }
