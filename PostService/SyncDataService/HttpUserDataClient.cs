@@ -1,4 +1,4 @@
-﻿using PostService.Data_Layer.DTOs;
+using PostService.Data_Layer.DTOs;
 using System.Text.Json;
 
 namespace PostService.SyncDataService
@@ -11,54 +11,61 @@ namespace PostService.SyncDataService
         public HttpUserDataClient(HttpClient httpClient, IConfiguration configuration)
         {
             _httpClient = httpClient;
-            _configuration = configuration; 
+            _configuration = configuration;
         }
-        public async Task<UserReadDTO> GetUserById(Guid id)
+
+        public async Task<UserReadDTO> GetUserById(int id)
         {
             var response = await _httpClient.GetAsync($"{_configuration["UserServiceEndpoint"]}/{id}");
-
-            if (response.IsSuccessStatusCode)
-            {
-                var content = await response.Content.ReadAsStringAsync();
-                var user = JsonSerializer.Deserialize<UserReadDTO>(content, new JsonSerializerOptions { PropertyNameCaseInsensitive = true });
-                return user;
-            }
-            else
+            if (!response.IsSuccessStatusCode)
             {
                 throw new HttpRequestException($"Failed to get user by ID: {response.StatusCode}");
             }
+
+            var content = await response.Content.ReadAsStringAsync();
+            return ReadResponseData<UserReadDTO>(content);
         }
 
-        public async Task<List<UserReadDTO>> GetUserFollower(Guid id)
+        public async Task<List<UserReadDTO>> GetUserFollower(int id)
         {
             var response = await _httpClient.GetAsync($"{_configuration["UserServiceEndpoint"]}/{id}/followers");
+            if (!response.IsSuccessStatusCode)
+            {
+                return new List<UserReadDTO>();
+            }
 
-            if (response.IsSuccessStatusCode)
-            {
-                var content = await response.Content.ReadAsStringAsync();
-                var listUser = JsonSerializer.Deserialize<List<UserReadDTO>>(content, new JsonSerializerOptions { PropertyNameCaseInsensitive = true });
-                return listUser;
-            }
-            else
-            {
-                throw new HttpRequestException($"Failed to get user by ID: {response.StatusCode}");
-            }
+            var content = await response.Content.ReadAsStringAsync();
+            return ReadResponseData<List<UserReadDTO>>(content);
         }
 
-        public async Task<List<UserReadDTO>> GetUserFollowing(Guid id)
+        public async Task<List<UserReadDTO>> GetUserFollowing(int id)
         {
             var response = await _httpClient.GetAsync($"{_configuration["UserServiceEndpoint"]}/{id}/following");
+            if (!response.IsSuccessStatusCode)
+            {
+                return new List<UserReadDTO>();
+            }
 
-            if (response.IsSuccessStatusCode)
+            var content = await response.Content.ReadAsStringAsync();
+            return ReadResponseData<List<UserReadDTO>>(content);
+        }
+
+        private static T ReadResponseData<T>(string content)
+        {
+            var options = new JsonSerializerOptions { PropertyNameCaseInsensitive = true };
+            var response = JsonSerializer.Deserialize<ServiceResponse<T>>(content, options);
+            if (response == null || response.data == null)
             {
-                var content = await response.Content.ReadAsStringAsync();
-                var listUser = JsonSerializer.Deserialize<List<UserReadDTO>>(content, new JsonSerializerOptions { PropertyNameCaseInsensitive = true });
-                return listUser;
+                throw new HttpRequestException("User service returned empty data.");
             }
-            else
-            {
-                throw new HttpRequestException($"Failed to get user by ID: {response.StatusCode}");
-            }
+
+            return response.data;
+        }
+
+        private class ServiceResponse<T>
+        {
+            public int result { get; set; }
+            public T data { get; set; }
         }
     }
 }

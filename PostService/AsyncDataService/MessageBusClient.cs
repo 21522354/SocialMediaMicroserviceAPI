@@ -1,46 +1,41 @@
-﻿using Newtonsoft.Json;
+using Newtonsoft.Json;
 using PostService.Data_Layer.DTOs;
 using RabbitMQ.Client;
 using System.Text;
-using System.Text.Json;
 
 namespace PostService.AsyncDataService
 {
-    public class MessageBusClient : IMessageBusClient
+    public class MessageBusClient : IMessageBusClient, IDisposable
     {
-        private readonly IConfiguration _configuration;
         private readonly IConnection _connection;
         private readonly IModel _channel;
 
-        // Constructor: Thiết lập kết nối và channel khi khởi tạo
         public MessageBusClient(IConfiguration configuration)
         {
-            _configuration = configuration;
+            var factory = new ConnectionFactory
+            {
+                HostName = configuration["RabbitMQHost"],
+                Port = int.Parse(configuration["RabbitMQPort"] ?? "5672")
+            };
 
-            // Khởi tạo kết nối và channel trong hàm khởi tạo
-            var factory = new ConnectionFactory { HostName = _configuration["RabbitMQHost"], Port = int.Parse(_configuration["RabbitMQPort"]) };
-            _connection = factory.CreateConnection();  // Tạo kết nối
-            _channel = _connection.CreateModel();      // Tạo channel
-
-            // Đảm bảo rằng queue đã được tạo sẵn
+            _connection = factory.CreateConnection();
+            _channel = _connection.CreateModel();
             _channel.QueueDeclare("posts", durable: false, exclusive: false, autoDelete: false, arguments: null);
         }
 
-        // Phương thức để publish notification mới
-        public async Task PublishNewNotification(NotificationMessageDTO notificationReadDTO)
+        public Task PublishNewNotification(NotificationMessageDTO notificationReadDTO)
         {
             var json = JsonConvert.SerializeObject(notificationReadDTO);
             var body = Encoding.UTF8.GetBytes(json);
 
-            // Tái sử dụng channel đã tạo
             _channel.BasicPublish(
-                exchange: "posts",
-                routingKey: "",
+                exchange: string.Empty,
+                routingKey: "posts",
                 body: body);
-            await Task.CompletedTask;
+
+            return Task.CompletedTask;
         }
 
-        // Phương thức hủy kết nối (nên được gọi khi không còn sử dụng MessageBusClient)
         public void Dispose()
         {
             _channel?.Close();

@@ -1,11 +1,9 @@
-﻿using Microsoft.EntityFrameworkCore;
+using Microsoft.EntityFrameworkCore;
 using PostService.AsyncDataService;
 using PostService.Data_Layer;
-using PostService.Data_Layer.Repository;
 using PostService.Mapper;
+using PostService.Service;
 using PostService.SyncDataService;
-using RabbitMQ.Client;
-using System.Reflection.Metadata;
 
 namespace PostService
 {
@@ -16,19 +14,10 @@ namespace PostService
             services.AddMapping();
 
             services.AddDbContext<PostServiceDBContext>(options =>
-                options.UseSqlServer(configuration.GetConnectionString("PostServiceConnection"))
-                //options.UseInMemoryDatabase("Inmem")
-                );
-
+                options.UseSqlServer(configuration.GetConnectionString("PostServiceConnection")));
 
             services.AddHttpClient<IUserDataClient, HttpUserDataClient>();
-            services.AddScoped<IPostRepository, PostRepository>();
-            services.AddScoped<IPostCommentRepository, PostCommentRepository>();
-            services.AddScoped<IPostLikeRepository, PostLikeRepository>();
-            services.AddScoped<IPostMediaRepository, PostMediaRepository>();
-            services.AddScoped<IReplyCommentRepository, ReplyCommentRepository>();
-            services.AddScoped<IPostHagtagRepository, PostHagtagRepository>();
-            services.AddScoped<IUnseenPostRepository, UnseenPostReposiroty>();
+            services.AddScoped<IPostService, S_Post>();
             services.AddScoped<IMessageBusClient, MessageBusClient>();
         }
     }

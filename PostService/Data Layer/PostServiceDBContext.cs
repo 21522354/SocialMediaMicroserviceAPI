@@ -71,16 +71,28 @@ namespace PostService.Data_Layer
                 .HasKey(p => p.ReplyCommentId);
 
             modelBuilder.Entity<PostLike>()
-                .HasKey(p => new { p.PostId, p.UserId });
+                .HasKey(p => p.Id);
+
+            modelBuilder.Entity<PostLike>()
+                .HasIndex(p => new { p.PostId, p.UserId })
+                .IsUnique();
 
             modelBuilder.Entity<PostMedia>()
                 .HasKey(p => p.Id);
 
             modelBuilder.Entity<UnseenPost>()
-                .HasKey(p => new { p.PostId, p.UserId });
+                .HasKey(p => p.Id);
 
             modelBuilder.Entity<SeenReels>()
-                .HasKey(p => new { p.PostId, p.UserId });
+                .HasKey(p => p.Id);
+
+            modelBuilder.Entity<UnseenPost>()
+                .HasIndex(p => new { p.PostId, p.UserId })
+                .IsUnique();
+
+            modelBuilder.Entity<SeenReels>()
+                .HasIndex(p => new { p.PostId, p.UserId })
+                .IsUnique();
 
             modelBuilder.Entity<SeenReels>()
                 .HasOne(p => p.Post)

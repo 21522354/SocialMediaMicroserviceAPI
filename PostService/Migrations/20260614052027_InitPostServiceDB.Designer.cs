@@ -3,6 +3,7 @@ using System;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
 using Microsoft.EntityFrameworkCore.Metadata;
+using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 using PostService.Data_Layer;
 
@@ -11,9 +12,11 @@ using PostService.Data_Layer;
 namespace PostService.Migrations
 {
     [DbContext(typeof(PostServiceDBContext))]
-    partial class PostServiceDBContextModelSnapshot : ModelSnapshot
+    [Migration("20260614052027_InitPostServiceDB")]
+    partial class InitPostServiceDB
     {
-        protected override void BuildModel(ModelBuilder modelBuilder)
+        /// <inheritdoc />
+        protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder
