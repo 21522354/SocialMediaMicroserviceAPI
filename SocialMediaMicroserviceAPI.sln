@@ -13,6 +13,8 @@ Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "NotificationService", "Noti
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "ChatService", "ChatService\ChatService.csproj", "{BAD4B170-4EED-46C8-BDE1-C85231A55305}"
 EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "IdentityService", "IdentityService\IdentityService.csproj", "{8067B171-4F67-43E4-AADE-A660E6DB4173}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
@@ -39,6 +41,10 @@ Global
 		{BAD4B170-4EED-46C8-BDE1-C85231A55305}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{BAD4B170-4EED-46C8-BDE1-C85231A55305}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{BAD4B170-4EED-46C8-BDE1-C85231A55305}.Release|Any CPU.Build.0 = Release|Any CPU
+		{8067B171-4F67-43E4-AADE-A660E6DB4173}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{8067B171-4F67-43E4-AADE-A660E6DB4173}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{8067B171-4F67-43E4-AADE-A660E6DB4173}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{8067B171-4F67-43E4-AADE-A660E6DB4173}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
