@@ -4,7 +4,7 @@ namespace StoryService.SyncDataService
 {
     public interface IUserDataClient
     {
-        Task<UserReadDTO> GetUserById(Guid id);
-        Task<List<UserReadDTO>> GetUsersFollowing(Guid userId);
+        Task<UserReadDTO> GetUserById(int id);
+        Task<List<UserReadDTO>> GetUsersFollowing(int userId);
     }
 }

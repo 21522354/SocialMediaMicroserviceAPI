@@ -2,7 +2,7 @@
 {
     public class UserAlreadySeenStory
     {
-        public Guid UserId { get; set; }
+        public int UserId { get; set; }
         public Guid StoryId { get; set; }   
         public virtual Story Story { get; set; }
     }

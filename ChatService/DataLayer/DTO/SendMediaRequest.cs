@@ -2,8 +2,8 @@
 {
     public class SendMediaRequest
     {
-        public Guid UserSendId { get; set; }
-        public Guid UserReceiveId { get; set; }
+        public int UserSendId { get; set; }
+        public int UserReceiveId { get; set; }
         public List<string> Images { get; set; }    
     }
 }

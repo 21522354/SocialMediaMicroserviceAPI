@@ -37,7 +37,7 @@ namespace StoryService.Data_Layer.Repository
             return story;
         }
 
-        public async Task<List<Story>> GetFriendStory(Guid userId)
+        public async Task<List<Story>> GetFriendStory(int userId)
         {
             var friendStories = await _context.Stories
             .Where(p => p.UserId == userId && p.CreatedDate > DateTime.Now.AddHours(-24))
@@ -46,7 +46,7 @@ namespace StoryService.Data_Layer.Repository
             return friendStories;
         }
 
-        public async Task<List<Story>> GetSavedStories(Guid userId)
+        public async Task<List<Story>> GetSavedStories(int userId)
         {
             var stories = await _context.Stories
                 .Where(p => p.UserId == userId && p.IsSaved == true)

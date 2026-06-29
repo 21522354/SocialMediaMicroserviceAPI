@@ -4,6 +4,7 @@ using NotificationService.AsyncDataService;
 using NotificationService.DataLayer;
 using NotificationService.DataLayer.Repository;
 using NotificationService.EventProcessing;
+using NotificationService.Service;
 using NotificationService.SyncDataService;
 
 namespace NotificationService
@@ -19,6 +20,7 @@ namespace NotificationService
 
             services.AddSingleton<IEventProcessor, EventProcessor>();
             services.AddScoped<INotificationRepository, NotificationRepository>();
+            services.AddScoped<INotificationService, S_Notification>();
             services.AddMapster();
             services.AddHttpClient<IUserDataClient, HttpUserDataClient>();
 

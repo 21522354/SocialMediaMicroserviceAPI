@@ -30,7 +30,7 @@ namespace StoryService.Data_Layer.Repository
             return await _context.UserAlreadySeenStories.ToListAsync();
         }
 
-        public async Task<UserAlreadySeenStory> GetByBothId(Guid storyId, Guid userId)
+        public async Task<UserAlreadySeenStory> GetByBothId(Guid storyId, int userId)
         {
             var story = await _context.UserAlreadySeenStories.Where(p => p.UserId == userId && p.StoryId == storyId).FirstOrDefaultAsync();
             return story;

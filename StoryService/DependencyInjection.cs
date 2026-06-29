@@ -3,6 +3,7 @@ using StoryService.AsyncDataService;
 using StoryService.Data_Layer;
 using StoryService.Data_Layer.Repository;
 using StoryService.Mapper;
+using StoryService.Service;
 using StoryService.SyncDataService;
 
 namespace StoryService
@@ -20,6 +21,7 @@ namespace StoryService
             services.AddHttpClient<IUserDataClient, HttpUserDataClient>();
             services.AddScoped<IStoryRepository, StoryRepository>();
             services.AddScoped<IUserAlreadySeenStoryRepository, UserAlreadySeenStoryRepository>();
+            services.AddScoped<IStoryService, S_Story>();
             services.AddScoped<IMessageBusClient, MessageBusClient>();
 
             services.AddMapping();

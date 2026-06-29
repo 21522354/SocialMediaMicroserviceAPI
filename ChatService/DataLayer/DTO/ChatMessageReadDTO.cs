@@ -3,7 +3,7 @@
     public class ChatMessageReadDTO
     {
         public Guid ChatMessageId { get; set; }
-        public Guid UserSendId { get; set; }
+        public int UserSendId { get; set; }
         public string NickName { get; set; }        
         public string Avatar { get; set; }
         public string Message { get; set; }

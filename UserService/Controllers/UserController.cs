@@ -59,12 +59,6 @@ namespace UserService.Controllers
             return Ok(res);
         }
 
-        [HttpPost]
-        public async Task<IActionResult> SignUp([FromBody] SignUpAndSignInRequest request)
-        {
-            var res = await _userService.SignUp(request.Email, request.Password);
-            return Ok(res);
-        }
 
         [HttpPatch("{id}/nickname")]
         public async Task<IActionResult> SetNickName(int id, [FromBody] SetNickNameRequest request)
@@ -90,10 +84,24 @@ namespace UserService.Controllers
             return Ok(res);
         }
 
-        [HttpPost("registrations")]
+        [HttpPost("registrations/email")]
+        public async Task<IActionResult> SignUp([FromBody] SignUpAndSignInRequest request)
+        {
+            var res = await _userService.SignUp(request.Email, request.Password);
+            return Ok(res);
+        }
+
+        [HttpPost("registrations/normal")]
         public async Task<IActionResult> SignUp2(SignUp2Request request)
         {
             var res = await _userService.SignUp2(request);
+            return Ok(res);
+        }
+
+        [HttpPost("signIn/fb")]
+        public async Task<IActionResult> SignInWithFb(string fbId)
+        {
+            var res = await _userService.SignInWithFB(fbId);
             return Ok(res);
         }
     }

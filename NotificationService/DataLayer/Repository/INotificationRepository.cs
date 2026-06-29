@@ -6,6 +6,6 @@ namespace NotificationService.DataLayer.Repository
     {
         Task AddNew(Notification notification);
         Task<List<Notification>> GetAll();
-        Task<List<Notification>> GetByUserId(Guid userId);
+        Task<List<Notification>> GetByUserId(int userId);
     }
 }

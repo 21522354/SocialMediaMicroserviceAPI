@@ -4,6 +4,6 @@ namespace ChatService.SyncDataService
 {
     public interface IUserDataClient
     {
-        Task<UserReadDTO> GetUserById(Guid userId); 
+        Task<UserReadDTO> GetUserById(int userId); 
     }
 }

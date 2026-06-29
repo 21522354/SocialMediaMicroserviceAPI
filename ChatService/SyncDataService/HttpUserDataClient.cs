@@ -1,5 +1,4 @@
 ﻿using ChatService.DataLayer.DTO;
-using System.Net.Http;
 using System.Text.Json;
 
 namespace ChatService.SyncDataService
@@ -14,20 +13,34 @@ namespace ChatService.SyncDataService
             _httpClient = httpClient;
             _configuration = configuration;
         }
-        public async Task<UserReadDTO> GetUserById(Guid id)
+        public async Task<UserReadDTO> GetUserById(int id)
         {
             var response = await _httpClient.GetAsync($"{_configuration["UserServiceEndpoint"]}/{id}");
-
-            if (response.IsSuccessStatusCode)
-            {
-                var content = await response.Content.ReadAsStringAsync();
-                var user = JsonSerializer.Deserialize<UserReadDTO>(content, new JsonSerializerOptions { PropertyNameCaseInsensitive = true });
-                return user;
-            }
-            else
+            if (!response.IsSuccessStatusCode)
             {
                 throw new HttpRequestException($"Failed to get user by ID: {response.StatusCode}");
             }
+
+            var content = await response.Content.ReadAsStringAsync();
+            return ReadResponseData<UserReadDTO>(content);
+        }
+
+        private static T ReadResponseData<T>(string content)
+        {
+            var options = new JsonSerializerOptions { PropertyNameCaseInsensitive = true };
+            var response = JsonSerializer.Deserialize<ServiceResponse<T>>(content, options);
+            if (response == null || response.data == null)
+            {
+                throw new HttpRequestException("User service returned empty data.");
+            }
+
+            return response.data;
+        }
+
+        private class ServiceResponse<T>
+        {
+            public int result { get; set; }
+            public T data { get; set; }
         }
     }
 }

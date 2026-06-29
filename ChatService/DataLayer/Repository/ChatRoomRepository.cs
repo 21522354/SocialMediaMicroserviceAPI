@@ -23,7 +23,7 @@ namespace ChatService.DataLayer.Repository
             await _context.SaveChangesAsync();
         }
 
-        public async Task<List<ChatRoom>> GetALlChatRoomForUser(Guid userId)
+        public async Task<List<ChatRoom>> GetALlChatRoomForUser(int userId)
         {
             return await _context.ChatRooms.Where(
                 p => p.FirstUserId == userId || p.SecondUserId == userId).ToListAsync();
@@ -34,7 +34,7 @@ namespace ChatService.DataLayer.Repository
             return await _context.ChatRooms.FindAsync(chatRoomId); 
         }
 
-        public async Task<ChatRoom> GetChatRoomByUserInChatRoom(Guid firstUserId, Guid secondUserId)
+        public async Task<ChatRoom> GetChatRoomByUserInChatRoom(int firstUserId, int secondUserId)
         {
             return await _context.ChatRooms.FirstOrDefaultAsync(
                 p =>

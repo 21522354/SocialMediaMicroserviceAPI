@@ -16,13 +16,13 @@ namespace StoryService.Data_Layer
                 Console.WriteLine("Seeding data");
 
                 // List of predefined User IDs
-                var userIds = new List<Guid>
+                var userIds = new List<int>
                 {
-                    Guid.Parse("e0be4a36-67cd-4dd6-be48-8b800c3123d1"),
-                    Guid.Parse("e0be4a36-67cd-4dd6-be48-8b800c3123d2"),
-                    Guid.Parse("e0be4a36-67cd-4dd6-be48-8b800c3123d3"),
-                    Guid.Parse("e0be4a36-67cd-4dd6-be48-8b800c3123d4"),
-                    Guid.Parse("e0be4a36-67cd-4dd6-be48-8b800c3123d5")
+                    1,
+                    2,
+                    3,
+                    4,
+                    5
                 };
 
                 // Seed 20 Story records

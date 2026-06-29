@@ -2,7 +2,7 @@
 {
     public class NotificationRead2DTO
     {
-        public Guid UserId { get; set; }
+        public int UserId { get; set; }
         public string Name { get; set; }
         public string Avatar { get; set; }
         public string Message { get; set; }

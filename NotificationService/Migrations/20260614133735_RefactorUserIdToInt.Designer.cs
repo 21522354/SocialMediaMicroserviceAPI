@@ -3,6 +3,7 @@ using System;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
 using Microsoft.EntityFrameworkCore.Metadata;
+using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 using NotificationService.DataLayer;
 
@@ -11,9 +12,11 @@ using NotificationService.DataLayer;
 namespace NotificationService.Migrations
 {
     [DbContext(typeof(NotificationServiceDBContext))]
-    partial class NotificationServiceDBContextModelSnapshot : ModelSnapshot
+    [Migration("20260614133735_RefactorUserIdToInt")]
+    partial class RefactorUserIdToInt
     {
-        protected override void BuildModel(ModelBuilder modelBuilder)
+        /// <inheritdoc />
+        protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder

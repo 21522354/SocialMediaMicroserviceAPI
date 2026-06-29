@@ -23,7 +23,7 @@ namespace NotificationService.DataLayer.Repository
             return await _context.Notifications.ToListAsync();
         }
 
-        public async Task<List<Notification>> GetByUserId(Guid userId)
+        public async Task<List<Notification>> GetByUserId(int userId)
         {
             return await _context.Notifications.Where(p => p.UserId == userId).ToListAsync();   
         }

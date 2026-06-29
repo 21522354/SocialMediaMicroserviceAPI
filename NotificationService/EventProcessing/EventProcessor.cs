@@ -72,7 +72,7 @@ namespace NotificationService.EventProcessing
                     await _repo.AddNew(noti);
 
                     var notificationMessage = _mapper.Map<NotificationMessageDTO>(noti);
-                    List<Guid> listUserReceive = new List<Guid>() { noti.UserId };
+                    List<int> listUserReceive = new List<int>() { noti.UserId };
                     notificationMessage.ListUserReceiveMessage = listUserReceive;
                     notificationMessage.EventType = "LikePost";
                     var notificationMessageJson = JsonSerializer.Serialize(notificationMessage);
@@ -98,7 +98,7 @@ namespace NotificationService.EventProcessing
 
                 var listUserFollower = await _userDataClient.GetUserFollower(notificationMessageDTO.UserInvoke);
 
-                var listUserReceive = new List<Guid>();
+                var listUserReceive = new List<int>();
 
                 foreach (var item in listUserFollower)
                 {
@@ -142,7 +142,7 @@ namespace NotificationService.EventProcessing
 
                 var listUserFollower = await _userDataClient.GetUserFollower(notificationMessageDTO.UserInvoke);
 
-                var listUserReceive = new List<Guid>();
+                var listUserReceive = new List<int>();
 
                 foreach ( var item in listUserFollower)
                 {
@@ -187,7 +187,7 @@ namespace NotificationService.EventProcessing
                     var user = await _userDataClient.GetUserByNickName(nickName);
                     listUserReadDTO.Add(user);
                 }
-                listUserReceive = new List<Guid>();
+                listUserReceive = new List<int>();
                 foreach (var user in listUserReadDTO)
                 {
                     try
@@ -237,7 +237,7 @@ namespace NotificationService.EventProcessing
                     await _repo.AddNew(noti);
 
                     var notificationMessage1 = _mapper.Map<NotificationMessageDTO>(noti);
-                    List<Guid> listUserReceive1 = new List<Guid>() { noti.UserId };
+                    List<int> listUserReceive1 = new List<int>() { noti.UserId };
                     notificationMessage1.ListUserReceiveMessage = listUserReceive1;
                     notificationMessage1.EventType = "ReplyComment";
                     var notificationMessageJson1 = JsonSerializer.Serialize(notificationMessage1);
@@ -266,7 +266,7 @@ namespace NotificationService.EventProcessing
                     var user = await _userDataClient.GetUserByNickName(nickName);
                     listUserReadDTO.Add(user);
                 }
-                var listUserReceive = new List<Guid>();
+                var listUserReceive = new List<int>();
                 foreach (var user in listUserReadDTO)
                 {
                     try
@@ -315,7 +315,7 @@ namespace NotificationService.EventProcessing
                     await _repo.AddNew(noti);
 
                     var notificationMessage1 = _mapper.Map<NotificationMessageDTO>(noti);
-                    List<Guid> listUserReceive1 = new List<Guid>() { noti.UserId };
+                    List<int> listUserReceive1 = new List<int>() { noti.UserId };
                     notificationMessage1.ListUserReceiveMessage = listUserReceive1;
                     notificationMessage1.EventType = "CommentPost";
                     var notificationMessageJson1 = JsonSerializer.Serialize(notificationMessage1);
@@ -345,7 +345,7 @@ namespace NotificationService.EventProcessing
                     var user = await _userDataClient.GetUserByNickName(nickName);
                     listUserReadDTO.Add(user);
                 }
-                var listUserReceive = new List<Guid>();
+                var listUserReceive = new List<int>();
                 foreach (var user in listUserReadDTO)
                 {
                     try
