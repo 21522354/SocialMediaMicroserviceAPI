@@ -212,42 +212,42 @@ namespace IdentityService.Common
             }
             return ToSentenceCase(result.Trim());
         }
-        public static string formatNumber(dynamic number, string digitGroupongSymbol, string decimalSymbol, int NoOfdigitsAfterDecimal)
-        {
-            try
-            {
-                Dictionary<dynamic, dynamic> dict = Utilities.Get_RegionSystem();
-                string sDateFormat = dict["sDateFormat"];
-                string sDigitGroup = dict["sDigitGroup"];
-                string sDecimal = dict["sDecimal"];
-                string _NoOfdigitsAfterDecimal = sDecimal + right("##################################################0", NoOfdigitsAfterDecimal);
-                string _format = "{00:###" + sDigitGroup + "###" + sDigitGroup + "###" + _NoOfdigitsAfterDecimal + "}";
-                string sFormat = string.Format(_format, number);
+        //public static string formatNumber(dynamic number, string digitGroupongSymbol, string decimalSymbol, int NoOfdigitsAfterDecimal)
+        //{
+        //    try
+        //    {
+        //        Dictionary<dynamic, dynamic> dict = Utilities.Get_RegionSystem();
+        //        string sDateFormat = dict["sDateFormat"];
+        //        string sDigitGroup = dict["sDigitGroup"];
+        //        string sDecimal = dict["sDecimal"];
+        //        string _NoOfdigitsAfterDecimal = sDecimal + right("##################################################0", NoOfdigitsAfterDecimal);
+        //        string _format = "{00:###" + sDigitGroup + "###" + sDigitGroup + "###" + _NoOfdigitsAfterDecimal + "}";
+        //        string sFormat = string.Format(_format, number);
 
-                if (sDigitGroup.Equals(digitGroupongSymbol.Trim()) && sDecimal.Equals(decimalSymbol.Trim()))
-                    return sFormat;
-                sFormat = sFormat.Replace(sDigitGroup, digitGroupongSymbol);
+        //        if (sDigitGroup.Equals(digitGroupongSymbol.Trim()) && sDecimal.Equals(decimalSymbol.Trim()))
+        //            return sFormat;
+        //        sFormat = sFormat.Replace(sDigitGroup, digitGroupongSymbol);
 
-                if (sDecimal.Equals(decimalSymbol.Trim()))
-                    return sFormat;
+        //        if (sDecimal.Equals(decimalSymbol.Trim()))
+        //            return sFormat;
 
 
-                int lastIndex = sFormat.LastIndexOf(sDecimal);
-                string sFormat2 = "";
-                for (int i = 0; i < sFormat.Length; i++)
-                {
-                    if (i == lastIndex)
-                        sFormat2 += decimalSymbol;
-                    else
-                        sFormat2 += sFormat[i];
-                }
-                return sFormat2;
-            }
-            catch (Exception)
-            {
-                return number.ToString();
-            }
-        }
+        //        int lastIndex = sFormat.LastIndexOf(sDecimal);
+        //        string sFormat2 = "";
+        //        for (int i = 0; i < sFormat.Length; i++)
+        //        {
+        //            if (i == lastIndex)
+        //                sFormat2 += decimalSymbol;
+        //            else
+        //                sFormat2 += sFormat[i];
+        //        }
+        //        return sFormat2;
+        //    }
+        //    catch (Exception)
+        //    {
+        //        return number.ToString();
+        //    }
+        //}
 
         public static string removeSpecialCharacter(string text)
         {
@@ -434,83 +434,83 @@ namespace IdentityService.Common
 
         //FUNCTION
 
-        public static void ChangDateToShortDate()
-        {
-            try
-            {
-                RegistryKey rkey = Registry.CurrentIdentity.OpenSubKey("Control Panel\\International", true);
-                string sDateFormat = rkey.GetValue("sShortDate", 0).ToString().Trim();
-                if (!sDateFormat.Trim().Equals("dd/MM/yyyy"))
-                {
-                    rkey.SetValue("sShortDate", "dd/MM/yyyy");
-                    //rkey.Flush();
-                }
-            }
-            catch (Exception)
-            {
-            }
-        }
+        //public static void ChangDateToShortDate()
+        //{
+        //    try
+        //    {
+        //        RegistryKey rkey = Registry.CurrentIdentity.OpenSubKey("Control Panel\\International", true);
+        //        string sDateFormat = rkey.GetValue("sShortDate", 0).ToString().Trim();
+        //        if (!sDateFormat.Trim().Equals("dd/MM/yyyy"))
+        //        {
+        //            rkey.SetValue("sShortDate", "dd/MM/yyyy");
+        //            //rkey.Flush();
+        //        }
+        //    }
+        //    catch (Exception)
+        //    {
+        //    }
+        //}
 
-        public static bool Test_RegionSystem()
-        {
-            bool _NotOk = false;
-            try
-            {
-                RegistryKey rkey = Registry.CurrentIdentity.OpenSubKey("Control Panel\\International", true);
-                string sDateFormat = rkey.GetValue("sShortDate", 0).ToString().Trim();
-                string sDecimal = rkey.GetValue("sDecimal", 0).ToString().Trim();
-                string sDigitGroup = rkey.GetValue("sThousand", 0).ToString().Trim();
-                if (sDateFormat != "dd/MM/yyyy")
-                    _NotOk = true;
-                if (sDecimal != ".")
-                    _NotOk = true;
-                if (sDigitGroup != ",")
-                    _NotOk = true;
-            }
-            catch (Exception)
-            {
-                _NotOk = false;
-            }
-            return _NotOk;
-        }
-        public static Dictionary<dynamic, dynamic> Get_RegionSystem()
-        {
-            Dictionary<dynamic, dynamic> dict = new Dictionary<dynamic, dynamic>() { { "statusCode", 200 }, { "sDateFormat", "" }, { "sDigitGroup", "" }, { "sDecimal", "" } };
-            try
-            {
-                RegistryKey rkey = Registry.CurrentIdentity.OpenSubKey("Control Panel\\International", true);
-                string sDateFormat = rkey.GetValue("sShortDate", 0).ToString();  //" + Định dạng ngày hiện tại của hệ thống là (" + rkey.GetValue("sShortDate", 0) + ") --> Cần đổi lại về mặc định là (dd/MM/yyyy)";
-                string sDigitGroup = rkey.GetValue("sThousand", 0).ToString(); //" + Ký tự phân biệt đơn vị, nghìn, triệu, tỷ... hiện tại của hệ thống là (" + rkey.GetValue("sThousand", 0) + ") --> Cần đổi lại về mặc định là dấu phẩy (.)";
-                string sDecimal = rkey.GetValue("sDecimal", 0).ToString(); //" + Ký tự phân biệt phần thập phân hiện tại của hệ thống là (" + rkey.GetValue("sDecimal", 0) + ") --> Cần đổi lại về mặc định là dấu chấm (,)";
-                dict["statusCode"] = 200;
-                dict["sDateFormat"] = sDateFormat;
-                dict["sDigitGroup"] = sDigitGroup;
-                dict["sDecimal"] = sDecimal;
-            }
-            catch (Exception)
-            {
-                dict["statusCode"] = -1;
-                dict["sDateFormat"] = "";
-                dict["sDigitGroup"] = "";
-                dict["sDecimal"] = "";
-            }
-            return dict;
-        }
-        public static void ChangFormatNumber(string sDateFormat = "dd/MM/yyyy", string sThousand = ",", string sDecimal = ".")
-        {
-            try
-            {
-                RegistryKey rkey = Registry.CurrentIdentity.OpenSubKey("Control Panel\\International", true);
-                rkey.SetValue("sThousand", sThousand);
-                rkey.SetValue("sDecimal", sDecimal);
-                if (!sDateFormat.Trim().Equals("dd/MM/yyyy"))
-                {
-                    rkey.SetValue("sShortDate", "dd/MM/yyyy");
-                    //rkey.Flush();
-                }
-            }
-            catch (Exception) { }
-        }
+        //public static bool Test_RegionSystem()
+        //{
+        //    bool _NotOk = false;
+        //    try
+        //    {
+        //        RegistryKey rkey = Registry.CurrentIdentity.OpenSubKey("Control Panel\\International", true);
+        //        string sDateFormat = rkey.GetValue("sShortDate", 0).ToString().Trim();
+        //        string sDecimal = rkey.GetValue("sDecimal", 0).ToString().Trim();
+        //        string sDigitGroup = rkey.GetValue("sThousand", 0).ToString().Trim();
+        //        if (sDateFormat != "dd/MM/yyyy")
+        //            _NotOk = true;
+        //        if (sDecimal != ".")
+        //            _NotOk = true;
+        //        if (sDigitGroup != ",")
+        //            _NotOk = true;
+        //    }
+        //    catch (Exception)
+        //    {
+        //        _NotOk = false;
+        //    }
+        //    return _NotOk;
+        //}
+        //public static Dictionary<dynamic, dynamic> Get_RegionSystem()
+        //{
+        //    Dictionary<dynamic, dynamic> dict = new Dictionary<dynamic, dynamic>() { { "statusCode", 200 }, { "sDateFormat", "" }, { "sDigitGroup", "" }, { "sDecimal", "" } };
+        //    try
+        //    {
+        //        RegistryKey rkey = Registry.CurrentIdentity.OpenSubKey("Control Panel\\International", true);
+        //        string sDateFormat = rkey.GetValue("sShortDate", 0).ToString();  //" + Định dạng ngày hiện tại của hệ thống là (" + rkey.GetValue("sShortDate", 0) + ") --> Cần đổi lại về mặc định là (dd/MM/yyyy)";
+        //        string sDigitGroup = rkey.GetValue("sThousand", 0).ToString(); //" + Ký tự phân biệt đơn vị, nghìn, triệu, tỷ... hiện tại của hệ thống là (" + rkey.GetValue("sThousand", 0) + ") --> Cần đổi lại về mặc định là dấu phẩy (.)";
+        //        string sDecimal = rkey.GetValue("sDecimal", 0).ToString(); //" + Ký tự phân biệt phần thập phân hiện tại của hệ thống là (" + rkey.GetValue("sDecimal", 0) + ") --> Cần đổi lại về mặc định là dấu chấm (,)";
+        //        dict["statusCode"] = 200;
+        //        dict["sDateFormat"] = sDateFormat;
+        //        dict["sDigitGroup"] = sDigitGroup;
+        //        dict["sDecimal"] = sDecimal;
+        //    }
+        //    catch (Exception)
+        //    {
+        //        dict["statusCode"] = -1;
+        //        dict["sDateFormat"] = "";
+        //        dict["sDigitGroup"] = "";
+        //        dict["sDecimal"] = "";
+        //    }
+        //    return dict;
+        //}
+        //public static void ChangFormatNumber(string sDateFormat = "dd/MM/yyyy", string sThousand = ",", string sDecimal = ".")
+        //{
+        //    try
+        //    {
+        //        RegistryKey rkey = Registry.CurrentIdentity.OpenSubKey("Control Panel\\International", true);
+        //        rkey.SetValue("sThousand", sThousand);
+        //        rkey.SetValue("sDecimal", sDecimal);
+        //        if (!sDateFormat.Trim().Equals("dd/MM/yyyy"))
+        //        {
+        //            rkey.SetValue("sShortDate", "dd/MM/yyyy");
+        //            //rkey.Flush();
+        //        }
+        //    }
+        //    catch (Exception) { }
+        //}
 
         public static string ToTitleCaseCulture(string sValue)
         {
